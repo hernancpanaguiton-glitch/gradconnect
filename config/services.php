@@ -35,4 +35,24 @@ return [
         ],
     ],
 
+    'groq' => [
+        'api_key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        'api_url' => 'https://api.groq.com/openai/v1/chat/completions',
+    ],
+
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'chat_model' => env('GEMINI_CHAT_MODEL', 'gemini-2.5-flash'),
+        'embedding_model' => env('GEMINI_EMBEDDING_MODEL', 'gemini-embedding-001'),
+        'chat_url' => 'https://generativelanguage.googleapis.com/v1beta/models',
+        'embedding_url' => 'https://generativelanguage.googleapis.com/v1beta/models',
+    ],
+
+    'jina' => [
+        'api_key' => env('JINA_API_KEY'),
+        'model' => env('JINA_EMBEDDING_MODEL', 'jina-embeddings-v3'),
+        'api_url' => 'https://api.jina.ai/v1/embeddings',
+    ],
+
 ];
