@@ -1,179 +1,258 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { PropsWithChildren, useState } from 'react';
+import { getNavFor, NavItem, NavSection } from '@/lib/nav';
+import { PageProps } from '@/types';
 
-export default function Authenticated({
-    header,
-    children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
+function NavIcon({ path, className = 'h-5 w-5' }: { path: string; className?: string }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className={className}
+        >
+            <path strokeLinecap="round" strokeLinejoin="round" d={path} />
+        </svg>
+    );
+}
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+function SidebarNavItem({
+    item,
+    collapsed,
+    currentPath,
+}: {
+    item: NavItem;
+    collapsed: boolean;
+    currentPath: string;
+}) {
+    const isActive = item.href !== '#' && (
+        item.href === '/dashboard'
+            ? currentPath === '/dashboard'
+            : currentPath.startsWith(item.href)
+    );
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+        <Link
+            href={item.href}
+            className={`
+                flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                ${isActive
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                }
+                ${collapsed ? 'justify-center' : ''}
+            `}
+            title={collapsed ? item.label : undefined}
+        >
+            <NavIcon path={item.iconPath} className="h-5 w-5 shrink-0" />
+            {!collapsed && <span className="truncate">{item.label}</span>}
+        </Link>
+    );
+}
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
+function RoleBadge({ role }: { role: string }) {
+    const labels: Record<string, string> = {
+        admin: 'Admin',
+        alumni_affairs: 'Alumni Affairs',
+        department_head: 'Dept. Head',
+        industry_partner: 'Industry Partner',
+        alumni: 'Alumni',
+        student: 'Student',
+    };
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
+    const colors: Record<string, string> = {
+        admin: 'bg-red-500/20 text-red-300',
+        alumni_affairs: 'bg-purple-500/20 text-purple-300',
+        department_head: 'bg-blue-500/20 text-blue-300',
+        industry_partner: 'bg-emerald-500/20 text-emerald-300',
+        alumni: 'bg-amber-500/20 text-amber-300',
+        student: 'bg-sky-500/20 text-sky-300',
+    };
 
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
+    return (
+        <span
+            className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${colors[role] ?? 'bg-slate-500/20 text-slate-300'}`}
+        >
+            {labels[role] ?? role}
+        </span>
+    );
+}
 
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
+export default function AuthenticatedLayout({ children }: PropsWithChildren) {
+    const { auth } = usePage<PageProps>().props;
+    const user = auth.user;
+    const navSections: NavSection[] = getNavFor(user);
+    const currentPath = usePage().url.split('?')[0];
 
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
+    const primaryRole = user.roles[0] ?? '';
+
+    function handleLogout() {
+        router.post(route('logout'));
+    }
+
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            {/* Mobile overlay */}
+            {sidebarOpen && (
                 <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
+                    className="fixed inset-0 z-20 bg-gray-900/60 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                    aria-hidden="true"
+                />
             )}
 
-            <main>{children}</main>
+            {/* Sidebar */}
+            <aside
+                className={`
+                    fixed inset-y-0 left-0 z-30 flex flex-col bg-slate-900 transition-all duration-300 ease-in-out
+                    lg:relative lg:translate-x-0
+                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                    ${collapsed ? 'w-16' : 'w-64'}
+                `}
+            >
+                {/* Logo + collapse toggle */}
+                <div className={`flex h-16 items-center border-b border-slate-700 ${collapsed ? 'justify-center px-2' : 'justify-between px-4'}`}>
+                    {!collapsed && (
+                        <Link href="/dashboard" className="flex items-center gap-2">
+                            <span className="text-white font-bold text-lg tracking-tight">GradConnect</span>
+                        </Link>
+                    )}
+                    <button
+                        onClick={() => setCollapsed((c) => !c)}
+                        className="hidden lg:flex items-center justify-center h-8 w-8 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+                        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                            {collapsed ? (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                            ) : (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                            )}
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Nav sections */}
+                <nav className="flex-1 overflow-y-auto py-4 space-y-6 px-2">
+                    {navSections.map((section, sectionIdx) => (
+                        <div key={sectionIdx}>
+                            {section.title && !collapsed && (
+                                <p className="px-3 mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                    {section.title}
+                                </p>
+                            )}
+                            <ul className="space-y-1">
+                                {section.items.map((item) => (
+                                    <li key={item.href + item.label}>
+                                        <SidebarNavItem
+                                            item={item}
+                                            collapsed={collapsed}
+                                            currentPath={currentPath}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </nav>
+
+                {/* User section */}
+                <div className={`border-t border-slate-700 p-3 ${collapsed ? 'flex flex-col items-center gap-2' : ''}`}>
+                    {!collapsed ? (
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold">
+                                {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-medium text-white">{user.name}</p>
+                                <RoleBadge role={primaryRole} />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold" title={user.name}>
+                            {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                        </div>
+                    )}
+                    {!collapsed && (
+                        <div className="mt-3 flex gap-2">
+                            <Link
+                                href={route('profile.edit')}
+                                className="flex-1 text-center rounded-md py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                            >
+                                Profile
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="flex-1 rounded-md py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                            >
+                                Log Out
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </aside>
+
+            {/* Main content */}
+            <div className="flex min-w-0 flex-1 flex-col">
+                {/* Top bar */}
+                <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:px-6">
+                    {/* Mobile menu button */}
+                    <button
+                        className="lg:hidden flex items-center justify-center h-8 w-8 rounded-md text-gray-500 hover:bg-gray-100"
+                        onClick={() => setSidebarOpen(true)}
+                        aria-label="Open menu"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+
+                    {/* Breadcrumb / page title slot — filled by children via context if needed */}
+                    <div className="flex-1" />
+
+                    {/* Flash messages */}
+                    <FlashMessages />
+
+                    {/* User avatar + quick logout */}
+                    <div className="flex items-center gap-3">
+                        <span className="hidden text-sm text-gray-600 sm:block">{user.name}</span>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-semibold">
+                            {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                        </div>
+                    </div>
+                </header>
+
+                {/* Page content */}
+                <main className="flex-1 p-4 sm:p-6">
+                    {children}
+                </main>
+            </div>
         </div>
+    );
+}
+
+function FlashMessages() {
+    const { flash } = usePage<PageProps>().props;
+
+    if (!flash?.success && !flash?.error) return null;
+
+    return (
+        <>
+            {flash.success && (
+                <div className="rounded-md bg-green-50 px-4 py-2 text-sm text-green-700 border border-green-200">
+                    {flash.success}
+                </div>
+            )}
+            {flash.error && (
+                <div className="rounded-md bg-red-50 px-4 py-2 text-sm text-red-700 border border-red-200">
+                    {flash.error}
+                </div>
+            )}
+        </>
     );
 }
