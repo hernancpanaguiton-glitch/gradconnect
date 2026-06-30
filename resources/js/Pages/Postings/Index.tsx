@@ -74,6 +74,7 @@ export default function PostingsIndex({ company, postings }: Props) {
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         <div className="flex justify-end gap-3">
+                                            <Link href={route('postings.matches', p.id)} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Matches</Link>
                                             <Link href={route('postings.edit', p.id)} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Edit</Link>
                                             <button onClick={() => destroy(p.id, p.title)} className="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
                                         </div>

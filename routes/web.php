@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\JobMatchController;
+use App\Http\Controllers\CandidateMatchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EducationRecordController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GraduateProfileController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobPostingController;
+use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SurveyController;
@@ -56,6 +58,9 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::post('/graduate/resumes', [ResumeController::class, 'store'])->name('resumes.store');
         Route::delete('/graduate/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
         Route::patch('/graduate/resumes/{resume}/primary', [ResumeController::class, 'setPrimary'])->name('resumes.set-primary');
+
+        // Ranked job recommendations
+        Route::get('/recommendations', [JobRecommendationController::class, 'index'])->name('recommendations.index');
     });
 
     // Company (industry partner)
@@ -72,6 +77,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::patch('/postings/{posting}', [JobPostingController::class, 'update'])->name('postings.update');
         Route::delete('/postings/{posting}', [JobPostingController::class, 'destroy'])->name('postings.destroy');
         Route::get('/postings/{posting}/candidates', [JobPostingController::class, 'candidates'])->name('postings.candidates');
+        Route::get('/postings/{posting}/matches', [CandidateMatchController::class, 'index'])->name('postings.matches');
     });
 
     // Job board — alumni / students

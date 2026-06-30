@@ -122,6 +122,7 @@ export function getNavFor(user: User): NavSection[] {
                 items: [
                     { label: 'My Profile', href: '/graduate/profile/edit', iconPath: icons.user },
                     { label: 'Jobs & Internships', href: '/jobs', iconPath: icons.briefcase },
+                    { label: 'Recommendations', href: '/recommendations', iconPath: icons.star },
                     { label: 'Career Resources', href: '#', iconPath: icons.academicCap },
                 ],
             },
