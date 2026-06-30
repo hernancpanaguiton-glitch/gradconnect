@@ -3,6 +3,7 @@ import SkillGapList from '@/Components/SkillGapList';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import axios from 'axios';
 import { useState } from 'react';
 
 interface Match {
@@ -33,13 +34,18 @@ interface Props extends PageProps {
 
 export default function PostingsMatches({ posting, matches }: Props) {
     const [requesting, setRequesting] = useState(false);
+    const [notice, setNotice] = useState<string | null>(null);
 
     function requestRematch() {
         setRequesting(true);
-        router.post(route('api.jobs.rematch.store', posting.id), {}, {
-            preserveScroll: true,
-            onFinish: () => setRequesting(false),
-        });
+        setNotice(null);
+        axios.post(route('api.jobs.rematch.store', posting.id))
+            .then(() => {
+                setNotice('Matching started. Candidate rankings will update once processing finishes — this page will refresh in a moment.');
+                setTimeout(() => router.reload({ only: ['matches'] }), 4000);
+            })
+            .catch(() => setNotice('Could not start matching. Please try again.'))
+            .finally(() => setRequesting(false));
     }
 
     return (
@@ -62,6 +68,12 @@ export default function PostingsMatches({ posting, matches }: Props) {
                         {requesting ? 'Requesting…' : 'Refresh matches'}
                     </button>
                 </div>
+
+                {notice && (
+                    <div className="rounded-lg bg-indigo-50 border border-indigo-200 px-4 py-3 text-sm text-indigo-700">
+                        {notice}
+                    </div>
+                )}
 
                 <div className="space-y-3">
                     {matches.map((match) => (
