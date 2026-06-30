@@ -67,23 +67,112 @@ class DatabaseSeeder extends Seeder
             'department_id' => $bizDept->id,
         ]);
 
+        // Skill lookup by name, so each job posting gets skills that match its role.
+        $skillsByName = $skills->keyBy('name');
+
+        // Realistic IT companies for the demo.
+        $companyBlueprints = [
+            ['name' => 'Sugbo Software Labs', 'industry' => 'Software Development', 'location' => 'Cebu City'],
+            ['name' => 'Mactan Digital Solutions', 'industry' => 'Information Technology', 'location' => 'Lapu-Lapu City'],
+            ['name' => 'Visayas Cloud Systems', 'industry' => 'IT & Cloud Services', 'location' => 'Mandaue City'],
+        ];
+
+        // IT job archetypes — each with required skills that actually fit the role.
+        $jobBlueprints = [
+            [
+                'title' => 'Software Engineer',
+                'employment_type' => 'full_time',
+                'experience_level' => 'mid',
+                'salary_range' => '40000-65000',
+                'description' => 'Build and maintain web applications and REST APIs using PHP and Laravel. Collaborate on feature delivery, code reviews, and database design.',
+                'qualifications' => "BS in Computer Science, IT, or a related field.\nSolid grasp of PHP, Laravel, and relational databases.\nComfortable with Git-based workflows.",
+                'skills' => ['PHP', 'Laravel', 'MySQL', 'Git', 'REST API'],
+            ],
+            [
+                'title' => 'Frontend Developer',
+                'employment_type' => 'full_time',
+                'experience_level' => 'entry',
+                'salary_range' => '30000-50000',
+                'description' => 'Develop responsive, accessible user interfaces with React and TypeScript. Translate designs into reusable components with consistent quality.',
+                'qualifications' => "Strong JavaScript and TypeScript fundamentals.\nExperience with React and modern CSS (Tailwind).\nKeen eye for detail and UX.",
+                'skills' => ['JavaScript', 'TypeScript', 'React', 'Tailwind CSS', 'HTML'],
+            ],
+            [
+                'title' => 'Backend Developer',
+                'employment_type' => 'full_time',
+                'experience_level' => 'mid',
+                'salary_range' => '45000-70000',
+                'description' => 'Design and implement backend services and REST APIs. Optimize PostgreSQL queries and containerize services with Docker.',
+                'qualifications' => "Proficiency in PHP/Laravel and PostgreSQL.\nExperience designing REST APIs.\nWorking knowledge of Docker.",
+                'skills' => ['PHP', 'Laravel', 'PostgreSQL', 'REST API', 'Docker'],
+            ],
+            [
+                'title' => 'Full Stack Developer',
+                'employment_type' => 'full_time',
+                'experience_level' => 'mid',
+                'salary_range' => '50000-80000',
+                'description' => 'Work across the stack building features end to end with React on the front end and Node.js services on the back end.',
+                'qualifications' => "Comfortable across frontend and backend.\nExperience with React, Node.js, and SQL databases.\nStrong Git proficiency.",
+                'skills' => ['JavaScript', 'React', 'Node.js', 'MySQL', 'Git'],
+            ],
+            [
+                'title' => 'Data Analyst',
+                'employment_type' => 'full_time',
+                'experience_level' => 'entry',
+                'salary_range' => '35000-55000',
+                'description' => 'Analyze datasets, build reports and dashboards, and surface insights to support decisions using Python and SQL.',
+                'qualifications' => "Strong SQL and Python skills.\nExperience with data analysis and visualization.\nAttention to detail.",
+                'skills' => ['Python', 'SQL', 'Data Analysis'],
+            ],
+            [
+                'title' => 'DevOps Engineer',
+                'employment_type' => 'contract',
+                'experience_level' => 'senior',
+                'salary_range' => '60000-90000',
+                'description' => 'Own CI/CD pipelines, containerization, and Linux server operations. Improve reliability and deployment velocity.',
+                'qualifications' => "Hands-on with Docker, Linux, and networking.\nExperience with Git-based CI/CD.\nStrong automation mindset.",
+                'skills' => ['Docker', 'Linux', 'Git', 'Networking'],
+            ],
+        ];
+
         // Industry Partners (with companies)
         $partnerUsers = User::factory()->count(3)->industryPartner()->create();
-        $companies = $partnerUsers->map(function (User $partnerUser) {
-            return Company::factory()->verified()->create(['owner_user_id' => $partnerUser->id]);
+        $companies = $partnerUsers->values()->map(function (User $partnerUser, int $index) use ($companyBlueprints) {
+            $blueprint = $companyBlueprints[$index % count($companyBlueprints)];
+
+            return Company::factory()->verified()->create([
+                'owner_user_id' => $partnerUser->id,
+                'name' => $blueprint['name'],
+                'industry' => $blueprint['industry'],
+                'location' => $blueprint['location'],
+            ]);
         });
 
-        // Job postings (2 per company)
-        $jobPostings = $companies->flatMap(function (Company $company) use ($skills) {
-            return JobPosting::factory()->count(2)->create([
-                'company_id' => $company->id,
-                'posted_by_user_id' => $company->owner_user_id,
-            ])->each(function (JobPosting $job) use ($skills) {
-                $job->skills()->attach(
-                    $skills->random(4)->pluck('id'),
-                    ['is_required' => true, 'weight' => 1]
-                );
-            });
+        // Job postings (2 per company), each with role-appropriate required skills.
+        $companies->each(function (Company $company, int $index) use ($jobBlueprints, $skillsByName) {
+            foreach (array_slice($jobBlueprints, $index * 2, 2) as $blueprint) {
+                $job = JobPosting::create([
+                    'company_id' => $company->id,
+                    'posted_by_user_id' => $company->owner_user_id,
+                    'title' => $blueprint['title'],
+                    'description' => $blueprint['description'],
+                    'qualifications' => $blueprint['qualifications'],
+                    'employment_type' => $blueprint['employment_type'],
+                    'experience_level' => $blueprint['experience_level'],
+                    'salary_range' => $blueprint['salary_range'],
+                    'location' => $company->location,
+                    'is_remote' => false,
+                    'status' => 'open',
+                ]);
+
+                $pivot = collect($blueprint['skills'])
+                    ->map(fn (string $name) => $skillsByName->get($name)?->id)
+                    ->filter()
+                    ->mapWithKeys(fn ($id) => [$id => ['is_required' => true, 'weight' => 1]])
+                    ->all();
+
+                $job->skills()->attach($pivot);
+            }
         });
 
         // Alumni (20) with profiles, education, employment, skills

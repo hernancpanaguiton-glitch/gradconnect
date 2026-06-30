@@ -2,6 +2,28 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 
+/** Render a "30000-50000" / "80000+" range as a peso, comma-grouped monthly figure. */
+function formatSalary(range: string): string {
+    const nums = range.match(/\d+/g);
+    if (!nums || nums.length === 0) {
+        return range;
+    }
+    const parts = nums.map((n) => Number(n).toLocaleString());
+    const plus = range.includes('+') ? '+' : '';
+    return parts.length === 1
+        ? `₱${parts[0]}${plus} / month`
+        : `₱${parts[0]}–${parts[1]} / month`;
+}
+
+function MetaField({ label, value, valueClass = '' }: { label: string; value: string; valueClass?: string }) {
+    return (
+        <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</p>
+            <p className={`mt-0.5 text-sm font-medium text-gray-800 ${valueClass}`}>{value}</p>
+        </div>
+    );
+}
+
 interface JobPosting {
     id: number; title: string; description: string; responsibilities: string | null;
     qualifications: string | null; employment_type: string; location: string | null;
@@ -48,12 +70,16 @@ export default function JobShow({ posting, userApplication }: Props) {
                             <p className="mt-1 text-gray-600">{posting.company.name}
                                 {posting.company.is_verified && <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">Verified</span>}
                             </p>
-                            <div className="mt-3 flex flex-wrap gap-2 text-sm text-gray-500">
-                                <span className="capitalize">{posting.employment_type.replace(/_/g, ' ')}</span>
-                                <span>·</span>
-                                <span>{posting.is_remote ? 'Remote' : (posting.location ?? 'On-site')}</span>
-                                {posting.salary_range && <><span>·</span><span>{posting.salary_range}</span></>}
-                                {posting.application_deadline && <><span>·</span><span>Deadline: {new Date(posting.application_deadline).toLocaleDateString()}</span></>}
+                            <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:gap-x-10">
+                                <MetaField label="Employment Type" value={posting.employment_type.replace(/_/g, ' ')} valueClass="capitalize" />
+                                <MetaField label="Location" value={posting.is_remote ? 'Remote' : (posting.location ?? 'On-site')} />
+                                {posting.salary_range && <MetaField label="Salary Range" value={formatSalary(posting.salary_range)} />}
+                                {posting.application_deadline && (
+                                    <MetaField
+                                        label="Application Deadline"
+                                        value={new Date(posting.application_deadline).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                                    />
+                                )}
                             </div>
                         </div>
                         {isGraduate && (

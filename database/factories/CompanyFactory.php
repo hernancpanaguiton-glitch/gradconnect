@@ -15,8 +15,9 @@ class CompanyFactory extends Factory
         return [
             'name' => fake()->company(),
             'industry' => fake()->randomElement([
-                'Information Technology', 'Business Process Outsourcing',
-                'Banking & Finance', 'Healthcare', 'Education', 'Manufacturing',
+                'Software Development', 'Information Technology',
+                'IT & Business Process Outsourcing', 'Cloud Services',
+                'Data & Analytics', 'Cybersecurity',
             ]),
             'website' => fake()->optional(0.7)->url(),
             'description' => fake()->optional(0.8)->paragraph(),

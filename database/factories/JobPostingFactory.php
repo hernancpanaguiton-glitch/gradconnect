@@ -13,7 +13,12 @@ class JobPostingFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->jobTitle(),
+            'title' => fake()->randomElement([
+                'Software Engineer', 'Frontend Developer', 'Backend Developer',
+                'Full Stack Developer', 'Data Analyst', 'DevOps Engineer',
+                'QA Engineer', 'Mobile Developer', 'Systems Administrator',
+                'IT Support Specialist',
+            ]),
             'description' => fake()->paragraphs(3, true),
             'responsibilities' => fake()->optional(0.8)->paragraphs(2, true),
             'qualifications' => fake()->optional(0.8)->paragraphs(2, true),
