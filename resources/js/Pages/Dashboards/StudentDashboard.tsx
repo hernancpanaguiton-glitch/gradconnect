@@ -1,8 +1,9 @@
+import StatCard, { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function StudentDashboard() {
+export default function StudentDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
     const { auth } = usePage<PageProps>().props;
     const user = auth.user;
 
@@ -21,19 +22,9 @@ export default function StudentDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Profile Completion</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Skills Listed</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Open Positions</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                        <p className="text-xs text-gray-400">Internships & jobs</p>
-                    </div>
+                    {stats.map((stat) => (
+                        <StatCard key={stat.label} {...stat} />
+                    ))}
                 </div>
 
                 <div className="rounded-xl bg-indigo-50 border border-indigo-200 p-6">

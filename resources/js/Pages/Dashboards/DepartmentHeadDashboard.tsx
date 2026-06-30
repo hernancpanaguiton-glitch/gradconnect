@@ -1,7 +1,9 @@
+import StatCard, { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
-export default function DepartmentHeadDashboard() {
+export default function DepartmentHeadDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
@@ -15,21 +17,9 @@ export default function DepartmentHeadDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Graduates</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                        <p className="text-xs text-gray-400">In your department</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Employment Rate</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                        <p className="text-xs text-gray-400">Based on tracer data</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Related Employment</p>
-                        <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
-                        <p className="text-xs text-gray-400">Jobs related to degree</p>
-                    </div>
+                    {stats.map((stat) => (
+                        <StatCard key={stat.label} {...stat} />
+                    ))}
                 </div>
 
                 <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
