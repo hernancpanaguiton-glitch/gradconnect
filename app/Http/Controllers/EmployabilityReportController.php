@@ -14,7 +14,7 @@ class EmployabilityReportController extends Controller
      */
     public function index(Request $request): Response
     {
-        abort_unless($request->user()->hasPermissionTo('employability_reports.generate'), 403);
+        abort_unless($request->user()->hasPermissionTo('reports.employability.view'), 403);
 
         $totalGraduates = GraduateProfile::count();
 

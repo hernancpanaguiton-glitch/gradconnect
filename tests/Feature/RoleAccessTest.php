@@ -136,6 +136,13 @@ class RoleAccessTest extends TestCase
         $this->actingAs($staff)->get('/reports/employability')->assertOk();
     }
 
+    public function test_department_head_can_access_employability_report(): void
+    {
+        $deptHead = User::factory()->departmentHead()->create();
+
+        $this->actingAs($deptHead)->get('/reports/employability')->assertOk();
+    }
+
     public function test_alumni_cannot_access_employability_report(): void
     {
         $alumni = User::factory()->alumni()->create();

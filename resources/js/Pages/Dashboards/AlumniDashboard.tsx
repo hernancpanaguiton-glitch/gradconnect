@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
     return (
@@ -40,18 +40,18 @@ export default function AlumniDashboard() {
                 <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h2 className="text-base font-semibold text-gray-900">Quick Actions</h2>
                     <div className="mt-4 flex flex-wrap gap-3">
-                        <a href="/me/profile" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
+                        <Link href={route('graduate.profile.edit')} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
                             Update Profile
-                        </a>
-                        <a href="/resumes" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
+                        </Link>
+                        <Link href={route('resumes.index')} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
                             Manage Resumes
-                        </a>
-                        <a href="/jobs" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
+                        </Link>
+                        <Link href={route('jobs.index')} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
                             Browse Jobs
-                        </a>
-                        <a href="/recommendations" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
+                        </Link>
+                        <Link href={route('recommendations.index')} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
                             View Recommendations
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

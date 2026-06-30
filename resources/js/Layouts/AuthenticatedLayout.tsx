@@ -110,7 +110,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
             <aside
                 className={`
                     fixed inset-y-0 left-0 z-30 flex flex-col bg-slate-900 transition-all duration-300 ease-in-out
-                    lg:relative lg:translate-x-0
+                    lg:sticky lg:top-0 lg:h-screen lg:translate-x-0
                     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
                     ${collapsed ? 'w-16' : 'w-64'}
                 `}

@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function StudentDashboard() {
     const { auth } = usePage<PageProps>().props;
@@ -42,12 +42,12 @@ export default function StudentDashboard() {
                         Complete your career profile to unlock job matches and recommendations.
                     </p>
                     <div className="mt-4 flex flex-wrap gap-3">
-                        <a href="/me/profile" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
+                        <Link href={route('graduate.profile.edit')} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
                             Build Your Profile
-                        </a>
-                        <a href="/jobs" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-indigo-700 ring-1 ring-indigo-300 hover:bg-indigo-50 transition-colors">
+                        </Link>
+                        <Link href={route('jobs.index')} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-indigo-700 ring-1 ring-indigo-300 hover:bg-indigo-50 transition-colors">
                             Browse Opportunities
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

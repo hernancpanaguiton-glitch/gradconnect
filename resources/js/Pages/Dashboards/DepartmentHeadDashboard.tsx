@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function DepartmentHeadDashboard() {
     return (
@@ -35,9 +35,9 @@ export default function DepartmentHeadDashboard() {
                 <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h2 className="text-base font-semibold text-gray-900">Reports</h2>
                     <div className="mt-4 flex flex-wrap gap-3">
-                        <a href="/reports/employability" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
+                        <Link href={route('reports.employability')} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors">
                             Employability Report
-                        </a>
+                        </Link>
                         <a href="#" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition-colors">
                             Graduate Profiles
                         </a>
