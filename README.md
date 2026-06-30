@@ -1,3 +1,40 @@
+# GradConnect
+
+GradConnect is an alumni / student ↔ employer matching platform (Laravel 13 + Inertia/React + Postgres `pgvector`).
+
+## Run with Docker (recommended for testers)
+
+You only need **Docker Desktop** installed — no PHP, Node, or Postgres on your machine.
+
+```bash
+# 1. Copy the example env (optionally paste in the shared AI keys)
+cp .env.docker.example .env.docker
+
+# 2. Build and start everything (app + Postgres/pgvector + queue worker)
+docker compose up --build
+```
+
+Then open **http://localhost:8000**.
+
+The first boot automatically waits for the database, runs migrations, and seeds demo data. Demo logins (password is shown by the seeder / tester guide):
+
+- `alumni@gradconnect.edu.ph`
+- `student@gradconnect.edu.ph`
+- `partner@gradconnect.edu.ph`
+
+> AI résumé↔job matching only activates if you add `GEMINI_API_KEY` / `GROQ_API_KEY` to `.env.docker`. The app runs fine without them — the AI recommendations just stay empty.
+
+Useful commands:
+
+```bash
+docker compose up -d --build      # run in the background
+docker compose logs -f app        # follow app logs
+docker compose down               # stop the stack
+docker compose down -v            # stop and wipe the database/storage (fresh start)
+```
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

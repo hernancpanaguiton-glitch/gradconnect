@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GradConnect — Tester's Guide</title>
+</head>
+<body>
+<style>
+  :root {
+    --ground: #f6f7fb;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --faint: #94a3b8;
+    --border: #e2e8f0;
+    --indigo: #4f46e5;
+    --indigo-tint: #eef2ff;
+    --indigo-ink: #3730a3;
+    --green: #15803d;
+    --green-tint: #f0fdf4;
+    --amber: #b45309;
+    --amber-tint: #fffbeb;
+    --red: #dc2626;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body { margin: 0; }
+
+  .page {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--ground);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---- Masthead ---- */
+  .masthead {
+    background: linear-gradient(160deg, #1e1b4b 0%, #0f172a 70%);
+    color: #fff;
+    padding: 56px 0 48px;
+  }
+  .masthead .wrap { padding-bottom: 0; }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    color: #c7d2fe; font-weight: 600; letter-spacing: .02em;
+  }
+  .brand svg { width: 26px; height: 26px; }
+  .masthead h1 {
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    line-height: 1.1; margin: 18px 0 12px; font-weight: 800;
+    letter-spacing: -.02em; text-wrap: balance; max-width: 18ch;
+  }
+  .masthead p {
+    color: #cbd5e1; font-size: 1.08rem; margin: 0; max-width: 60ch;
+  }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .14em; font-size: .72rem;
+    font-weight: 700; color: var(--indigo);
+  }
+  .masthead .eyebrow { color: #818cf8; }
+
+  /* ---- Sections ---- */
+  section { margin-top: 52px; scroll-margin-top: 20px; }
+  h2 {
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em;
+    margin: 0 0 6px; text-wrap: balance;
+  }
+  .section-intro { color: var(--muted); margin: 0 0 22px; max-width: 64ch; }
+  h3 { font-size: 1.08rem; font-weight: 700; margin: 26px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  a { color: var(--indigo); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 3px; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px;
+    box-shadow: 0 1px 2px rgba(15,23,42,.04);
+  }
+  .card + .card { margin-top: 16px; }
+
+  /* ---- Contents ---- */
+  .toc {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px; margin-top: -28px;
+  }
+  .toc a {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; color: var(--ink); font-weight: 600;
+    font-size: .92rem;
+  }
+  .toc a:hover { border-color: var(--indigo); text-decoration: none; }
+  .toc .num {
+    font-family: var(--mono); font-size: .72rem; color: var(--indigo);
+    background: var(--indigo-tint); border-radius: 6px; padding: 3px 7px;
+  }
+
+  /* ---- Credentials table ---- */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th {
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--muted); font-weight: 700; background: #fbfcfe;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td code, .cred { font-family: var(--mono); font-size: .86rem; }
+  .cred { color: var(--indigo-ink); }
+
+  /* ---- Role chips ---- */
+  .role-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    font-family: var(--mono); letter-spacing: .01em;
+  }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .c-admin { background: #fef2f2; color: #b91c1c; }
+  .c-affairs { background: #faf5ff; color: #7e22ce; }
+  .c-dept { background: #eff6ff; color: #1d4ed8; }
+  .c-partner { background: #ecfdf5; color: #047857; }
+  .c-alumni { background: #fffbeb; color: #b45309; }
+  .c-student { background: #f0f9ff; color: #0369a1; }
+
+  .does { margin: 8px 0 0; padding: 0; list-style: none; }
+  .does li { padding: 6px 0 6px 26px; position: relative; }
+  .does li::before {
+    content: ""; position: absolute; left: 4px; top: 13px; width: 8px; height: 8px;
+    border: 2px solid var(--indigo); border-radius: 50%;
+  }
+
+  /* ---- Callouts ---- */
+  .note, .warn, .tip {
+    border-radius: 12px; padding: 14px 18px; margin: 18px 0;
+    border-left: 4px solid; font-size: .95rem;
+  }
+  .note { background: var(--indigo-tint); border-color: var(--indigo); }
+  .warn { background: var(--amber-tint); border-color: var(--amber); }
+  .tip { background: var(--green-tint); border-color: var(--green); }
+  .note strong, .warn strong, .tip strong { display: block; margin-bottom: 2px; }
+  .warn strong { color: var(--amber); }
+  .tip strong { color: var(--green); }
+  .note strong { color: var(--indigo-ink); }
+
+  /* ---- Code / resume blocks ---- */
+  .block {
+    position: relative; background: #0f172a; color: #e2e8f0;
+    border-radius: 12px; padding: 18px 20px; margin: 14px 0;
+    font-family: var(--mono); font-size: .85rem; line-height: 1.6;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+  }
+  .block.light {
+    background: #f8fafc; color: #334155; border: 1px solid var(--border); white-space: pre-wrap;
+  }
+  .copy {
+    position: absolute; top: 10px; right: 10px;
+    font-family: var(--sans); font-size: .72rem; font-weight: 600;
+    background: rgba(255,255,255,.12); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2);
+    border-radius: 7px; padding: 5px 10px; cursor: pointer;
+  }
+  .block.light .copy { background: var(--indigo-tint); color: var(--indigo-ink); border-color: transparent; }
+  .copy:hover { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+  .copy:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+
+  .pill { font-family: var(--mono); font-size: .82rem; background: var(--indigo-tint); color: var(--indigo-ink); padding: 2px 7px; border-radius: 6px; }
+  .req { color: var(--red); font-weight: 700; }
+  .muted { color: var(--muted); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  .foot { margin-top: 60px; color: var(--faint); font-size: .85rem; text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div class="wrap">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/></svg>
+        GradConnect
+      </div>
+      <h1>Tester's Guide &amp; Walkthrough</h1>
+      <p>Everything your team needs to log in, explore each role, and try the AI résumé&ndash;to&ndash;job matching. Built for the University of Cebu &mdash; Lapu-Lapu &amp; Mandaue graduate employability platform.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section style="margin-top:32px;">
+      <nav class="toc" aria-label="Contents">
+        <a href="#start"><span class="num">01</span> Before you start</a>
+        <a href="#logins"><span class="num">02</span> Login accounts</a>
+        <a href="#alumni"><span class="num">03</span> Alumni</a>
+        <a href="#student"><span class="num">04</span> Student</a>
+        <a href="#partner"><span class="num">05</span> Industry Partner</a>
+        <a href="#affairs"><span class="num">06</span> Alumni Affairs</a>
+        <a href="#dept"><span class="num">07</span> Department Head</a>
+        <a href="#admin"><span class="num">08</span> Admin</a>
+        <a href="#resumes"><span class="num">09</span> Sample résumés</a>
+        <a href="#notes"><span class="num">10</span> Known gaps</a>
+      </nav>
+    </section>
+
+    <!-- 01 -->
+    <section id="start">
+      <p class="eyebrow">Getting set up</p>
+      <h2>Before you start</h2>
+      <p class="section-intro">GradConnect runs locally through Laravel Herd. Open the address your team lead shares &mdash; when running on the host machine that is <span class="pill">http://gradconnect.test</span>.</p>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Two ways the AI features behave</h3>
+        <p>The résumé &amp; job <strong>embeddings</strong> and <strong>fit scoring</strong> run as background jobs. There are two states to be aware of when testing:</p>
+        <ul class="does">
+          <li>The <strong>alumni@gradconnect.edu.ph</strong> account already has a résumé and a full set of AI recommendations loaded &mdash; you can view those immediately, no setup needed.</li>
+          <li>To generate <em>new</em> matches (uploading a fresh résumé, or clicking <em>Refresh recommendations / Refresh matches</em>), the host must have a queue worker running and AI keys configured.</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>For the person hosting the app</strong>
+        Run the queue worker so résumé uploads and the refresh buttons process live:
+        <div class="block"><button class="copy">Copy</button>php artisan queue:work</div>
+        The Gemini and Groq API keys must be set in <span class="pill">.env</span> (<code>GEMINI_API_KEY</code>, <code>GROQ_API_KEY</code>). Without them, uploads still save but stay unscored.
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="logins">
+      <p class="eyebrow">Sign in</p>
+      <h2>Login accounts</h2>
+      <p class="section-intro">Every demo account uses the password <span class="pill">password</span>. Pick the role you want to test. (New self-registrations start with no role assigned, so use these instead &mdash; an Admin can grant roles afterward.)</p>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+            <tbody>
+              <tr><td><span class="chip c-alumni">Alumni</span></td><td class="cred">alumni@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-student">Student</span></td><td class="cred">student@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-partner">Industry Partner</span></td><td class="cred">partner@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-affairs">Alumni Affairs</span></td><td class="cred">alumni.affairs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-dept">Department Head</span></td><td class="cred">depthead.ccs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-admin">Admin</span></td><td class="cred">admin@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="warn">
+        <strong>Hitting a 419 / "Page Expired" on login?</strong>
+        Open the site in a fresh private/incognito window (or clear cookies for the site) and use the exact address above. That resets the session token.
+      </div>
+    </section>
+
+    <!-- 03 Alumni -->
+    <section id="alumni">
+      <div class="role-head"><span class="chip c-alumni">Alumni</span><span class="muted cred">alumni@gradconnect.edu.ph</span></div>
+      <h2>Alumni</h2>
+      <p class="section-intro">A graduate managing their career profile, résumés, job applications, and AI recommendations. This is the best account to see the AI matching in action.</p>
+
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>My Profile</strong> &mdash; fill in career details across four tabs: Basic Info, Education, Employment, Skills.</li>
+        <li><strong>My Résumés</strong> &mdash; upload a PDF résumé (this is what gets matched to jobs).</li>
+        <li><strong>Job Board</strong> &mdash; browse open positions, filter, and apply.</li>
+        <li><strong>Recommendations</strong> &mdash; see jobs ranked by AI fit score with explanations and skill gaps.</li>
+        <li><strong>Surveys</strong> &mdash; answer open employability &amp; tracer surveys.</li>
+      </ul>
+
+      <h3>What to enter &mdash; Profile tabs</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Tab / Field</th><th>Example value</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Basic Info</strong> &middot; Program</td><td>BS Information Technology</td></tr>
+              <tr><td>Headline</td><td>Backend Developer</td></tr>
+              <tr><td>Summary</td><td>Laravel developer with 4 years building REST APIs.</td></tr>
+              <tr><td>Employment status</td><td>Employed / Unemployed / Self-employed / Further study</td></tr>
+              <tr><td>City &middot; Phone &middot; LinkedIn</td><td>Cebu City &middot; 0917&hellip; &middot; linkedin.com/in/&hellip;</td></tr>
+              <tr><td>Willing to relocate</td><td>checkbox</td></tr>
+              <tr><td><strong>Education</strong></td><td>Institution, Degree, Field of study, Start/End <em>year</em> (e.g. 2018&ndash;2022), Honors</td></tr>
+              <tr><td><strong>Employment</strong></td><td>Company, Job title, Type (Full-time&hellip;), Start/End <em>date</em>, or tick "Currently working here"</td></tr>
+              <tr><td><strong>Skills</strong></td><td>Search and add, e.g. PHP, Laravel, React, SQL</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Try the AI matching</h3>
+      <ul class="does">
+        <li>Open <strong>Recommendations</strong> &mdash; <code>alumni@</code> already shows 6 ranked jobs (Backend Developer and Software Engineer score highest for its backend résumé).</li>
+        <li>Each card shows a <strong>fit bar</strong>, the model's <strong>explanation</strong>, and green "matched" / amber "gap" skill chips.</li>
+        <li>Upload your own résumé under <strong>My Résumés</strong> (see the samples below), then press <strong>Refresh recommendations</strong> to generate a fresh ranking.</li>
+      </ul>
+      <div class="warn"><strong>Résumés must be PDF</strong>(max 10&nbsp;MB). Other formats are rejected. New uploads only get scored while the host's queue worker is running.</div>
+    </section>
+
+    <!-- 04 Student -->
+    <section id="student">
+      <div class="role-head"><span class="chip c-student">Student</span><span class="muted cred">student@gradconnect.edu.ph</span></div>
+      <h2>Graduating Student</h2>
+      <p class="section-intro">A soon-to-graduate student building a career profile and browsing internships &amp; entry-level roles.</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>My Profile</strong> &mdash; same profile tabs as Alumni; set an <em>expected</em> graduation year.</li>
+        <li><strong>Jobs &amp; Internships</strong> &mdash; browse and apply to open positions.</li>
+        <li><strong>Recommendations</strong> &mdash; AI job matches once a résumé is uploaded.</li>
+        <li><strong>Surveys</strong> &mdash; respond to open surveys.</li>
+      </ul>
+      <p class="muted">Tip: build the profile, add a few skills, then upload a résumé to see recommendations populate (queue worker required for new uploads).</p>
+    </section>
+
+    <!-- 05 Partner -->
+    <section id="partner">
+      <div class="role-head"><span class="chip c-partner">Industry Partner</span><span class="muted cred">partner@gradconnect.edu.ph</span></div>
+      <h2>Industry Partner</h2>
+      <p class="section-intro">An employer posting vacancies, reviewing applicants, and seeing AI-ranked candidates.</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>My Company</strong> &mdash; edit the company profile.</li>
+        <li><strong>Job Postings</strong> &mdash; create, edit, and close postings.</li>
+        <li><strong>Candidates</strong> &mdash; review who applied and update their status.</li>
+        <li><strong>Matches</strong> &mdash; see graduates AI-ranked against a posting.</li>
+      </ul>
+
+      <h3>What to enter &mdash; new Job Posting</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Field</th><th>Example value</th></tr></thead>
+            <tbody>
+              <tr><td>Title <span class="req">*</span></td><td>Backend Developer</td></tr>
+              <tr><td>Description <span class="req">*</span></td><td>Build and maintain REST APIs with Laravel&hellip;</td></tr>
+              <tr><td>Responsibilities / Qualifications</td><td>free text</td></tr>
+              <tr><td>Employment type</td><td>Full-time / Part-time / Contract / Internship</td></tr>
+              <tr><td>Location &middot; Remote</td><td>Cebu City &middot; remote toggle</td></tr>
+              <tr><td>Salary range</td><td><code>45000-70000</code> (shown as ₱45,000&ndash;70,000 / month)</td></tr>
+              <tr><td>Experience level &middot; Min education</td><td>Mid &middot; Bachelor</td></tr>
+              <tr><td>Status</td><td>Open (so it shows on the Job Board)</td></tr>
+              <tr><td>Application deadline</td><td>optional date &mdash; the last day to apply</td></tr>
+              <tr><td>Skills</td><td>add skills and tick which are <em>required</em></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="muted">After saving, open a posting's <strong>Matches</strong> and press <strong>Refresh matches</strong> to rank applicants by AI fit (queue worker required).</p>
+    </section>
+
+    <!-- 06 Affairs -->
+    <section id="affairs">
+      <div class="role-head"><span class="chip c-affairs">Alumni Affairs</span><span class="muted cred">alumni.affairs@gradconnect.edu.ph</span></div>
+      <h2>Alumni Affairs Office</h2>
+      <p class="section-intro">Runs employability &amp; tracer surveys and views employment reports.</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>Surveys</strong> &mdash; create, edit, open/close, and view results.</li>
+        <li><strong>Employability Report</strong> &mdash; graduate counts and employment-status breakdown.</li>
+      </ul>
+      <h3>What to enter &mdash; new Survey</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Field</th><th>Example value</th></tr></thead>
+            <tbody>
+              <tr><td>Title <span class="req">*</span></td><td>Graduate Employability Survey 2026</td></tr>
+              <tr><td>Type</td><td>Employability / Tracer / Custom</td></tr>
+              <tr><td>Status</td><td>Open (so respondents can answer)</td></tr>
+              <tr><td>Question prompt</td><td>What is your current employment status?</td></tr>
+              <tr><td>Question type</td><td>text, textarea, single choice, multi choice, rating, boolean, number</td></tr>
+              <tr><td>Options</td><td>for choice types: Employed, Unemployed, Self-employed&hellip;</td></tr>
+              <tr><td>Required</td><td>toggle per question</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="muted">Two surveys are already seeded and <strong>open</strong>, so the Alumni/Student accounts can answer them right away.</p>
+    </section>
+
+    <!-- 07 Dept Head -->
+    <section id="dept">
+      <div class="role-head"><span class="chip c-dept">Department Head</span><span class="muted cred">depthead.ccs@gradconnect.edu.ph</span></div>
+      <h2>Department Head</h2>
+      <p class="section-intro">Read-only analytics scoped to their department (College of Computer Studies and its programs).</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>Dashboard</strong> &mdash; graduates in the department, employment rate, course-related employment.</li>
+        <li><strong>Employability Report</strong> &mdash; the same employment breakdown view.</li>
+      </ul>
+      <p class="muted">No data entry &mdash; this role reviews figures only.</p>
+    </section>
+
+    <!-- 08 Admin -->
+    <section id="admin">
+      <div class="role-head"><span class="chip c-admin">Admin</span><span class="muted cred">admin@gradconnect.edu.ph</span></div>
+      <h2>Administrator</h2>
+      <p class="section-intro">Manages user accounts and the dynamic roles &amp; permissions system.</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>User Management</strong> &mdash; search users; edit a user's <em>status</em> (active / suspended / pending) and assigned <em>roles</em>; delete users.</li>
+        <li><strong>Roles &amp; Permissions</strong> &mdash; create custom roles and toggle each permission on a matrix. Core roles are protected from deletion.</li>
+      </ul>
+      <div class="tip">
+        <strong>Good test: dynamic permissions</strong>
+        Create a role, give it a permission, assign it to a user &mdash; that user's available menu and pages change accordingly. Suspend a user and they're blocked at login.
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- 09 Sample resumes -->
+    <section id="resumes">
+      <p class="eyebrow">Feed the matcher</p>
+      <h2>Sample résumés to upload</h2>
+      <p class="section-intro">The app accepts <strong>PDF only</strong>. Copy any résumé below into Google Docs or Word, then <em>Export / Save as PDF</em> and upload it under an Alumni or Student account's <strong>My Résumés</strong>. Each one is written to match different seeded jobs, so the AI rankings come out clearly different.</p>
+
+      <h3>① Backend developer &rarr; matches "Backend Developer" / "Software Engineer"</h3>
+      <div class="block"><button class="copy">Copy</button>Maria Reyes — Backend Software Developer
+
+Backend developer with 4 years building web applications and RESTful APIs
+using PHP and the Laravel framework. Strong in MySQL and PostgreSQL database
+design and query optimization, Git version control, and Docker-based
+deployments. Built and maintained REST APIs serving web and mobile clients.
+
+Bachelor of Science in Information Technology, University of Cebu.
+
+Skills: PHP, Laravel, MySQL, PostgreSQL, REST API, Git, Docker, JavaScript.</div>
+
+      <h3>② Frontend developer &rarr; matches "Frontend Developer" / "Full Stack Developer"</h3>
+      <div class="block"><button class="copy">Copy</button>Noah Cruz — Frontend Developer
+
+Frontend developer specializing in building responsive, accessible user
+interfaces with React and TypeScript. Experienced with modern CSS and
+Tailwind CSS, component-driven design, and integrating REST APIs. Comfortable
+collaborating in Git-based teams.
+
+Bachelor of Science in Computer Science, University of Cebu.
+
+Skills: JavaScript, TypeScript, React, Tailwind CSS, HTML, CSS, REST API, Git.</div>
+
+      <h3>③ Data analyst &rarr; matches "Data Analyst"</h3>
+      <div class="block"><button class="copy">Copy</button>Liza Gomez — Data Analyst
+
+Data analyst with experience turning raw datasets into dashboards and
+reports. Strong SQL and Python skills, comfortable with data cleaning,
+analysis, and visualization to support decision-making.
+
+Bachelor of Science in Information Technology, University of Cebu.
+
+Skills: Python, SQL, Data Analysis, Communication, Problem Solving.</div>
+
+      <div class="tip"><strong>What to expect</strong>After uploading and (host-side) the queue processing it, open <strong>Recommendations</strong>: the matching role should sit at the top with a high fit score and a written explanation, while unrelated roles score low.</div>
+    </section>
+
+    <!-- 10 Notes -->
+    <section id="notes">
+      <p class="eyebrow">Set expectations</p>
+      <h2>Known gaps &mdash; not bugs</h2>
+      <p class="section-intro">This build covers the foundation plus the AI matching feature. A few menu items are intentional placeholders for future work &mdash; please don't log these as defects:</p>
+      <div class="card">
+        <ul class="does">
+          <li>Sidebar links that do nothing yet: <span class="pill">Career Resources</span>, <span class="pill">Talent Search</span>, <span class="pill">Job Moderation</span>, <span class="pill">System Reports</span>, <span class="pill">Settings</span>, <span class="pill">Alumni Records</span>, <span class="pill">Career Activities</span>, <span class="pill">Graduate Profiles</span>.</li>
+          <li>The Employability Report is a basic summary (totals and status breakdown), not a full analytics suite.</li>
+          <li>Dashboard numbers reflect current data &mdash; AI match counts climb only after résumés are uploaded and scored.</li>
+          <li>Self-registration creates an account with no role; an Admin assigns roles afterward. For testing, use the seeded logins above.</li>
+        </ul>
+      </div>
+      <p class="muted" style="margin-top:18px;">Found a real issue? Note the <strong>role</strong>, the <strong>page</strong>, and what you <strong>expected vs. saw</strong> &mdash; that's enough to reproduce it quickly.</p>
+    </section>
+
+    <p class="foot">GradConnect &mdash; Graduate Employability &amp; Career Development Platform &middot; University of Cebu, Lapu-Lapu &amp; Mandaue</p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var block = btn.parentElement;
+      var text = block.cloneNode(true);
+      text.querySelector('.copy').remove();
+      navigator.clipboard.writeText(text.textContent.trim()).then(function () {
+        var original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = original; }, 1400);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
+

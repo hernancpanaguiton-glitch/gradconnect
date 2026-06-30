@@ -1,0 +1,63 @@
+# GradConnect — one-command local stack for students.
+#
+#   cp .env.docker.example .env.docker
+#   docker compose up --build
+#
+# Then open http://localhost:8000
+# Demo logins: alumni@ / student@ / partner@gradconnect.edu.ph
+
+services:
+  app:
+    build:
+      context: .
+      target: app
+    env_file:
+      - .env.docker
+    environment:
+      RUN_MIGRATIONS: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  queue:
+    build:
+      context: .
+      target: app
+    env_file:
+      - .env.docker
+    environment:
+      # The web container owns migrations/seeding; the worker just processes jobs.
+      RUN_MIGRATIONS: "false"
+    command: php artisan queue:work --tries=3 --timeout=120
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      app:
+        condition: service_started
+    restart: unless-stopped
+
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: gradconnect
+      POSTGRES_USER: gradconnect
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gradconnect -d gradconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  storage-data:
