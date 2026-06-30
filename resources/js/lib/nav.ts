@@ -109,6 +109,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'My Resumes', href: '/graduate/resumes', iconPath: icons.document },
                     { label: 'Job Board', href: '/jobs', iconPath: icons.briefcase },
                     { label: 'Recommendations', href: '/recommendations', iconPath: icons.star },
+                    { label: 'Surveys', href: '/surveys', iconPath: icons.clipboard },
                 ],
             },
         ];
@@ -123,6 +124,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'My Profile', href: '/graduate/profile/edit', iconPath: icons.user },
                     { label: 'Jobs & Internships', href: '/jobs', iconPath: icons.briefcase },
                     { label: 'Recommendations', href: '/recommendations', iconPath: icons.star },
+                    { label: 'Surveys', href: '/surveys', iconPath: icons.clipboard },
                     { label: 'Career Resources', href: '#', iconPath: icons.academicCap },
                 ],
             },
