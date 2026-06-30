@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Api\JobMatchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EducationRecordController;
@@ -97,6 +98,14 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
 
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
+
+    // AI matching — trigger + poll status
+    Route::prefix('api')->name('api.')->middleware('permission:matching.trigger')->group(function () {
+        Route::post('/jobs/{posting}/rematch', [JobMatchController::class, 'rematchJob'])->name('jobs.rematch.store');
+        Route::get('/jobs/{posting}/rematch', [JobMatchController::class, 'jobStatus'])->name('jobs.rematch.show');
+        Route::post('/me/rematch', [JobMatchController::class, 'rematchProfile'])->name('me.rematch.store');
+        Route::get('/me/rematch', [JobMatchController::class, 'profileStatus'])->name('me.rematch.show');
+    });
 
     // Admin
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {

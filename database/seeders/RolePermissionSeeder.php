@@ -70,7 +70,7 @@ class RolePermissionSeeder extends Seeder
         $alumni->syncPermissions([
             'profile.edit', 'resume.upload', 'resume.manage',
             'jobs.view', 'jobs.apply', 'career.track',
-            'recommendations.view', 'surveys.respond',
+            'recommendations.view', 'surveys.respond', 'matching.trigger',
         ]);
 
         $student = Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
@@ -78,7 +78,7 @@ class RolePermissionSeeder extends Seeder
             'profile.edit', 'resume.upload', 'resume.manage',
             'jobs.view', 'jobs.apply',
             'career.resources.view', 'assessments.participate',
-            'surveys.respond',
+            'surveys.respond', 'matching.trigger',
         ]);
 
         $industryPartner = Role::firstOrCreate(['name' => 'industry_partner', 'guard_name' => 'web']);
