@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobPostingRequest;
+use App\Jobs\GenerateJobPostingEmbedding;
 use App\Models\Company;
 use App\Models\JobPosting;
 use App\Models\Skill;
@@ -72,6 +73,8 @@ class JobPostingController extends Controller
             $posting->skills()->sync($skillPivot);
         }
 
+        GenerateJobPostingEmbedding::dispatch($posting->id);
+
         return redirect()->route('postings.index')->with('success', 'Job posting created.');
     }
 
@@ -110,6 +113,10 @@ class JobPostingController extends Controller
                 ]
             );
             $posting->skills()->sync($skillPivot);
+        }
+
+        if ($posting->wasChanged(['title', 'description', 'responsibilities', 'qualifications'])) {
+            GenerateJobPostingEmbedding::dispatch($posting->id);
         }
 
         return back()->with('success', 'Job posting updated.');

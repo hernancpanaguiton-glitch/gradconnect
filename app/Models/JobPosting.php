@@ -51,6 +51,11 @@ class JobPosting extends Model
         return $this->hasMany(JobApplication::class);
     }
 
+    public function matchResults(): HasMany
+    {
+        return $this->hasMany(JobMatchResult::class);
+    }
+
     public function scopeOpen(Builder $query): Builder
     {
         return $query->where('status', 'open');

@@ -75,6 +75,11 @@ class GraduateProfile extends Model
         return $this->hasMany(EmployerFeedback::class);
     }
 
+    public function matchResults(): HasMany
+    {
+        return $this->hasMany(JobMatchResult::class);
+    }
+
     public function currentEmployment(): HasOne
     {
         return $this->hasOne(EmploymentRecord::class)->where('is_current', true)->latestOfMany();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreResumeRequest;
+use App\Jobs\GenerateResumeEmbedding;
 use App\Models\Resume;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class ResumeController extends Controller
 
         $isFirst = ! $profile->resumes()->exists();
 
-        $profile->resumes()->create([
+        $resume = $profile->resumes()->create([
             'original_filename' => $uploadedFile->getClientOriginalName(),
             'path' => $path,
             'mime_type' => $uploadedFile->getMimeType(),
@@ -49,6 +50,8 @@ class ResumeController extends Controller
             'is_primary' => $isFirst,
             'embedding_status' => 'pending',
         ]);
+
+        GenerateResumeEmbedding::dispatch($resume->id);
 
         return back()->with('success', 'Resume uploaded.');
     }

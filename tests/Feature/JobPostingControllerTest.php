@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\GenerateJobPostingEmbedding;
 use App\Models\Company;
 use App\Models\GraduateProfile;
 use App\Models\JobPosting;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class JobPostingControllerTest extends TestCase
@@ -79,6 +81,8 @@ class JobPostingControllerTest extends TestCase
 
     public function test_industry_partner_can_create_a_posting(): void
     {
+        Queue::fake();
+
         [$partner, $company] = $this->makePartnerWithCompany();
 
         $this->actingAs($partner)
@@ -92,6 +96,7 @@ class JobPostingControllerTest extends TestCase
             ->assertRedirect('/postings');
 
         $this->assertDatabaseHas('job_postings', ['title' => 'Software Engineer']);
+        Queue::assertPushed(GenerateJobPostingEmbedding::class);
     }
 
     public function test_alumni_cannot_create_a_posting(): void
@@ -107,6 +112,8 @@ class JobPostingControllerTest extends TestCase
 
     public function test_industry_partner_can_update_own_posting(): void
     {
+        Queue::fake();
+
         [$partner, $company] = $this->makePartnerWithCompany();
         $posting = JobPosting::factory()->for($company)->for($partner, 'postedBy')->create();
 
@@ -121,6 +128,28 @@ class JobPostingControllerTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('Updated Title', $posting->fresh()->title);
+        Queue::assertPushed(GenerateJobPostingEmbedding::class);
+    }
+
+    public function test_updating_a_posting_without_embedding_relevant_changes_does_not_redispatch(): void
+    {
+        Queue::fake();
+
+        [$partner, $company] = $this->makePartnerWithCompany();
+        $posting = JobPosting::factory()->for($company)->for($partner, 'postedBy')->create(['status' => 'open']);
+
+        $this->actingAs($partner)
+            ->patch("/postings/{$posting->id}", [
+                'title' => $posting->title,
+                'description' => $posting->description,
+                'employment_type' => $posting->employment_type,
+                'status' => 'closed',
+                'is_remote' => false,
+            ])
+            ->assertRedirect();
+
+        $this->assertSame('closed', $posting->fresh()->status);
+        Queue::assertNotPushed(GenerateJobPostingEmbedding::class);
     }
 
     public function test_industry_partner_cannot_update_another_partners_posting(): void
