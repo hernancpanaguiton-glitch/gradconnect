@@ -135,8 +135,14 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        // Industry Partners (with companies)
-        $partnerUsers = User::factory()->count(3)->industryPartner()->create();
+        // Industry Partners (with companies) — first one gets a memorable demo login.
+        $partnerUsers = collect([
+            User::factory()->industryPartner()->create([
+                'first_name' => 'Liam',
+                'last_name' => 'Tan',
+                'email' => 'partner@gradconnect.edu.ph',
+            ]),
+        ])->concat(User::factory()->count(2)->industryPartner()->create());
         $companies = $partnerUsers->values()->map(function (User $partnerUser, int $index) use ($companyBlueprints) {
             $blueprint = $companyBlueprints[$index % count($companyBlueprints)];
 
@@ -175,8 +181,14 @@ class DatabaseSeeder extends Seeder
             }
         });
 
-        // Alumni (20) with profiles, education, employment, skills
-        $alumniUsers = User::factory()->count(20)->alumni()->create();
+        // Alumni (20) with profiles, education, employment, skills — first one gets a memorable demo login.
+        $alumniUsers = collect([
+            User::factory()->alumni()->create([
+                'first_name' => 'Maria',
+                'last_name' => 'Reyes',
+                'email' => 'alumni@gradconnect.edu.ph',
+            ]),
+        ])->concat(User::factory()->count(19)->alumni()->create());
         $alumniUsers->each(function (User $user) use ($itProgram, $skills) {
             $profile = GraduateProfile::factory()->employed()->create([
                 'user_id' => $user->id,
@@ -193,8 +205,14 @@ class DatabaseSeeder extends Seeder
             );
         });
 
-        // Graduating Students (10)
-        $studentUsers = User::factory()->count(10)->student()->create();
+        // Graduating Students (10) — first one gets a memorable demo login.
+        $studentUsers = collect([
+            User::factory()->student()->create([
+                'first_name' => 'Noah',
+                'last_name' => 'Cruz',
+                'email' => 'student@gradconnect.edu.ph',
+            ]),
+        ])->concat(User::factory()->count(9)->student()->create());
         $studentUsers->each(function (User $user) use ($csDept, $skills) {
             $profile = GraduateProfile::factory()->student()->create([
                 'user_id' => $user->id,
