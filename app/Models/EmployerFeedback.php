@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployerFeedback extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'company_id', 'job_application_id', 'graduate_profile_id',
         'submitted_by_user_id', 'competency_ratings', 'overall_rating', 'comments',

@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmploymentRecord extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'graduate_profile_id', 'company_name', 'industry', 'job_title',
         'employment_type', 'is_current', 'start_date', 'end_date',
