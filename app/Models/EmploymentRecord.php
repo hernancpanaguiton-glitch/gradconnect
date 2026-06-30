@@ -23,8 +23,8 @@ class EmploymentRecord extends Model
         return [
             'is_current' => 'boolean',
             'is_related_to_course' => 'boolean',
-            'start_date' => 'date',
-            'end_date' => 'date',
+            'start_date' => 'date:Y-m-d',
+            'end_date' => 'date:Y-m-d',
         ];
     }
 

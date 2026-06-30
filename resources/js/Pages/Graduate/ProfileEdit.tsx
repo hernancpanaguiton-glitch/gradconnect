@@ -3,6 +3,21 @@ import { PageProps } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
+/** Format an ISO date string (e.g. "2025-04-21T00:00:00.000000Z") as "Apr 2025". */
+function formatMonthYear(value: string | null): string {
+    if (!value) {
+        return '?';
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+}
+
 interface Skill { id: number; name: string; category: string | null; slug: string }
 interface EducationRecord {
     id: number; institution: string; degree: string; field_of_study: string | null;
@@ -265,7 +280,7 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
                                 <div>
                                     <p className="font-medium text-gray-900">{rec.job_title}</p>
                                     <p className="text-sm text-gray-600">{rec.company_name}{rec.industry ? ` · ${rec.industry}` : ''}</p>
-                                    <p className="text-xs text-gray-400">{rec.employment_type.replace(/_/g, ' ')} · {rec.start_date ?? '?'} – {rec.is_current ? 'Present' : (rec.end_date ?? '?')}</p>
+                                    <p className="text-xs text-gray-400">{rec.employment_type.replace(/_/g, ' ')} · {formatMonthYear(rec.start_date)} – {rec.is_current ? 'Present' : formatMonthYear(rec.end_date)}</p>
                                 </div>
                                 <button onClick={() => deleteEmployment(rec.id)} className="text-red-400 hover:text-red-600 text-xs">Remove</button>
                             </div>
