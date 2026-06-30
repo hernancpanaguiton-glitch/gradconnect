@@ -91,7 +91,7 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Recruiting',
                 items: [
-                    { label: 'My Company', href: '/company', iconPath: icons.building },
+                    { label: 'My Company', href: '/company/edit', iconPath: icons.building },
                     { label: 'Job Postings', href: '/postings', iconPath: icons.clipboard },
                     { label: 'Talent Search', href: '#', iconPath: icons.search },
                 ],
@@ -105,8 +105,8 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'My Career',
                 items: [
-                    { label: 'My Profile', href: '/me/profile', iconPath: icons.user },
-                    { label: 'My Resumes', href: '/resumes', iconPath: icons.document },
+                    { label: 'My Profile', href: '/graduate/profile/edit', iconPath: icons.user },
+                    { label: 'My Resumes', href: '/graduate/resumes', iconPath: icons.document },
                     { label: 'Job Board', href: '/jobs', iconPath: icons.briefcase },
                     { label: 'Recommendations', href: '/recommendations', iconPath: icons.star },
                 ],
@@ -120,7 +120,7 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Career',
                 items: [
-                    { label: 'My Profile', href: '/me/profile', iconPath: icons.user },
+                    { label: 'My Profile', href: '/graduate/profile/edit', iconPath: icons.user },
                     { label: 'Jobs & Internships', href: '/jobs', iconPath: icons.briefcase },
                     { label: 'Career Resources', href: '#', iconPath: icons.academicCap },
                 ],
