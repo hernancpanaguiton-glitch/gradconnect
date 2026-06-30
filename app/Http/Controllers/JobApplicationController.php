@@ -43,7 +43,7 @@ class JobApplicationController extends Controller
     public function updateStatus(Request $request, JobApplication $application): RedirectResponse
     {
         $request->validate([
-            'status' => ['required', 'in:reviewing,shortlisted,rejected,hired'],
+            'status' => ['required', 'in:under_review,shortlisted,rejected,hired'],
         ]);
 
         $posting = $application->jobPosting;

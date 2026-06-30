@@ -28,11 +28,9 @@ class EmployabilityReportController extends Controller
         $willingToRelocate = GraduateProfile::where('willing_to_relocate', true)->count();
 
         return Inertia::render('Reports/Employability', [
-            'stats' => [
-                'totalGraduates' => $totalGraduates,
-                'employmentBreakdown' => $employmentBreakdown,
-                'willingToRelocate' => $willingToRelocate,
-            ],
+            'totalGraduates' => $totalGraduates,
+            'employmentBreakdown' => $employmentBreakdown,
+            'willingToRelocate' => $willingToRelocate,
         ]);
     }
 }

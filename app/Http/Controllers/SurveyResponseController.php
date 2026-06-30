@@ -36,7 +36,7 @@ class SurveyResponseController extends Controller
 
         return Inertia::render('Surveys/Respond', [
             'survey' => $survey,
-            'surveyResponse' => $response->load('answers'),
+            'existingAnswers' => $response->load('answers')->answers,
         ]);
     }
 
@@ -49,8 +49,6 @@ class SurveyResponseController extends Controller
 
         $request->validate([
             'answers' => ['required', 'array'],
-            'answers.*.question_id' => ['required', 'exists:survey_questions,id'],
-            'answers.*.value' => ['nullable'],
         ]);
 
         $user = $request->user();
@@ -68,10 +66,10 @@ class SurveyResponseController extends Controller
             ],
         );
 
-        foreach ($request->answers as $answerData) {
+        foreach ($request->answers as $questionId => $value) {
             $response->answers()->updateOrCreate(
-                ['survey_question_id' => $answerData['question_id']],
-                ['value' => $answerData['value']],
+                ['survey_question_id' => $questionId],
+                ['value' => $value],
             );
         }
 

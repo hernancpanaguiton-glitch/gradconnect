@@ -8,6 +8,7 @@ use App\Models\JobPosting;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -158,9 +159,10 @@ class JobPostingController extends Controller
             ->latest();
 
         if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%");
+            $like = DB::getDriverName() === 'pgsql' ? 'ilike' : 'like';
+            $query->where(function ($q) use ($search, $like) {
+                $q->where('title', $like, "%{$search}%")
+                    ->orWhere('description', $like, "%{$search}%");
             });
         }
 

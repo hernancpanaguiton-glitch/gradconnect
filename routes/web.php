@@ -36,38 +36,42 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Graduate profile
-    Route::get('/graduate/profile/edit', [GraduateProfileController::class, 'edit'])->name('graduate.profile.edit');
-    Route::patch('/graduate/profile', [GraduateProfileController::class, 'update'])->name('graduate.profile.update');
+    Route::middleware('role:alumni|student')->group(function () {
+        Route::get('/graduate/profile/edit', [GraduateProfileController::class, 'edit'])->name('graduate.profile.edit');
+        Route::patch('/graduate/profile', [GraduateProfileController::class, 'update'])->name('graduate.profile.update');
 
-    // Education records
-    Route::post('/graduate/education', [EducationRecordController::class, 'store'])->name('education.store');
-    Route::patch('/graduate/education/{education}', [EducationRecordController::class, 'update'])->name('education.update');
-    Route::delete('/graduate/education/{education}', [EducationRecordController::class, 'destroy'])->name('education.destroy');
+        // Education records
+        Route::post('/graduate/education', [EducationRecordController::class, 'store'])->name('education.store');
+        Route::patch('/graduate/education/{education}', [EducationRecordController::class, 'update'])->name('education.update');
+        Route::delete('/graduate/education/{education}', [EducationRecordController::class, 'destroy'])->name('education.destroy');
 
-    // Employment records
-    Route::post('/graduate/employment', [EmploymentRecordController::class, 'store'])->name('employment.store');
-    Route::patch('/graduate/employment/{employment}', [EmploymentRecordController::class, 'update'])->name('employment.update');
-    Route::delete('/graduate/employment/{employment}', [EmploymentRecordController::class, 'destroy'])->name('employment.destroy');
+        // Employment records
+        Route::post('/graduate/employment', [EmploymentRecordController::class, 'store'])->name('employment.store');
+        Route::patch('/graduate/employment/{employment}', [EmploymentRecordController::class, 'update'])->name('employment.update');
+        Route::delete('/graduate/employment/{employment}', [EmploymentRecordController::class, 'destroy'])->name('employment.destroy');
 
-    // Resumes
-    Route::get('/graduate/resumes', [ResumeController::class, 'index'])->name('resumes.index');
-    Route::post('/graduate/resumes', [ResumeController::class, 'store'])->name('resumes.store');
-    Route::delete('/graduate/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
-    Route::patch('/graduate/resumes/{resume}/primary', [ResumeController::class, 'setPrimary'])->name('resumes.set-primary');
+        // Resumes
+        Route::get('/graduate/resumes', [ResumeController::class, 'index'])->name('resumes.index');
+        Route::post('/graduate/resumes', [ResumeController::class, 'store'])->name('resumes.store');
+        Route::delete('/graduate/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
+        Route::patch('/graduate/resumes/{resume}/primary', [ResumeController::class, 'setPrimary'])->name('resumes.set-primary');
+    });
 
     // Company (industry partner)
-    Route::get('/company/edit', [CompanyController::class, 'edit'])->name('company.edit');
-    Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
-    Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+    Route::middleware('role:industry_partner')->group(function () {
+        Route::get('/company/edit', [CompanyController::class, 'edit'])->name('company.edit');
+        Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
+        Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
 
-    // Job postings — industry partner management
-    Route::get('/postings', [JobPostingController::class, 'index'])->name('postings.index');
-    Route::get('/postings/create', [JobPostingController::class, 'create'])->name('postings.create');
-    Route::post('/postings', [JobPostingController::class, 'store'])->name('postings.store');
-    Route::get('/postings/{posting}/edit', [JobPostingController::class, 'edit'])->name('postings.edit');
-    Route::patch('/postings/{posting}', [JobPostingController::class, 'update'])->name('postings.update');
-    Route::delete('/postings/{posting}', [JobPostingController::class, 'destroy'])->name('postings.destroy');
-    Route::get('/postings/{posting}/candidates', [JobPostingController::class, 'candidates'])->name('postings.candidates');
+        // Job postings — industry partner management
+        Route::get('/postings', [JobPostingController::class, 'index'])->name('postings.index');
+        Route::get('/postings/create', [JobPostingController::class, 'create'])->name('postings.create');
+        Route::post('/postings', [JobPostingController::class, 'store'])->name('postings.store');
+        Route::get('/postings/{posting}/edit', [JobPostingController::class, 'edit'])->name('postings.edit');
+        Route::patch('/postings/{posting}', [JobPostingController::class, 'update'])->name('postings.update');
+        Route::delete('/postings/{posting}', [JobPostingController::class, 'destroy'])->name('postings.destroy');
+        Route::get('/postings/{posting}/candidates', [JobPostingController::class, 'candidates'])->name('postings.candidates');
+    });
 
     // Job board — alumni / students
     Route::get('/jobs', [JobPostingController::class, 'publicIndex'])->name('jobs.index');
@@ -95,7 +99,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
 
     // Admin
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
         Route::patch('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');

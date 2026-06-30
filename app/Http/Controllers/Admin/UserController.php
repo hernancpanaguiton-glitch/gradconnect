@@ -7,6 +7,7 @@ use App\Http\Requests\AdminUpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
@@ -20,11 +21,12 @@ class UserController extends Controller
     {
         $users = User::with('roles')
             ->when($request->input('search'), function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'ilike', "%{$search}%")
-                        ->orWhere('last_name', 'ilike', "%{$search}%")
-                        ->orWhere('email', 'ilike', "%{$search}%")
-                        ->orWhere('id_number', 'ilike', "%{$search}%");
+                $like = DB::getDriverName() === 'pgsql' ? 'ilike' : 'like';
+                $query->where(function ($q) use ($search, $like) {
+                    $q->where('first_name', $like, "%{$search}%")
+                        ->orWhere('last_name', $like, "%{$search}%")
+                        ->orWhere('email', $like, "%{$search}%")
+                        ->orWhere('id_number', $like, "%{$search}%");
                 });
             })
             ->latest()

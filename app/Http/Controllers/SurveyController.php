@@ -24,7 +24,14 @@ class SurveyController extends Controller
             $query->open();
         }
 
-        $surveys = $query->withCount('responses')->paginate(20);
+        $surveys = $query->withCount('responses')->get();
+
+        // Append user's own response status for respondents
+        if (! $user->hasPermissionTo('surveys.manage')) {
+            $surveys->each(function (Survey $survey) use ($user): void {
+                $survey->user_response = $survey->responses()->where('user_id', $user->id)->first(['id', 'status']);
+            });
+        }
 
         return Inertia::render('Surveys/Index', [
             'surveys' => $surveys,
@@ -127,13 +134,39 @@ class SurveyController extends Controller
     {
         $this->authorize('viewResults', $survey);
 
-        $survey->load([
-            'questions',
-            'responses.answers',
-        ]);
+        $survey->load(['questions', 'responses.answers']);
+
+        $totalResponses = $survey->responses->where('status', 'submitted')->count();
+
+        $results = $survey->questions->map(function ($question) use ($survey) {
+            $answers = $survey->responses->flatMap(
+                fn ($r) => $r->answers->where('survey_question_id', $question->id)
+            );
+
+            $distribution = null;
+            if (in_array($question->type, ['single_choice', 'multi_choice', 'boolean', 'rating'])) {
+                $distribution = $answers->countBy(function ($a) {
+                    $v = $a->value;
+
+                    return is_array($v) ? implode(', ', $v) : (string) $v;
+                })->all();
+            }
+
+            return [
+                'id' => $question->id,
+                'prompt' => $question->prompt,
+                'type' => $question->type,
+                'order' => $question->order,
+                'total_answers' => $answers->count(),
+                'answers' => $distribution ? [] : $answers->map(fn ($a) => ['value' => $a->value])->values()->all(),
+                'distribution' => $distribution,
+            ];
+        });
 
         return Inertia::render('Surveys/Results', [
             'survey' => $survey,
+            'results' => $results,
+            'totalResponses' => $totalResponses,
         ]);
     }
 }
