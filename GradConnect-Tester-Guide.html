@@ -202,7 +202,7 @@
   <div class="wrap">
     <section style="margin-top:32px;">
       <nav class="toc" aria-label="Contents">
-        <a href="#start"><span class="num">01</span> Before you start</a>
+        <a href="#start"><span class="num">01</span> Run with Docker</a>
         <a href="#logins"><span class="num">02</span> Login accounts</a>
         <a href="#alumni"><span class="num">03</span> Alumni</a>
         <a href="#student"><span class="num">04</span> Student</a>
@@ -218,23 +218,48 @@
     <!-- 01 -->
     <section id="start">
       <p class="eyebrow">Getting set up</p>
-      <h2>Before you start</h2>
-      <p class="section-intro">GradConnect runs locally through Laravel Herd. Open the address your team lead shares &mdash; when running on the host machine that is <span class="pill">http://gradconnect.test</span>.</p>
+      <h2>Run with Docker</h2>
+      <p class="section-intro">GradConnect ships as a self-contained Docker stack, so you don't need to install PHP, Node, or PostgreSQL &mdash; only <strong>Docker Desktop</strong>. The whole app (web server, database, and background worker) starts with a single command.</p>
 
       <div class="card">
-        <h3 style="margin-top:0;">Two ways the AI features behave</h3>
-        <p>The résumé &amp; job <strong>embeddings</strong> and <strong>fit scoring</strong> run as background jobs. There are two states to be aware of when testing:</p>
-        <ul class="does">
-          <li>The <strong>alumni@gradconnect.edu.ph</strong> account already has a résumé and a full set of AI recommendations loaded &mdash; you can view those immediately, no setup needed.</li>
-          <li>To generate <em>new</em> matches (uploading a fresh résumé, or clicking <em>Refresh recommendations / Refresh matches</em>), the host must have a queue worker running and AI keys configured.</li>
-        </ul>
+        <h3 style="margin-top:0;">1 &middot; Install Docker Desktop</h3>
+        <p>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> for your operating system, launch it, and wait until the whale icon is steady (the engine is running). On Windows, keep the <strong>WSL 2</strong> option enabled if prompted, and let it finish its first-time setup before continuing.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">2 &middot; Get the project &amp; start it</h3>
+        <p>Open a terminal (PowerShell on Windows) and run these four commands:</p>
+        <div class="block"><button class="copy">Copy</button>git clone https://github.com/hernancpanaguiton-glitch/gradconnect.git
+cd gradconnect
+cp .env.docker.example .env.docker
+docker compose up --build</div>
+        <p class="muted">The first build takes a few minutes &mdash; it downloads the images and compiles the front-end. It's ready when the log shows <code>Server running on [http://0.0.0.0:8000]</code>.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">3 &middot; Open the app</h3>
+        <p>Visit <span class="pill">http://localhost:8000</span> in your browser and sign in with one of the accounts in the next section.</p>
+      </div>
+
+      <div class="tip">
+        <strong>First launch sets everything up for you</strong>
+        Database migrations run and demo data (accounts, jobs, surveys, and the <code>alumni@</code> résumé with its AI matches) is seeded automatically on the first boot. The background <strong>queue worker runs as its own container</strong>, so résumé uploads and the <em>Refresh</em> buttons process live &mdash; no extra commands needed.
       </div>
 
       <div class="note">
-        <strong>For the person hosting the app</strong>
-        Run the queue worker so résumé uploads and the refresh buttons process live:
-        <div class="block"><button class="copy">Copy</button>php artisan queue:work</div>
-        The Gemini and Groq API keys must be set in <span class="pill">.env</span> (<code>GEMINI_API_KEY</code>, <code>GROQ_API_KEY</code>). Without them, uploads still save but stay unscored.
+        <strong>Enabling live AI matching (optional)</strong>
+        The <code>alumni@</code> account already shows pre-generated AI recommendations you can view immediately. To score <em>new</em> résumé uploads or the <em>Refresh recommendations / Refresh matches</em> buttons, paste the shared Gemini &amp; Groq keys into <span class="pill">.env.docker</span> (<code>GEMINI_API_KEY</code>, <code>GROQ_API_KEY</code>), then restart: <code>docker compose down</code> then <code>docker compose up</code>. Without keys, uploads still save but stay unscored.
+      </div>
+
+      <h3>Handy commands</h3>
+      <div class="block light"><button class="copy">Copy</button>docker compose up -d          # run in the background
+docker compose logs -f app    # watch the app logs
+docker compose down           # stop the app (keeps your data)
+docker compose down -v        # stop and wipe data for a clean restart</div>
+
+      <div class="warn">
+        <strong>Stuck on a seeding / "duplicate key" error?</strong>
+        That means a previous run left half-seeded data. Reset with <code>docker compose down -v</code> (the <code>-v</code> wipes the database), then <code>docker compose up --build</code> for a clean start.
       </div>
     </section>
 
