@@ -40,8 +40,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Install PHP dependencies first for better layer caching.
+# NOTE: dev dependencies are kept because the demo seeder uses model
+# factories, which rely on fakerphp/faker (a require-dev package).
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist --no-progress
+RUN composer install --no-interaction --no-scripts --prefer-dist --no-progress
 
 # Copy the rest of the application source.
 COPY . .
