@@ -185,14 +185,14 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
                             <Field label="Graduation Year" error={errors.graduation_year}>
                                 <Input value={data.graduation_year} onChange={(v) => setData('graduation_year', v)} type="number" placeholder="2024" />
                             </Field>
-                            <Field label="Gender">
+                            <Field label="Gender" error={errors.gender}>
                                 <Select value={data.gender} onChange={(v) => setData('gender', v)}
                                     options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }, { value: 'other', label: 'Other' }, { value: 'prefer_not_to_say', label: 'Prefer not to say' }]} />
                             </Field>
                             <Field label="Date of Birth">
                                 <Input value={data.birthdate} onChange={(v) => setData('birthdate', v)} type="date" />
                             </Field>
-                            <Field label="Phone">
+                            <Field label="Phone" error={errors.phone}>
                                 <Input value={data.phone} onChange={(v) => setData('phone', v)} placeholder="+63 9XX XXX XXXX" />
                             </Field>
                             <Field label="City">
