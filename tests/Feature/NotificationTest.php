@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\AccountApproved;
 use App\Notifications\ApplicationReceived;
 use App\Notifications\ApplicationStatusUpdated;
+use App\Notifications\NewAccountPendingApproval;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -98,6 +99,34 @@ class NotificationTest extends TestCase
             ->assertSessionHasNoErrors();
 
         Notification::assertNothingSentTo($active);
+    }
+
+    public function test_admins_are_notified_when_a_pending_account_registers(): void
+    {
+        Notification::fake();
+        $admin = User::factory()->admin()->create();
+
+        $this->post('/register', [
+            'first_name' => 'Dean', 'last_name' => 'Cruz',
+            'email' => 'dean@example.com', 'password' => 'password',
+            'password_confirmation' => 'password', 'role' => 'dean',
+        ])->assertRedirect(route('login'));
+
+        Notification::assertSentTo($admin, NewAccountPendingApproval::class);
+    }
+
+    public function test_admins_are_not_notified_when_a_graduate_registers(): void
+    {
+        Notification::fake();
+        $admin = User::factory()->admin()->create();
+
+        $this->post('/register', [
+            'first_name' => 'Stu', 'last_name' => 'Dent',
+            'email' => 'stu@example.com', 'password' => 'password',
+            'password_confirmation' => 'password', 'role' => 'student',
+        ]);
+
+        Notification::assertNotSentTo($admin, NewAccountPendingApproval::class);
     }
 
     public function test_notification_email_uses_the_branded_theme(): void

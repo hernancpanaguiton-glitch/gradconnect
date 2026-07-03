@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use App\Notifications\NewAccountPendingApproval;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -65,6 +67,9 @@ class RegisteredUserController extends Controller
             // Admin approval is the gate for pending roles, so mark their email
             // verified now to avoid a second (email) gate after approval.
             $user->markEmailAsVerified();
+
+            // Alert administrators that a new account is awaiting approval.
+            Notification::send(User::role('admin')->get(), new NewAccountPendingApproval($user));
 
             return redirect()->route('login')->with(
                 'status',

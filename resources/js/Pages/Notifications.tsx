@@ -1,7 +1,7 @@
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Bell, Briefcase, CheckCheck, CircleCheck, UserCheck } from 'lucide-react';
+import { Bell, Briefcase, CheckCheck, CircleCheck, Clock, UserCheck } from 'lucide-react';
 
 interface Item {
     id: string;
@@ -26,6 +26,7 @@ const ICONS: Record<string, { icon: typeof Briefcase; color: string }> = {
     application_received: { icon: Briefcase, color: 'text-primary bg-blue-50 dark:bg-blue-500/15' },
     application_status: { icon: CircleCheck, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/15' },
     account_approved: { icon: UserCheck, color: 'text-violet-600 bg-violet-50 dark:bg-violet-500/15' },
+    account_pending: { icon: Clock, color: 'text-amber-600 bg-amber-50 dark:bg-amber-500/15' },
     general: { icon: Bell, color: 'text-muted-foreground bg-muted' },
 };
 
