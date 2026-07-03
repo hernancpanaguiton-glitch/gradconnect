@@ -146,7 +146,7 @@ class JobPostingController extends Controller
         );
 
         $applications = $posting->applications()
-            ->with(['graduateProfile.user', 'resume'])
+            ->with(['graduateProfile.user', 'graduateProfile.department', 'resume'])
             ->latest()
             ->paginate(30);
 

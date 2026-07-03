@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\JobMatchController;
 use App\Http\Controllers\CandidateMatchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentHeadController;
 use App\Http\Controllers\EducationRecordController;
 use App\Http\Controllers\EmployabilityReportController;
 use App\Http\Controllers\EmploymentRecordController;
@@ -124,6 +125,12 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
 
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
+
+    // Department head / dean — self-assign their college
+    Route::middleware('role:department_head')->group(function () {
+        Route::patch('/department-head/college', [DepartmentHeadController::class, 'updateCollege'])
+            ->name('department-head.college.update');
+    });
 
     // AI matching — trigger + poll status
     Route::prefix('api')->name('api.')->middleware('permission:matching.trigger')->group(function () {

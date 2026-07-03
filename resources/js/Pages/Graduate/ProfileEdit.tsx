@@ -37,12 +37,14 @@ interface GraduateProfile {
     phone: string | null; address: string | null; city: string | null;
     linkedin_url: string | null; headline: string | null; summary: string | null;
     current_employment_status: string | null; willing_to_relocate: boolean;
+    department_id: number | null;
     profile_completion: number;
     education_records: EducationRecord[];
     employment_records: EmploymentRecord[];
     skills: Array<Skill & { pivot: { proficiency: string | null; source: string } }>;
 }
-interface Props extends PageProps { profile: GraduateProfile; allSkills: Skill[] }
+interface College { id: number; name: string; code: string | null }
+interface Props extends PageProps { profile: GraduateProfile; allSkills: Skill[]; colleges: College[] }
 
 type Tab = 'basic' | 'education' | 'employment' | 'skills';
 
@@ -78,7 +80,7 @@ function Select({ value, onChange, options }: {
     );
 }
 
-export default function ProfileEdit({ profile, allSkills }: Props) {
+export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
     const { flash } = usePage<Props>().props;
     const [tab, setTab] = useState<Tab>('basic');
 
@@ -96,6 +98,7 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
         summary: profile.summary ?? '',
         current_employment_status: profile.current_employment_status ?? '',
         willing_to_relocate: profile.willing_to_relocate,
+        department_id: profile.department_id ? String(profile.department_id) : '',
         skills: profile.skills.map((s) => s.id),
     });
 
@@ -244,6 +247,10 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
                         <div className="grid grid-cols-2 gap-4">
                             <Field label="Program / Course" error={errors.program}>
                                 <Input value={data.program} onChange={(v) => setData('program', v)} placeholder="e.g. BS Information Technology" />
+                            </Field>
+                            <Field label="College" error={errors.department_id}>
+                                <Select value={data.department_id} onChange={(v) => setData('department_id', v)}
+                                    options={colleges.map((c) => ({ value: String(c.id), label: c.name }))} />
                             </Field>
                             <Field label="Graduation Year" error={errors.graduation_year}>
                                 <Input value={data.graduation_year} onChange={(v) => setData('graduation_year', v)} type="number" placeholder="2024" />

@@ -4,7 +4,7 @@ import { Head, Link, router } from '@inertiajs/react';
 
 interface Applicant {
     id: number; status: string; applied_at: string | null; cover_letter: string | null;
-    graduate_profile: { id: number; user: { name: string; email: string }; current_employment_status: string | null };
+    graduate_profile: { id: number; user: { name: string; email: string }; current_employment_status: string | null; department: { id: number; name: string } | null };
     resume: { id: number; original_filename: string } | null;
 }
 interface Posting { id: number; title: string }
@@ -49,7 +49,12 @@ export default function Candidates({ posting, applications }: Props) {
                         <tbody className="divide-y divide-gray-100">
                             {applications.data.map((app) => (
                                 <tr key={app.id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 font-medium text-gray-900">{app.graduate_profile.user.name}</td>
+                                    <td className="px-4 py-3 font-medium text-gray-900">
+                                        {app.graduate_profile.user.name}
+                                        {app.graduate_profile.department && (
+                                            <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
+                                        )}
+                                    </td>
                                     <td className="px-4 py-3 text-gray-600">{app.graduate_profile.user.email}</td>
                                     <td className="px-4 py-3 text-gray-500 text-xs">{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</td>
                                     <td className="px-4 py-3 text-center">

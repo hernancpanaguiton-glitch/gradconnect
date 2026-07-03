@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateGraduateProfileRequest;
 use App\Jobs\GenerateResumeEmbedding;
+use App\Models\Department;
 use App\Models\GraduateProfile;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
@@ -26,8 +27,9 @@ class GraduateProfileController extends Controller
         $profile->load(['educationRecords', 'employmentRecords', 'skills']);
 
         $allSkills = Skill::orderBy('category')->orderBy('name')->get(['id', 'name', 'category', 'slug']);
+        $colleges = Department::colleges()->orderBy('name')->get(['id', 'name', 'code']);
 
-        return Inertia::render('Graduate/ProfileEdit', compact('profile', 'allSkills'));
+        return Inertia::render('Graduate/ProfileEdit', compact('profile', 'allSkills', 'colleges'));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateGraduateProfileRequest extends FormRequest
 {
@@ -36,6 +37,7 @@ class UpdateGraduateProfileRequest extends FormRequest
             'summary' => ['nullable', 'string'],
             'current_employment_status' => ['nullable', 'in:employed,unemployed,self_employed,further_study,not_seeking'],
             'willing_to_relocate' => ['nullable', 'boolean'],
+            'department_id' => ['nullable', Rule::exists('departments', 'id')->where('type', 'college')],
             'skills' => ['nullable', 'array'],
             'skills.*' => ['exists:skills,id'],
         ];

@@ -16,7 +16,7 @@ class CandidateMatchController extends Controller
         $this->authorize('update', $posting);
 
         $matches = $posting->matchResults()
-            ->with(['graduateProfile.user', 'resume'])
+            ->with(['graduateProfile.user', 'graduateProfile.department', 'resume'])
             ->orderByRaw('fit_score is null')
             ->orderByDesc('fit_score')
             ->orderByDesc('similarity')

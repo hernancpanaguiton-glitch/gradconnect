@@ -8,6 +8,7 @@ export interface User {
     email_verified_at?: string;
     status: 'active' | 'pending' | 'suspended';
     department_id?: number | null;
+    department?: { id: number; name: string; code: string | null } | null;
     roles: string[];
     permissions: string[];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUpdateUserRequest;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,10 +48,12 @@ class UserController extends Controller
         $user->load('roles');
 
         $roles = Role::orderBy('name')->get(['id', 'name']);
+        $colleges = Department::colleges()->orderBy('name')->get(['id', 'name', 'code']);
 
         return Inertia::render('Admin/UserEdit', [
             'user' => $user,
             'roles' => $roles,
+            'colleges' => $colleges,
         ]);
     }
 
@@ -59,7 +62,10 @@ class UserController extends Controller
      */
     public function update(AdminUpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->update(['status' => $request->status]);
+        $user->update([
+            'status' => $request->status,
+            'department_id' => $request->department_id,
+        ]);
         $user->syncRoles($request->roles);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated.');

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AdminUpdateUserRequest extends FormRequest
 {
@@ -26,6 +27,7 @@ class AdminUpdateUserRequest extends FormRequest
             'status' => ['required', 'in:active,suspended,pending'],
             'roles' => ['required', 'array'],
             'roles.*' => ['string'],
+            'department_id' => ['nullable', Rule::exists('departments', 'id')->where('type', 'college')],
         ];
     }
 }

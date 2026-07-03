@@ -31,6 +31,10 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
 
+        if ($user) {
+            $user->loadMissing('department');
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -43,6 +47,9 @@ class HandleInertiaRequests extends Middleware
                     'email_verified_at' => $user->email_verified_at,
                     'status' => $user->status,
                     'department_id' => $user->department_id,
+                    'department' => $user->department
+                        ? $user->department->only(['id', 'name', 'code'])
+                        : null,
                     'roles' => $user->getRoleNames(),
                     'permissions' => $user->getAllPermissions()->pluck('name'),
                 ] : null,

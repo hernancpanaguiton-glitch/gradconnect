@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,14 @@ class Department extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'code', 'type', 'parent_id'];
+
+    /**
+     * Scope to top-level colleges (as opposed to their child programs).
+     */
+    public function scopeColleges(Builder $query): Builder
+    {
+        return $query->where('type', 'college');
+    }
 
     public function parent(): BelongsTo
     {

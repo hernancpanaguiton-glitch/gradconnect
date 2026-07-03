@@ -31,7 +31,14 @@ class DashboardController extends Controller
             default => ['Dashboards/AlumniDashboard', $this->graduateStats($user, isStudent: false)],
         };
 
-        return Inertia::render($component, ['stats' => $stats]);
+        $props = ['stats' => $stats];
+
+        // Department heads can pick their college from the dashboard.
+        if ($user->hasRole('department_head')) {
+            $props['colleges'] = Department::colleges()->orderBy('name')->get(['id', 'name', 'code']);
+        }
+
+        return Inertia::render($component, $props);
     }
 
     /**

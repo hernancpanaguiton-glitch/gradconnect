@@ -171,6 +171,11 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                             <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium text-white">{user.name}</p>
                                 <RoleBadge role={primaryRole} />
+                                {user.department && (
+                                    <p className="mt-0.5 truncate text-xs text-gray-400" title={user.department.name}>
+                                        {user.department.name}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     ) : (

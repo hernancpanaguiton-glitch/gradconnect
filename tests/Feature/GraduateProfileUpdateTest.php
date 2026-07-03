@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Department;
 use App\Models\GraduateProfile;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -74,6 +75,28 @@ class GraduateProfileUpdateTest extends TestCase
         $this->actingAs($user)
             ->patch(route('graduate.profile.update'), $this->formPayload($profile))
             ->assertSessionHasNoErrors();
+    }
+
+    public function test_profile_update_persists_college_and_rejects_a_program(): void
+    {
+        $college = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
+        $program = Department::create(['name' => 'BS IT', 'code' => 'BSIT', 'type' => 'program', 'parent_id' => $college->id]);
+
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
+
+        // A valid college is saved.
+        $this->actingAs($user)->patch(
+            route('graduate.profile.update'),
+            $this->formPayload($profile, ['department_id' => $college->id])
+        )->assertSessionHasNoErrors();
+        $this->assertSame($college->id, $profile->refresh()->department_id);
+
+        // A program (non-college) department is rejected.
+        $this->actingAs($user)->patch(
+            route('graduate.profile.update'),
+            $this->formPayload($profile, ['department_id' => $program->id])
+        )->assertSessionHasErrors('department_id');
     }
 
     public function test_employability_report_reflects_status_change(): void
