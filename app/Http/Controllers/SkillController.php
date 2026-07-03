@@ -53,4 +53,27 @@ class SkillController extends Controller
             'skill' => $skill->only(['id', 'name', 'category', 'slug']),
         ]);
     }
+
+    /**
+     * Validate and persist a skill without attaching it to any profile —
+     * used by contexts that manage their own skill pivot (e.g. job postings).
+     *
+     * @throws ValidationException
+     */
+    public function resolve(StoreSkillRequest $request): JsonResponse
+    {
+        $result = $this->skills->validate($request->validated('name'));
+
+        if (! $result['valid']) {
+            throw ValidationException::withMessages([
+                'name' => $result['reason'] ?? 'That does not look like a recognized skill.',
+            ]);
+        }
+
+        $skill = Skill::findOrCreateByName($result['canonical']);
+
+        return response()->json([
+            'skill' => $skill->only(['id', 'name', 'category', 'slug']),
+        ]);
+    }
 }

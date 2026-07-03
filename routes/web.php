@@ -11,6 +11,7 @@ use App\Http\Controllers\EmployabilityReportController;
 use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GraduateProfileController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\ProfileController;
@@ -39,14 +40,19 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Shared skill helpers (AI autocomplete + validate) — used by both the
+    // graduate profile and the job posting form.
+    Route::get('/skills/suggest', [SkillController::class, 'suggest'])
+        ->middleware('throttle:30,1')->name('skills.suggest');
+    Route::post('/skills/resolve', [SkillController::class, 'resolve'])
+        ->middleware('throttle:30,1')->name('skills.resolve');
+
     // Graduate profile
     Route::middleware('role:alumni|student')->group(function () {
         Route::get('/graduate/profile/edit', [GraduateProfileController::class, 'edit'])->name('graduate.profile.edit');
         Route::patch('/graduate/profile', [GraduateProfileController::class, 'update'])->name('graduate.profile.update');
 
-        // Skills (custom skills with AI autocomplete/validation)
-        Route::get('/graduate/skills/suggest', [SkillController::class, 'suggest'])
-            ->middleware('throttle:30,1')->name('skills.suggest');
+        // Custom skills added to the graduate's own profile (AI-validated).
         Route::post('/graduate/skills', [SkillController::class, 'store'])->name('skills.store');
 
         // Education records
@@ -74,6 +80,14 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::get('/company/edit', [CompanyController::class, 'edit'])->name('company.edit');
         Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+
+        // AI writing assists for the job posting form.
+        Route::get('/postings/assist/titles', [JobAssistController::class, 'titles'])
+            ->middleware('throttle:30,1')->name('postings.assist.titles');
+        Route::post('/postings/assist/description', [JobAssistController::class, 'description'])
+            ->middleware('throttle:20,1')->name('postings.assist.description');
+        Route::post('/postings/assist/qualifications', [JobAssistController::class, 'qualifications'])
+            ->middleware('throttle:20,1')->name('postings.assist.qualifications');
 
         // Job postings — industry partner management
         Route::get('/postings', [JobPostingController::class, 'index'])->name('postings.index');

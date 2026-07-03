@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\Skill;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SkillSuggestionService
 {
+    public function __construct(private readonly AiChatClient $ai) {}
+
     /**
      * Suggest skills for an autocomplete query: existing library skills first
      * (fast, offline), then AI-suggested legitimate skills not already listed.
@@ -61,11 +61,11 @@ class SkillSuggestionService
             return ['valid' => false, 'canonical' => null, 'reason' => 'Please enter a skill.'];
         }
 
-        if (! $this->hasProvider()) {
+        if (! $this->ai->hasProvider()) {
             return ['valid' => true, 'canonical' => Str::title($name), 'reason' => null];
         }
 
-        $response = $this->chatJson(
+        $response = $this->ai->json(
             'Decide whether the input is a legitimate professional, technical, or soft skill '.
             'someone would list on a résumé (e.g. "Kubernetes", "Project Management"). '.
             'Respond ONLY as JSON: {"valid": true|false, "canonical": "Proper Case Skill Name"}. '.
@@ -91,11 +91,11 @@ class SkillSuggestionService
      */
     private function aiSuggest(string $query): array
     {
-        if (! $this->hasProvider()) {
+        if (! $this->ai->hasProvider()) {
             return [];
         }
 
-        $response = $this->chatJson(
+        $response = $this->ai->json(
             'You are a skills taxonomy assistant. List up to 8 real, well-known professional or '.
             'technical skills that match or closely relate to the query. Only legitimate skills, '.
             'no sentences. Respond ONLY as JSON: {"skills": ["Skill One", "Skill Two"]}. '.
@@ -110,71 +110,5 @@ class SkillSuggestionService
             ->take(8)
             ->values()
             ->all();
-    }
-
-    private function hasProvider(): bool
-    {
-        return (bool) (config('services.groq.api_key') || config('services.gemini.api_key'));
-    }
-
-    /**
-     * Send a prompt to the configured chat provider (Groq, then Gemini) and
-     * decode the JSON reply. Returns null on any failure.
-     *
-     * @return array<string, mixed>|null
-     */
-    private function chatJson(string $prompt): ?array
-    {
-        try {
-            $raw = $this->callGroq($prompt) ?? $this->callGemini($prompt);
-        } catch (\Throwable $e) {
-            Log::warning('Skill suggestion AI request threw', ['exception' => $e->getMessage()]);
-
-            return null;
-        }
-
-        if ($raw === null) {
-            return null;
-        }
-
-        $decoded = json_decode($raw, true);
-
-        return is_array($decoded) ? $decoded : null;
-    }
-
-    private function callGroq(string $prompt): ?string
-    {
-        $apiKey = config('services.groq.api_key');
-
-        if (! $apiKey) {
-            return null;
-        }
-
-        $response = Http::withToken($apiKey)->post(config('services.groq.api_url'), [
-            'model' => config('services.groq.model'),
-            'messages' => [['role' => 'user', 'content' => $prompt]],
-            'response_format' => ['type' => 'json_object'],
-            'temperature' => 0.1,
-        ]);
-
-        return $response->successful() ? $response->json('choices.0.message.content') : null;
-    }
-
-    private function callGemini(string $prompt): ?string
-    {
-        $apiKey = config('services.gemini.api_key');
-
-        if (! $apiKey) {
-            return null;
-        }
-
-        $url = config('services.gemini.chat_url').'/'.config('services.gemini.chat_model').':generateContent';
-
-        $response = Http::withQueryParameters(['key' => $apiKey])->post($url, [
-            'contents' => [['parts' => [['text' => $prompt]]]],
-            'generationConfig' => ['responseMimeType' => 'application/json'],
-        ]);
-
-        return $response->successful() ? $response->json('candidates.0.content.parts.0.text') : null;
     }
 }

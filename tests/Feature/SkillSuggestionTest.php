@@ -78,7 +78,10 @@ class SkillSuggestionTest extends TestCase
 
     public function test_works_without_ai_provider(): void
     {
-        // No API keys configured (default test env).
+        // Force "no provider" regardless of the developer's environment.
+        config(['services.groq.api_key' => null, 'services.gemini.api_key' => null]);
+        Http::preventStrayRequests();
+
         Skill::findOrCreateByName('Python');
         $user = User::factory()->alumni()->create();
 
