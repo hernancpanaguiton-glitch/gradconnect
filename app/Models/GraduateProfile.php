@@ -90,4 +90,42 @@ class GraduateProfile extends Model
     {
         return $this->skills->pluck('name')->all();
     }
+
+    /**
+     * Build a plain-text summary of the profile (headline, summary, skills,
+     * education, employment) for embedding and AI match scoring, so matches
+     * reflect the graduate's whole profile — not only their résumé file.
+     */
+    public function buildProfileText(): string
+    {
+        $this->loadMissing(['skills', 'educationRecords', 'employmentRecords']);
+
+        $education = $this->educationRecords
+            ->map(fn ($record) => trim(implode(' — ', array_filter([
+                $record->institution,
+                $record->degree,
+                $record->field_of_study,
+            ]))))
+            ->filter()
+            ->all();
+
+        $employment = $this->employmentRecords
+            ->map(fn ($record) => trim(implode(' at ', array_filter([
+                $record->job_title,
+                $record->company_name,
+            ]))))
+            ->filter()
+            ->all();
+
+        $skills = $this->skillNames();
+
+        return implode("\n\n", array_filter([
+            $this->program ? "Program: {$this->program}" : null,
+            $this->headline ? "Headline: {$this->headline}" : null,
+            $this->summary ? "Summary:\n{$this->summary}" : null,
+            $skills ? 'Skills: '.implode(', ', $skills) : null,
+            $education ? "Education:\n".implode("\n", $education) : null,
+            $employment ? "Employment:\n".implode("\n", $employment) : null,
+        ]));
+    }
 }

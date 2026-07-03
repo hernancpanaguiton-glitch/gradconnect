@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateGraduateProfileRequest;
+use App\Jobs\GenerateResumeEmbedding;
 use App\Models\GraduateProfile;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
@@ -49,6 +50,12 @@ class GraduateProfileController extends Controller
 
         $profile->profile_completion = $this->calculateCompletion($profile);
         $profile->save();
+
+        // The résumé embedding blends the profile text, so refresh it when the
+        // profile changes to keep future recommendations in sync.
+        if ($primaryResume = $profile->primaryResume) {
+            GenerateResumeEmbedding::dispatch($primaryResume->id);
+        }
 
         return back()->with('success', 'Profile updated.');
     }

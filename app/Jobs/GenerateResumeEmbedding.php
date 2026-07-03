@@ -43,7 +43,11 @@ class GenerateResumeEmbedding implements ShouldQueue
 
         $resume->update(['extracted_text' => $text]);
 
-        $vector = $embeddingService->embed($text);
+        // Embed the résumé alongside the graduate's profile so the vector
+        // shortlist reflects their whole profile, not just the résumé file.
+        $embeddingText = trim($resume->graduateProfile->buildProfileText()."\n\n".$text);
+
+        $vector = $embeddingService->embed($embeddingText);
 
         if ($vector === null) {
             $resume->markFailed();

@@ -62,8 +62,12 @@ class ResumeMatchingService
 
     protected function scoreAndUpsert(JobPosting $jobPosting, Resume $resume, float $similarity): JobMatchResult
     {
+        $candidateText = trim(
+            $resume->graduateProfile->buildProfileText()."\n\n".($resume->extracted_text ?? '')
+        );
+
         $matchResult = $this->aiManager->scoreWithFallback(
-            $resume->extracted_text ?? '',
+            $candidateText,
             $jobPosting->buildEmbeddingText(),
             ['required_skills' => $jobPosting->requiredSkillNames()],
         );
