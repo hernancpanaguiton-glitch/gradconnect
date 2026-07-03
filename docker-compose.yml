@@ -22,6 +22,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      mail:
+        condition: service_started
     restart: unless-stopped
 
   queue:
@@ -39,6 +41,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      mail:
+        condition: service_started
       app:
         condition: service_started
     restart: unless-stopped
@@ -56,6 +60,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  # Local mail catcher: confirmation emails land in the web inbox at :8025.
+  mail:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
     restart: unless-stopped
 
 volumes:

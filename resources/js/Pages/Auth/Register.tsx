@@ -13,7 +13,18 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        role: 'student',
     });
+
+    const roleOptions = [
+        { value: 'student', label: 'Student' },
+        { value: 'alumni', label: 'Alumni' },
+        { value: 'alumni_officer', label: 'Alumni Officer' },
+        { value: 'dean', label: 'Dean' },
+        { value: 'industry_partner', label: 'Industry Partner' },
+    ];
+
+    const needsApproval = data.role !== 'student' && data.role !== 'alumni';
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -59,6 +70,33 @@ export default function Register() {
                     />
 
                     <InputError message={errors.last_name} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="role" value="I am registering as" />
+
+                    <select
+                        id="role"
+                        name="role"
+                        value={data.role}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        onChange={(e) => setData('role', e.target.value)}
+                        required
+                    >
+                        {roleOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+
+                    <p className="mt-2 text-sm text-gray-500">
+                        {needsApproval
+                            ? 'Staff and employer accounts are reviewed by an administrator before you can sign in.'
+                            : 'You will receive a confirmation email to activate your account.'}
+                    </p>
+
+                    <InputError message={errors.role} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
