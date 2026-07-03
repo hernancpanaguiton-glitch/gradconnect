@@ -8,8 +8,9 @@
         <script>
             (function () {
                 try {
-                    var t = localStorage.getItem('theme');
-                    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    // Opt-in only: dark applies when explicitly chosen, so pages not yet
+                    // dark-adapted default to light during the re-skin migration.
+                    if (localStorage.getItem('theme') === 'dark') {
                         document.documentElement.classList.add('dark');
                     }
                 } catch (e) {}
