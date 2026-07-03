@@ -32,6 +32,7 @@ When you finish, three containers will be running together:
 | **app** | The GradConnect web application, served at `http://localhost:8000` |
 | **db** | PostgreSQL with the `pgvector` extension (stores data + AI embeddings) |
 | **queue** | A background worker that processes résumé/job matching jobs |
+| **mail** | A [Mailpit](https://mailpit.axllent.org/) inbox — confirmation emails land here, viewable at `http://localhost:8025` |
 
 The database is migrated and seeded with demo data automatically on first launch.
 
@@ -154,6 +155,8 @@ Leave this terminal window open — it shows the live logs. (To run it in the ba
 Open your browser to:
 
 ### 👉 http://localhost:8000
+
+> 📧 **New sign-ups:** when you register a **Student** or **Alumni** account, a confirmation email is sent. Open the Mailpit inbox at **http://localhost:8025** to find it and click the verification link. **Alumni Officer, Dean, and Industry Partner** sign-ups instead wait for an admin to approve them (log in as `admin@gradconnect.edu.ph` and set the account to *active* on the Users page).
 
 Log in with one of the seeded demo accounts:
 
