@@ -32,6 +32,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    /**
+     * Always expose the computed full name so it is present on serialized
+     * relations (e.g. a candidate's user in an applicant list), not just
+     * where it is built by hand.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = ['name'];
+
     protected function casts(): array
     {
         return [

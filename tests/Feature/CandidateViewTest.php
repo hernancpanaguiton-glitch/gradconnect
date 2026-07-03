@@ -65,6 +65,18 @@ class CandidateViewTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_candidate_data_endpoint_returns_the_full_name(): void
+    {
+        $partner = User::factory()->industryPartner()->create();
+        $candidate = User::factory()->alumni()->create(['first_name' => 'Maria', 'last_name' => 'Reyes']);
+        $profile = GraduateProfile::factory()->create(['user_id' => $candidate->id]);
+
+        $this->actingAs($partner)
+            ->getJson(route('candidates.data', $profile))
+            ->assertOk()
+            ->assertJsonPath('profile.user.name', 'Maria Reyes');
+    }
+
     public function test_graduate_without_permission_is_forbidden(): void
     {
         $alumni = User::factory()->alumni()->create();

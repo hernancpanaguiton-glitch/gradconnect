@@ -136,6 +136,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Read-only candidate profile + résumé (employers reviewing candidates)
     Route::middleware('permission:candidates.view_resumes')->group(function () {
         Route::get('/candidates/{graduateProfile}', [CandidateController::class, 'show'])->name('candidates.show');
+        Route::get('/candidates/{graduateProfile}/data', [CandidateController::class, 'data'])->name('candidates.data');
         Route::get('/candidates/resume/{resume}', [CandidateController::class, 'resume'])->name('candidates.resume');
     });
 

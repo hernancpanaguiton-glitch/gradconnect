@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GraduateProfile;
 use App\Models\Resume;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -32,6 +33,25 @@ class CandidateController extends Controller
         return Inertia::render('Candidates/Show', [
             'profile' => $graduateProfile,
         ]);
+    }
+
+    /**
+     * Candidate profile as JSON, for the quick-view modal on the applicant list.
+     */
+    public function data(Request $request, GraduateProfile $graduateProfile): JsonResponse
+    {
+        abort_unless($request->user()->hasPermissionTo('candidates.view_resumes'), 403);
+
+        $graduateProfile->load([
+            'user',
+            'department',
+            'skills',
+            'educationRecords',
+            'employmentRecords',
+            'resumes' => fn ($query) => $query->latest(),
+        ]);
+
+        return response()->json(['profile' => $graduateProfile]);
     }
 
     /**

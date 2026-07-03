@@ -1,6 +1,8 @@
+import CandidateProfileModal from '@/Components/CandidateProfileModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 interface Applicant {
     id: number; status: string; applied_at: string | null; cover_letter: string | null;
@@ -20,6 +22,8 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Candidates({ posting, applications }: Props) {
+    const [selectedCandidate, setSelectedCandidate] = useState<number | null>(null);
+
     function updateStatus(appId: number, status: string) {
         router.patch(route('applications.update-status', appId), { status }, { preserveScroll: true });
     }
@@ -50,9 +54,10 @@ export default function Candidates({ posting, applications }: Props) {
                             {applications.data.map((app) => (
                                 <tr key={app.id} className="hover:bg-gray-50">
                                     <td className="px-4 py-3 font-medium text-gray-900">
-                                        <Link href={route('candidates.show', app.graduate_profile.id)} className="hover:text-indigo-600">
+                                        <button type="button" onClick={() => setSelectedCandidate(app.graduate_profile.id)}
+                                            className="text-left hover:text-indigo-600 hover:underline">
                                             {app.graduate_profile.user.name}
-                                        </Link>
+                                        </button>
                                         {app.graduate_profile.department && (
                                             <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
                                         )}
@@ -84,6 +89,10 @@ export default function Candidates({ posting, applications }: Props) {
                     </table>
                 </div>
             </div>
+
+            {selectedCandidate !== null && (
+                <CandidateProfileModal profileId={selectedCandidate} onClose={() => setSelectedCandidate(null)} />
+            )}
         </AuthenticatedLayout>
     );
 }
