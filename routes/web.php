@@ -22,6 +22,7 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
+use App\Http\Controllers\TalentSearchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -142,7 +143,8 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::inertia('/events', 'Events')->name('events');
     Route::inertia('/scholarships', 'Scholarships')->name('scholarships');
     Route::inertia('/clearance', 'Clearance')->name('clearance');
-    Route::inertia('/talent-search', 'TalentSearch')->name('talent-search');
+    Route::get('/talent-search', [TalentSearchController::class, 'index'])
+        ->middleware('permission:candidates.search')->name('talent-search');
 
     // Department head / dean — self-assign their college
     Route::middleware('role:department_head')->group(function () {
