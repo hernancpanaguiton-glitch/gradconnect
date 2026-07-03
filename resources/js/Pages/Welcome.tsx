@@ -1,184 +1,229 @@
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import {
+    ArrowRight, Award, BarChart2, Brain, Building2, DollarSign,
+    GraduationCap, MapPin, Star, Target, TrendingUp, Zap,
+} from 'lucide-react';
 
-function Logo({ className = 'h-8 w-8' }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
-            />
-        </svg>
-    );
-}
+const STATS = [
+    { value: '4,820+', label: 'Graduates Placed' },
+    { value: '87%', label: 'Employment Rate' },
+    { value: '320+', label: 'Partner Companies' },
+    { value: '96%', label: 'Survey Response' },
+];
 
-function FeatureCard({ iconPath, title, children }: { iconPath: string; title: string; children: React.ReactNode }) {
-    return (
-        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:shadow-md hover:ring-indigo-200">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
-                </svg>
-            </div>
-            <h3 className="mt-4 text-base font-semibold text-gray-900">{title}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-gray-600">{children}</p>
-        </div>
-    );
-}
+const FEATURES = [
+    { icon: Brain, title: 'AI Resume Matching', desc: 'Our AI engine analyzes resumes against live job requirements and scores compatibility with precision.' },
+    { icon: TrendingUp, title: 'Career Analytics', desc: 'Real-time dashboards tracking graduate employment trends, industry distribution, and career progression.' },
+    { icon: Target, title: 'Skill Gap Analysis', desc: 'Identify missing competencies and get curated learning paths aligned with market demand.' },
+    { icon: BarChart2, title: 'Graduate Tracer Study', desc: 'Automated surveys tracking alumni career outcomes for CHED compliance and accreditation.' },
+    { icon: Building2, title: 'Employer Network', desc: 'Direct connection between UCLM graduates and 320+ verified industry partners.' },
+    { icon: Award, title: 'Career Roadmap', desc: 'Personalized career development plans with milestone tracking and mentorship matching.' },
+];
+
+const TESTIMONIALS = [
+    { name: 'Maria Santos', role: "BS Computer Science '22", text: "GradConnect's AI matched me with my dream job at Accenture within 2 weeks of uploading my resume. The skill gap analysis was eye-opening.", avatar: 'MS' },
+    { name: 'James Ramos', role: "BS Business Admin '21", text: 'The platform helped me track my career progress and connect with alumni mentors. I got promoted to Manager within 18 months.', avatar: 'JR' },
+    { name: 'Ana Reyes', role: 'Career Services Director', text: 'Our employment rate jumped from 72% to 87% after deploying GradConnect. The tracer study module alone saves us 200+ hours per cycle.', avatar: 'AR' },
+];
+
+const MATCH_SKILLS: Array<[string, number]> = [['JavaScript', 92], ['React', 88], ['Node.js', 85], ['SQL', 78]];
 
 export default function Welcome({ auth }: PageProps) {
-    const icons = {
-        spark: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z',
-        clipboard: 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z',
-        chart: 'M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z',
-        building: 'M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21',
-    };
-
     return (
         <>
             <Head title="Welcome to GradConnect" />
 
-            <div className="min-h-screen bg-gray-50 text-gray-900">
-                {/* Top nav */}
-                <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/80 backdrop-blur">
-                    <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-                        <div className="flex items-center gap-2 text-indigo-600">
-                            <Logo className="h-7 w-7" />
-                            <span className="text-lg font-bold tracking-tight text-gray-900">GradConnect</span>
+            <div className="min-h-screen bg-white text-foreground">
+                {/* Nav */}
+                <nav className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur">
+                    <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700">
+                                <GraduationCap size={18} className="text-white" />
+                            </div>
+                            <div>
+                                <span className="block text-lg font-bold leading-tight text-foreground">GradConnect</span>
+                                <span className="block text-xs leading-none text-muted-foreground">UCLM Career Platform</span>
+                            </div>
                         </div>
-                        <nav className="flex items-center gap-2">
+                        <div className="hidden items-center gap-8 md:flex">
+                            {['Features', 'About', 'For Employers', 'Contact'].map((l) => (
+                                <span key={l} className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">{l}</span>
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-3">
                             {auth.user ? (
-                                <Link
-                                    href={route('dashboard')}
-                                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
-                                >
+                                <Link href={route('dashboard')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">
                                     Go to Dashboard
                                 </Link>
                             ) : (
                                 <>
-                                    <Link
-                                        href={route('login')}
-                                        className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
-                                    >
-                                        Log in
-                                    </Link>
-                                    <Link
-                                        href={route('register')}
-                                        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
-                                    >
-                                        Get started
-                                    </Link>
+                                    <Link href={route('login')} className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-blue-50">Sign In</Link>
+                                    <Link href={route('register')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">Get Started</Link>
                                 </>
                             )}
-                        </nav>
+                        </div>
                     </div>
-                </header>
+                </nav>
 
                 {/* Hero */}
-                <section className="relative overflow-hidden bg-slate-900">
-                    <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" aria-hidden="true" />
-                    <div className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" aria-hidden="true" />
-                    <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-28">
-                        <div className="max-w-2xl">
-                            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-indigo-200 ring-1 ring-white/15">
-                                University of Cebu — Lapu-Lapu &amp; Mandaue
-                            </span>
-                            <h1 className="mt-5 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                                Connect graduates to the careers they trained for.
-                            </h1>
-                            <p className="mt-5 text-lg leading-relaxed text-slate-300">
-                                GradConnect is the graduate employability &amp; career development platform that uses AI to
-                                match résumés to job openings, surface skill gaps, run employability surveys, and track
-                                career outcomes — all in one place.
-                            </p>
-                            <div className="mt-8 flex flex-wrap gap-3">
-                                {auth.user ? (
-                                    <Link
-                                        href={route('dashboard')}
-                                        className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
-                                    >
-                                        Open your dashboard
+                <section className="relative overflow-hidden bg-gradient-to-br from-[#0f1f3d] via-[#1a3a6b] to-[#1a56db] text-white">
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute left-20 top-20 h-72 w-72 rounded-full bg-blue-400 blur-3xl" />
+                        <div className="absolute bottom-10 right-20 h-96 w-96 rounded-full bg-indigo-400 blur-3xl" />
+                    </div>
+                    <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
+                        <div className="grid items-center gap-16 md:grid-cols-2">
+                            <div>
+                                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/20 px-4 py-1.5 text-xs font-semibold text-blue-200">
+                                    <Zap size={12} /> AI-Powered Career Platform
+                                </div>
+                                <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl">
+                                    Launch Your Career with <span className="text-blue-300">Intelligent</span> Guidance
+                                </h1>
+                                <p className="mb-8 text-lg leading-relaxed text-blue-100">
+                                    UCLM's official graduate employability platform — connecting graduates with opportunities
+                                    through AI resume matching, career analytics, and a nationwide employer network.
+                                </p>
+                                <div className="flex flex-wrap gap-4">
+                                    <Link href={auth.user ? route('dashboard') : route('register')} className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-primary shadow-lg transition-colors hover:bg-blue-50">
+                                        {auth.user ? 'Open Dashboard' : 'Start Your Journey'} <ArrowRight size={16} />
                                     </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('register')}
-                                            className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
-                                        >
-                                            Create an account
-                                        </Link>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/15"
-                                        >
-                                            Log in
-                                        </Link>
-                                    </>
-                                )}
+                                    <Link href={route('login')} className="flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10">
+                                        <Building2 size={16} /> For Employers
+                                    </Link>
+                                </div>
                             </div>
+
+                            {/* AI match card */}
+                            <div className="hidden md:block">
+                                <div className="rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur">
+                                    <div className="mb-4 flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500"><Brain size={20} className="text-white" /></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold text-white">AI Job Match Found</p>
+                                            <p className="text-xs text-blue-200">Senior Full Stack Developer</p>
+                                        </div>
+                                        <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-300">95% Match</span>
+                                    </div>
+                                    <div className="mb-4 space-y-3">
+                                        {MATCH_SKILLS.map(([skill, value]) => (
+                                            <div key={skill}>
+                                                <div className="mb-1 flex justify-between text-xs text-blue-100"><span>{skill}</span><span>{value}%</span></div>
+                                                <div className="h-1.5 rounded-full bg-white/10"><div className="h-1.5 rounded-full bg-blue-400 transition-all" style={{ width: `${value}%` }} /></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center justify-between border-t border-white/10 pt-3 text-xs text-blue-200">
+                                        <span className="flex items-center gap-1"><Building2 size={12} /> Cebu Pacific IT</span>
+                                        <span className="flex items-center gap-1"><DollarSign size={12} /> ₱55K–70K/mo</span>
+                                        <span className="flex items-center gap-1"><MapPin size={12} /> Cebu City</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Stat row */}
+                        <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-4">
+                            {STATS.map((s) => (
+                                <div key={s.label} className="text-center">
+                                    <p className="text-3xl font-bold text-white">{s.value}</p>
+                                    <p className="mt-1 text-sm text-blue-200">{s.label}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </section>
 
                 {/* Features */}
-                <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                            Everything your graduate community needs
-                        </h2>
-                        <p className="mt-3 text-gray-600">
-                            From AI-powered job matching to accreditation-ready analytics.
-                        </p>
-                    </div>
-                    <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        <FeatureCard iconPath={icons.spark} title="AI Job Matching">
-                            Résumés and job posts are embedded and ranked by fit, with explanations and skill-gap
-                            insights for every match.
-                        </FeatureCard>
-                        <FeatureCard iconPath={icons.clipboard} title="Employability Surveys">
-                            Run tracer studies and employability surveys, then collect structured responses from alumni
-                            and graduating students.
-                        </FeatureCard>
-                        <FeatureCard iconPath={icons.chart} title="Outcomes &amp; Analytics">
-                            Track employment status and program outcomes with reports built for department heads and
-                            accreditation.
-                        </FeatureCard>
-                        <FeatureCard iconPath={icons.building} title="Industry Connections">
-                            Partner companies post openings, review ranked candidates, and share employer competency
-                            feedback.
-                        </FeatureCard>
+                <section className="bg-[#f0f4f9] py-24">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="mb-16 text-center">
+                            <h2 className="mb-4 text-3xl font-bold text-foreground">Everything You Need to Succeed</h2>
+                            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">A complete career development ecosystem built for UCLM graduates, alumni, and industry partners.</p>
+                        </div>
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {FEATURES.map((f) => (
+                                <div key={f.title} className="rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                                        <f.icon size={22} className="text-primary" />
+                                    </div>
+                                    <h3 className="mb-2 font-bold text-foreground">{f.title}</h3>
+                                    <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
-                {/* CTA strip */}
-                {!auth.user && (
-                    <section className="mx-auto max-w-6xl px-6 pb-20">
-                        <div className="rounded-2xl bg-indigo-600 px-8 py-10 text-center sm:py-12">
-                            <h2 className="text-2xl font-bold text-white">Ready to get connected?</h2>
-                            <p className="mx-auto mt-2 max-w-xl text-indigo-100">
-                                Build your profile, upload your résumé, and start seeing roles matched to your skills.
-                            </p>
-                            <Link
-                                href={route('register')}
-                                className="mt-6 inline-block rounded-lg bg-white px-6 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50"
-                            >
-                                Create your account
-                            </Link>
+                {/* Testimonials */}
+                <section className="bg-white py-24">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="mb-16 text-center">
+                            <h2 className="text-3xl font-bold text-foreground">What Our Community Says</h2>
                         </div>
-                    </section>
-                )}
+                        <div className="grid gap-6 md:grid-cols-3">
+                            {TESTIMONIALS.map((t) => (
+                                <div key={t.name} className="rounded-2xl border border-border bg-[#f0f4f9] p-6">
+                                    <div className="mb-4 flex gap-1">{Array(5).fill(0).map((_, i) => <Star key={i} size={14} className="fill-amber-400 text-amber-400" />)}</div>
+                                    <p className="mb-6 text-sm leading-relaxed text-foreground">"{t.text}"</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white">{t.avatar}</div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                                            <p className="text-xs text-muted-foreground">{t.role}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* CTA */}
+                <section className="bg-gradient-to-r from-[#0f1f3d] to-[#1a56db] py-20 text-white">
+                    <div className="mx-auto max-w-4xl px-6 text-center">
+                        <h2 className="mb-4 text-3xl font-bold">Ready to Take the Next Step?</h2>
+                        <p className="mb-8 text-lg text-blue-100">Join thousands of UCLM graduates building successful careers with GradConnect.</p>
+                        {!auth.user && (
+                            <Link href={route('register')} className="inline-block rounded-xl bg-white px-8 py-3.5 text-base font-bold text-primary shadow-lg transition-colors hover:bg-blue-50">
+                                Create Free Account
+                            </Link>
+                        )}
+                    </div>
+                </section>
 
                 {/* Footer */}
-                <footer className="border-t border-gray-200 bg-white">
-                    <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 sm:flex-row">
-                        <div className="flex items-center gap-2 text-gray-500">
-                            <Logo className="h-5 w-5" />
-                            <span className="text-sm font-medium">GradConnect</span>
+                <footer className="bg-[#0f1f3d] py-12 text-white">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="mb-8 grid gap-8 md:grid-cols-4">
+                            <div>
+                                <div className="mb-4 flex items-center gap-2">
+                                    <GraduationCap size={20} className="text-blue-400" />
+                                    <span className="text-lg font-bold">GradConnect</span>
+                                </div>
+                                <p className="text-sm leading-relaxed text-blue-200">University of Cebu Lapu-Lapu and Mandaue official graduate employability platform.</p>
+                            </div>
+                            {[
+                                { title: 'Platform', links: ['Features', 'AI Matching', 'Tracer Study', 'Career Analytics'] },
+                                { title: 'For Students', links: ['Register', 'Upload Resume', 'Browse Jobs', 'Skill Analysis'] },
+                                { title: 'Contact', links: ['careers@uclm.edu.ph', '+63 32 234 5678', 'A.C. Cortes Ave., Mandaue City', 'Mon–Fri 8AM–5PM'] },
+                            ].map((col) => (
+                                <div key={col.title}>
+                                    <p className="mb-4 text-sm font-semibold">{col.title}</p>
+                                    {col.links.map((l) => <p key={l} className="mb-2 cursor-pointer text-sm text-blue-200 transition-colors hover:text-white">{l}</p>)}
+                                </div>
+                            ))}
                         </div>
-                        <p className="text-sm text-gray-400">
-                            © {new Date().getFullYear()} University of Cebu — Lapu-Lapu &amp; Mandaue
-                        </p>
+                        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 md:flex-row">
+                            <p className="text-sm text-blue-300">© {new Date().getFullYear()} University of Cebu Lapu-Lapu and Mandaue. All rights reserved.</p>
+                            <div className="flex gap-6">
+                                {['Privacy Policy', 'Terms of Service', 'Accessibility'].map((l) => (
+                                    <span key={l} className="cursor-pointer text-sm text-blue-300 transition-colors hover:text-white">{l}</span>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </footer>
             </div>

@@ -1,38 +1,26 @@
 import { Link } from '@inertiajs/react';
+import { GraduationCap } from 'lucide-react';
 import { PropsWithChildren } from 'react';
-
-function Logo({ className = 'h-8 w-8' }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
-            />
-        </svg>
-    );
-}
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
-        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 px-4 py-10">
+        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#0f1f3d] to-[#1a56db] px-4 py-10">
             {/* Ambient glow to match the Figma hero */}
-            <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" aria-hidden="true" />
-            <div className="pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-20 top-20 h-72 w-72 rounded-full bg-blue-400/10 blur-3xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute -bottom-24 right-20 h-96 w-96 rounded-full bg-indigo-400/10 blur-3xl" aria-hidden="true" />
 
-            <Link href="/" className="relative flex items-center gap-2 text-white">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15">
-                    <Logo className="h-6 w-6" />
+            <Link href="/" className="relative flex flex-col items-center gap-3 text-white">
+                <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur">
+                    <GraduationCap size={28} className="text-white" />
                 </span>
-                <span className="text-2xl font-bold tracking-tight">GradConnect</span>
             </Link>
-            <p className="relative mt-2 text-sm text-slate-400">UCLM Career Platform</p>
+            <p className="relative mt-3 text-sm text-blue-200">GradConnect — UCLM Career Platform</p>
 
-            <div className="relative mt-6 w-full overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-2xl shadow-slate-950/40 sm:max-w-md sm:px-8">
+            <div className="relative mt-6 w-full overflow-hidden rounded-2xl bg-card px-6 py-8 text-card-foreground shadow-2xl shadow-slate-950/40 sm:max-w-md sm:px-8">
                 {children}
             </div>
 
-            <p className="relative mt-6 text-xs text-slate-500">
+            <p className="relative mt-6 text-xs text-blue-300/70">
                 University of Cebu — Lapu-Lapu &amp; Mandaue
             </p>
         </div>
