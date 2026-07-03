@@ -35,7 +35,10 @@ class TalentSearchController extends Controller
                         ->orWhere('headline', $like, "%{$search}%")
                         ->orWhereHas('user', fn ($u) => $u
                             ->where('first_name', $like, "%{$search}%")
-                            ->orWhere('last_name', $like, "%{$search}%"))
+                            ->orWhere('last_name', $like, "%{$search}%")
+                            // Match the full name too, so "maria reyes" finds
+                            // first_name "Maria" + last_name "Reyes".
+                            ->orWhereRaw("(first_name || ' ' || last_name) {$like} ?", ["%{$search}%"]))
                         ->orWhereHas('skills', fn ($s) => $s->where('name', $like, "%{$search}%"));
                 });
             })

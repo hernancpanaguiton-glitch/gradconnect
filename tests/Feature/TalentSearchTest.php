@@ -54,6 +54,19 @@ class TalentSearchTest extends TestCase
                 ->where('candidates.data.0.user.name', 'Maria Santos'));
     }
 
+    public function test_search_matches_full_name(): void
+    {
+        $partner = User::factory()->industryPartner()->create();
+        $this->candidate('Maria', 'Reyes');
+        $this->candidate('James', 'Ramos');
+
+        $this->actingAs($partner)
+            ->get(route('talent-search', ['search' => 'maria reyes']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->has('candidates.data', 1)
+                ->where('candidates.data.0.user.name', 'Maria Reyes'));
+    }
+
     public function test_with_resume_filter_excludes_candidates_without_one(): void
     {
         $partner = User::factory()->industryPartner()->create();
