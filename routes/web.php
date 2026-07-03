@@ -17,6 +17,7 @@ use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SurveyController;
@@ -127,8 +128,11 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
 
+    // AI résumé analysis (real feature for graduates).
+    Route::get('/resume-analysis', [ResumeAnalysisController::class, 'index'])
+        ->middleware('role:alumni|student')->name('resume-analysis');
+
     // Feature-screen shells (design shells so every sidebar link resolves).
-    Route::inertia('/resume-analysis', 'ResumeAnalysis')->name('resume-analysis');
     Route::inertia('/skill-gap', 'SkillGap')->name('skill-gap');
     Route::inertia('/messages', 'Messages')->name('messages');
     Route::inertia('/notifications', 'Notifications')->name('notifications');

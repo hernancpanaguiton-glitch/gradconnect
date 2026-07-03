@@ -75,7 +75,7 @@ class AiChatClient
             $payload['response_format'] = ['type' => 'json_object'];
         }
 
-        $response = Http::withToken($apiKey)->post(config('services.groq.api_url'), $payload);
+        $response = Http::withToken($apiKey)->timeout(20)->post(config('services.groq.api_url'), $payload);
 
         return $response->successful() ? $response->json('choices.0.message.content') : null;
     }
@@ -96,7 +96,7 @@ class AiChatClient
             $payload['generationConfig'] = ['responseMimeType' => 'application/json'];
         }
 
-        $response = Http::withQueryParameters(['key' => $apiKey])->post($url, $payload);
+        $response = Http::withQueryParameters(['key' => $apiKey])->timeout(20)->post($url, $payload);
 
         return $response->successful() ? $response->json('candidates.0.content.parts.0.text') : null;
     }
