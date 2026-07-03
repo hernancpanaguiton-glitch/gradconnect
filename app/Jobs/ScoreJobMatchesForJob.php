@@ -28,6 +28,14 @@ class ScoreJobMatchesForJob implements ShouldQueue
             return;
         }
 
+        // Self-heal: candidate shortlisting needs the posting's embedding, which
+        // may be missing (e.g. seeded postings, or created before AI keys were
+        // configured). Generate it now so "Refresh matches" reliably works.
+        if ($jobPosting->embedding_status !== 'done') {
+            GenerateJobPostingEmbedding::dispatchSync($jobPosting->id);
+            $jobPosting->refresh();
+        }
+
         $matchingService->matchJobToCandidates($jobPosting);
     }
 }

@@ -28,6 +28,14 @@ class ScoreJobMatchesForProfile implements ShouldQueue
             return;
         }
 
+        // Self-heal: ranking needs the primary resume's embedding. If it hasn't
+        // been generated yet, do it now so "Refresh recommendations" works.
+        $resume = $profile->primaryResume;
+
+        if ($resume && $resume->embedding_status !== 'done') {
+            GenerateResumeEmbedding::dispatchSync($resume->id);
+        }
+
         $matchingService->matchProfileToJobs($profile);
     }
 }

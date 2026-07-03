@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Jobs\GenerateJobPostingEmbedding;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\EducationRecord;
@@ -178,6 +179,10 @@ class DatabaseSeeder extends Seeder
                     ->all();
 
                 $job->skills()->attach($pivot);
+
+                // Queue the embedding so candidate matching works out of the box
+                // (processed by the queue worker when AI keys are configured).
+                GenerateJobPostingEmbedding::dispatch($job->id);
             }
         });
 
