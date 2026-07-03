@@ -55,7 +55,7 @@ export default function Resumes({ resumes }: Props) {
                     <p className="text-sm font-medium text-gray-700">Upload New Resume</p>
                     <div className="flex gap-3 items-start">
                         <div className="flex-1">
-                            <input type="file" accept=".pdf" onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
+                            <input type="file" accept=".pdf,.txt,.docx" onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
                                 className="block w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100" />
                             {errors.file && <p className="mt-1 text-xs text-red-600">{errors.file}</p>}
                         </div>
@@ -64,7 +64,7 @@ export default function Resumes({ resumes }: Props) {
                             Upload
                         </button>
                     </div>
-                    <p className="text-xs text-gray-400">PDF only, max 10 MB.</p>
+                    <p className="text-xs text-gray-400">PDF, DOCX or TXT, max 10 MB.</p>
                 </form>
 
                 {/* Resume list */}
