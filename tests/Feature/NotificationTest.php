@@ -100,6 +100,16 @@ class NotificationTest extends TestCase
         Notification::assertNothingSentTo($active);
     }
 
+    public function test_notification_email_uses_the_branded_theme(): void
+    {
+        $user = User::factory()->create(['first_name' => 'Maria', 'last_name' => 'Santos']);
+
+        $html = (string) (new AccountApproved)->toMail($user)->render();
+
+        // The GradConnect theme's primary blue is present in the rendered email.
+        $this->assertStringContainsString('1a56db', $html);
+    }
+
     public function test_notifications_page_loads_and_marks_all_read(): void
     {
         $user = User::factory()->alumni()->create();

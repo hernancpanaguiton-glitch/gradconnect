@@ -28,6 +28,7 @@ class ApplicationStatusUpdated extends Notification implements ShouldQueue
         $title = $this->application->jobPosting->title;
 
         return (new MailMessage)
+            ->theme('gradconnect')
             ->subject("Update on your application: {$title}")
             ->greeting('Hello!')
             ->line("Your application for {$title} is now: {$this->statusLabel()}.")

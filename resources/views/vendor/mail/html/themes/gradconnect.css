@@ -1,0 +1,246 @@
+/* GradConnect branded email theme */
+
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #f0f4f9;
+    color: #0f1f3d;
+    height: 100%;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+p,
+ul,
+ol,
+blockquote {
+    line-height: 1.4;
+    text-align: left;
+}
+
+a {
+    color: #1a56db;
+}
+
+a img {
+    border: none;
+}
+
+/* Layout */
+
+.wrapper {
+    background-color: #f0f4f9;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+.content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+/* Header */
+
+.header {
+    padding: 28px 0;
+    text-align: center;
+}
+
+.header a {
+    color: #0f1f3d;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 1px 0 white;
+}
+
+/* Body */
+
+.body {
+    background: linear-gradient(180deg, #0f1f3d 0%, #0f1f3d 96px, #f0f4f9 96px, #f0f4f9 100%);
+    border-bottom: 1px solid #f0f4f9;
+    border-top: 1px solid #f0f4f9;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+.inner-body {
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 6px 24px rgba(15, 31, 61, 0.12);
+    margin: 0 auto;
+    padding: 0;
+    width: 570px;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+}
+
+/* Subcopy */
+
+.subcopy {
+    border-top: 1px solid #e4eaf3;
+    margin-top: 25px;
+    padding-top: 25px;
+}
+
+.subcopy p {
+    font-size: 13px;
+    color: #5a6a85;
+}
+
+/* Footer */
+
+.footer {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    width: 570px;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+}
+
+.footer p {
+    color: #8ba3c9;
+    font-size: 12px;
+    text-align: center;
+}
+
+.footer a {
+    color: #8ba3c9;
+    text-decoration: underline;
+}
+
+/* Tables */
+
+.table table {
+    margin: 30px auto;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+.table th {
+    border-bottom: 1px solid #e4eaf3;
+    margin: 0;
+    padding-bottom: 8px;
+}
+
+.table td {
+    color: #5a6a85;
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.content-cell {
+    max-width: 100vw;
+    padding: 32px 36px;
+    color: #0f1f3d;
+}
+
+/* Buttons */
+
+.action {
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+.button {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    color: #fff;
+    display: inline-block;
+    overflow: hidden;
+    text-decoration: none;
+    -webkit-text-size-adjust: none;
+    font-weight: 600;
+}
+
+.button-blue,
+.button-primary {
+    background-color: #1a56db;
+    border-bottom: 8px solid #1a56db;
+    border-left: 18px solid #1a56db;
+    border-right: 18px solid #1a56db;
+    border-top: 8px solid #1a56db;
+}
+
+.button-green,
+.button-success {
+    background-color: #10b981;
+    border-bottom: 8px solid #10b981;
+    border-left: 18px solid #10b981;
+    border-right: 18px solid #10b981;
+    border-top: 8px solid #10b981;
+}
+
+.button-red,
+.button-error {
+    background-color: #dc2626;
+    border-bottom: 8px solid #dc2626;
+    border-left: 18px solid #dc2626;
+    border-right: 18px solid #dc2626;
+    border-top: 8px solid #dc2626;
+}
+
+/* Panels */
+
+.panel {
+    border-left: #1a56db solid 4px;
+    margin: 21px 0;
+}
+
+.panel-content {
+    background-color: #e8eef7;
+    color: #0f1f3d;
+    padding: 16px;
+}
+
+.panel-content p {
+    color: #0f1f3d;
+}
+
+.panel-item {
+    padding: 0;
+}
+
+.panel-item p:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Utilities */
+
+.break-all {
+    word-break: break-all;
+}

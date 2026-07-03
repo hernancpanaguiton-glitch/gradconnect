@@ -28,6 +28,7 @@ class ApplicationReceived extends Notification implements ShouldQueue
         $title = $this->application->jobPosting->title;
 
         return (new MailMessage)
+            ->theme('gradconnect')
             ->subject("New application: {$title}")
             ->greeting('Hello!')
             ->line("{$applicant} has applied to your posting for {$title}.")
