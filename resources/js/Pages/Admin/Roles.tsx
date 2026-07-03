@@ -72,12 +72,6 @@ export default function Roles({ roles, permissionGroups }: Props) {
                     </div>
                 </div>
 
-                {flash?.success && (
-                    <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>
-                )}
-                {flash?.error && (
-                    <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{flash.error}</div>
-                )}
 
                 {/* Create role */}
                 <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">

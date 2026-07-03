@@ -47,8 +47,6 @@ export default function Resumes({ resumes }: Props) {
             <div className="max-w-2xl space-y-5">
                 <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
 
-                {flash?.success && <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>}
-                {flash?.error && <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{flash.error}</div>}
 
                 {/* Upload */}
                 <form onSubmit={handleUpload} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">

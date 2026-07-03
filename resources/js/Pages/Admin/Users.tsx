@@ -74,9 +74,6 @@ export default function Users({ users, filters }: Props) {
                     </form>
                 </div>
 
-                {flash?.success && (
-                    <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>
-                )}
 
                 <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
                     <table className="min-w-full text-sm">

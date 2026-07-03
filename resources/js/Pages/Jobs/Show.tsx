@@ -59,8 +59,6 @@ export default function JobShow({ posting, userApplication }: Props) {
                     <Link href={route('jobs.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Job Board</Link>
                 </div>
 
-                {flash?.success && <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>}
-                {flash?.error && <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{flash.error}</div>}
 
                 {/* Header */}
                 <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">

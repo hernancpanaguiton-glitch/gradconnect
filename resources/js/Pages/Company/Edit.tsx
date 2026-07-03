@@ -42,7 +42,6 @@ export default function CompanyEdit({ company }: Props) {
                     )}
                 </div>
 
-                {flash?.success && <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>}
 
                 <form onSubmit={handleSubmit} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
                     <div>

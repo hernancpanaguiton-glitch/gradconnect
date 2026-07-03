@@ -229,7 +229,6 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
                     </div>
                 </div>
 
-                {flash?.success && <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">{flash.success}</div>}
 
                 {/* Tabs */}
                 <div className="flex border-b border-gray-200 gap-1">
