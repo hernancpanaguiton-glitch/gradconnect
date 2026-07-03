@@ -115,6 +115,7 @@ class RolePermissionSeeder extends Seeder
         $sao->syncPermissions([
             'students.manage', 'scholarships.manage', 'student_events.manage',
             'clearance.manage', 'student_analytics.view', 'reports.employability.view',
+            'candidates.search', 'candidates.view_resumes',
         ]);
 
         // Admin super-role gets every permission

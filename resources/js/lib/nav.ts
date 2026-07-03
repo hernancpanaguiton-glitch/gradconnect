@@ -109,7 +109,7 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Student Affairs',
                 items: [
-                    { label: 'Student Records', href: '/admin/users', icon: Users },
+                    { label: 'Student Records', href: '/talent-search', icon: Users },
                     { label: 'Scholarships', href: '/scholarships', icon: GraduationCap },
                     { label: 'Student Events', href: '/events', icon: Calendar },
                     { label: 'Clearance & Records', href: '/clearance', icon: ListChecks },

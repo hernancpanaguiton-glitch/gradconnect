@@ -135,6 +135,7 @@
   .c-partner { background: #ecfdf5; color: #047857; }
   .c-alumni { background: #fffbeb; color: #b45309; }
   .c-student { background: #f0f9ff; color: #0369a1; }
+  .c-sao { background: #f0fdfa; color: #0f766e; }
 
   .does { margin: 8px 0 0; padding: 0; list-style: none; }
   .does li { padding: 6px 0 6px 26px; position: relative; }
@@ -209,9 +210,10 @@
         <a href="#partner"><span class="num">05</span> Industry Partner</a>
         <a href="#affairs"><span class="num">06</span> Alumni Affairs</a>
         <a href="#dept"><span class="num">07</span> Department Head</a>
-        <a href="#admin"><span class="num">08</span> Admin</a>
-        <a href="#resumes"><span class="num">09</span> Sample résumés</a>
-        <a href="#notes"><span class="num">10</span> Known gaps</a>
+        <a href="#sao"><span class="num">08</span> Student Affairs Office</a>
+        <a href="#admin"><span class="num">09</span> Admin</a>
+        <a href="#resumes"><span class="num">10</span> Sample résumés</a>
+        <a href="#notes"><span class="num">11</span> Known gaps</a>
       </nav>
     </section>
 
@@ -243,7 +245,7 @@ docker compose up --build</div>
 
       <div class="note">
         <strong>Registering your own account</strong>
-        The sign-up form now asks for a role. <strong>Student</strong> and <strong>Alumni</strong> accounts are activated right away but must confirm a <em>verification email</em> &mdash; open the mail inbox at <span class="pill">http://localhost:8025</span> to find it and click the link. <strong>Alumni Officer</strong>, <strong>Dean</strong>, and <strong>Industry Partner</strong> accounts are held for <em>admin approval</em>: sign in as the Admin below and set the account to <em>active</em> on the Users page before it can log in.
+        The sign-up form now asks for a role. <strong>Student</strong> and <strong>Alumni</strong> accounts are activated right away but must confirm a <em>verification email</em> &mdash; open the mail inbox at <span class="pill">http://localhost:8025</span> to find it and click the link. <strong>Alumni Officer</strong>, <strong>Dean</strong>, <strong>Industry Partner</strong>, and <strong>Student Affairs Office</strong> accounts are held for <em>admin approval</em>: sign in as the Admin below and set the account to <em>active</em> on the Users page before it can log in. Admins are notified in-app and by email when a new account needs approval.
       </div>
 
       <div class="tip">
@@ -283,6 +285,7 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
               <tr><td><span class="chip c-partner">Industry Partner</span></td><td class="cred">partner@gradconnect.edu.ph</td><td><code>password</code></td></tr>
               <tr><td><span class="chip c-affairs">Alumni Affairs</span></td><td class="cred">alumni.affairs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
               <tr><td><span class="chip c-dept">Department Head</span></td><td class="cred">depthead.ccs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
+              <tr><td><span class="chip c-sao">Student Affairs</span></td><td class="cred">sao@gradconnect.edu.ph</td><td><code>password</code></td></tr>
               <tr><td><span class="chip c-admin">Admin</span></td><td class="cred">admin@gradconnect.edu.ph</td><td><code>password</code></td></tr>
             </tbody>
           </table>
@@ -432,7 +435,24 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
       <p class="muted">No data entry &mdash; this role reviews figures only.</p>
     </section>
 
-    <!-- 08 Admin -->
+    <!-- 08 Student Affairs Office -->
+    <section id="sao">
+      <div class="role-head"><span class="chip c-sao">Student Affairs</span><span class="muted cred">sao@gradconnect.edu.ph</span></div>
+      <h2>Student Affairs Office</h2>
+      <p class="section-intro">Supports current students &mdash; records, scholarships, events, clearance, and student analytics.</p>
+      <h3>What you can do</h3>
+      <ul class="does">
+        <li><strong>Dashboard</strong> &mdash; student headcount, scholarship recipients, clearance progress, and event stats.</li>
+        <li><strong>Student Records</strong> &mdash; search the student/graduate directory and open a read-only profile (with résumés).</li>
+        <li><strong>Scholarships</strong> &mdash; scholarship programs, recipients, and budgets.</li>
+        <li><strong>Student Events</strong> &mdash; career fairs, workshops, and campus events.</li>
+        <li><strong>Clearance &amp; Records</strong> &mdash; graduation clearance progress across offices.</li>
+        <li><strong>Student Analytics</strong> &mdash; the employability report view.</li>
+      </ul>
+      <div class="note"><strong>Registering as SAO</strong> New Student Affairs accounts (like Alumni Officer, Dean, and Industry Partner) are held for <em>admin approval</em> before they can sign in. Use the seeded <code>sao@</code> login above to explore right away.</div>
+    </section>
+
+    <!-- 09 Admin -->
     <section id="admin">
       <div class="role-head"><span class="chip c-admin">Admin</span><span class="muted cred">admin@gradconnect.edu.ph</span></div>
       <h2>Administrator</h2>

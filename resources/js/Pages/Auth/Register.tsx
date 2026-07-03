@@ -22,6 +22,7 @@ export default function Register() {
         { value: 'alumni_officer', label: 'Alumni Officer' },
         { value: 'dean', label: 'Dean' },
         { value: 'industry_partner', label: 'Industry Partner' },
+        { value: 'sao', label: 'Student Affairs Office' },
     ];
 
     const needsApproval = data.role !== 'student' && data.role !== 'alumni';

@@ -25,6 +25,7 @@ class RegisteredUserController extends Controller
         'alumni_officer' => 'alumni_affairs',
         'dean' => 'department_head',
         'industry_partner' => 'industry_partner',
+        'sao' => 'sao',
     ];
 
     /**

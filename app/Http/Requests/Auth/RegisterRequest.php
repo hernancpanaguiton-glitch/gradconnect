@@ -29,7 +29,7 @@ class RegisterRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:student,alumni,alumni_officer,dean,industry_partner'],
+            'role' => ['required', 'in:student,alumni,alumni_officer,dean,industry_partner,sao'],
         ];
     }
 }

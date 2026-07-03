@@ -93,6 +93,7 @@ class RegistrationTest extends TestCase
             'alumni officer' => ['alumni_officer', 'alumni_affairs'],
             'dean' => ['dean', 'department_head'],
             'industry partner' => ['industry_partner', 'industry_partner'],
+            'student affairs office' => ['sao', 'sao'],
         ];
     }
 
