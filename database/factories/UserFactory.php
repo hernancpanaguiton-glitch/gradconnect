@@ -94,4 +94,11 @@ class UserFactory extends Factory
             $user->assignRole('admin');
         });
     }
+
+    public function sao(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $user->assignRole('sao');
+        });
+    }
 }

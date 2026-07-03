@@ -27,6 +27,7 @@ class DashboardController extends Controller
             $user->hasRole('alumni_affairs') => ['Dashboards/AlumniAffairsDashboard', $this->alumniAffairsStats()],
             $user->hasRole('department_head') => ['Dashboards/DepartmentHeadDashboard', $this->departmentHeadStats($user)],
             $user->hasRole('industry_partner') => ['Dashboards/IndustryPartnerDashboard', $this->industryPartnerStats($user)],
+            $user->hasRole('sao') => ['Dashboards/SaoDashboard', $this->saoStats()],
             $user->hasRole('student') => ['Dashboards/StudentDashboard', $this->graduateStats($user, isStudent: true)],
             default => ['Dashboards/AlumniDashboard', $this->graduateStats($user, isStudent: false)],
         };
@@ -117,6 +118,19 @@ class DashboardController extends Controller
             ['label' => 'Total Applications', 'value' => JobApplication::whereIn('job_posting_id', $postingIds)->count()],
             ['label' => 'Shortlisted', 'value' => JobApplication::whereIn('job_posting_id', $postingIds)->where('status', 'shortlisted')->count()],
             ['label' => 'AI Matches', 'value' => JobMatchResult::whereIn('job_posting_id', $postingIds)->count(), 'sub' => 'Scored candidates'],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function saoStats(): array
+    {
+        return [
+            ['label' => 'Total Students', 'value' => User::role('student')->count()],
+            ['label' => 'Career Readiness', 'value' => '68%', 'sub' => 'Assessment average'],
+            ['label' => 'Skill-Gap Alerts', 'value' => 12, 'sub' => 'Flagged this term'],
+            ['label' => 'Active Scholarships', 'value' => 34, 'sub' => 'Current recipients'],
         ];
     }
 

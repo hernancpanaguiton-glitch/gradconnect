@@ -16,12 +16,14 @@ export default function StatTile({
     label,
     value,
     change,
+    sub,
     color = 'blue',
 }: {
     icon: LucideIcon;
     label: string;
     value: string | number;
     change?: string;
+    sub?: string;
     color?: Color;
 }) {
     return (
@@ -33,6 +35,7 @@ export default function StatTile({
                     {change && (
                         <p className="mt-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">↑ {change}</p>
                     )}
+                    {sub && !change && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
                 </div>
                 <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${CHIP[color]}`}>
                     <Icon size={20} />

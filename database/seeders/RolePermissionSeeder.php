@@ -53,6 +53,13 @@ class RolePermissionSeeder extends Seeder
             'program_outcomes.view',
             'accreditation.support',
 
+            // Student Affairs Office (student welfare & non-academic development)
+            'students.manage',
+            'scholarships.manage',
+            'student_events.manage',
+            'clearance.manage',
+            'student_analytics.view',
+
             // Admin (+ absorbed CSO: job moderation, system reports)
             'users.manage',
             'roles.manage',
@@ -102,6 +109,12 @@ class RolePermissionSeeder extends Seeder
         $departmentHead->syncPermissions([
             'reports.department.view', 'reports.employability.view',
             'program_outcomes.view', 'accreditation.support',
+        ]);
+
+        $sao = Role::firstOrCreate(['name' => 'sao', 'guard_name' => 'web']);
+        $sao->syncPermissions([
+            'students.manage', 'scholarships.manage', 'student_events.manage',
+            'clearance.manage', 'student_analytics.view', 'reports.employability.view',
         ]);
 
         // Admin super-role gets every permission

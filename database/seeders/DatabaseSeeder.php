@@ -68,6 +68,13 @@ class DatabaseSeeder extends Seeder
             'department_id' => $bizDept->id,
         ]);
 
+        // Student Affairs Office
+        User::factory()->sao()->create([
+            'first_name' => 'Grace',
+            'last_name' => 'Villanueva',
+            'email' => 'sao@gradconnect.edu.ph',
+        ]);
+
         // Skill lookup by name, so each job posting gets skills that match its role.
         $skillsByName = $skills->keyBy('name');
 
