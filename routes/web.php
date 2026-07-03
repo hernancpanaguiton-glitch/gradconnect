@@ -127,6 +127,19 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
 
+    // Feature-screen shells (design shells so every sidebar link resolves).
+    Route::inertia('/resume-analysis', 'ResumeAnalysis')->name('resume-analysis');
+    Route::inertia('/skill-gap', 'SkillGap')->name('skill-gap');
+    Route::inertia('/messages', 'Messages')->name('messages');
+    Route::inertia('/notifications', 'Notifications')->name('notifications');
+    Route::inertia('/settings', 'Settings')->name('settings');
+    Route::inertia('/applications', 'Applications')->name('applications.index');
+    Route::inertia('/reports', 'ReportsHub')->name('reports.index');
+    Route::inertia('/events', 'Events')->name('events');
+    Route::inertia('/scholarships', 'Scholarships')->name('scholarships');
+    Route::inertia('/clearance', 'Clearance')->name('clearance');
+    Route::inertia('/talent-search', 'TalentSearch')->name('talent-search');
+
     // Department head / dean — self-assign their college
     Route::middleware('role:department_head')->group(function () {
         Route::patch('/department-head/college', [DepartmentHeadController::class, 'updateCollege'])
@@ -159,6 +172,10 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::post('/roles', [RolePermissionController::class, 'store'])->name('roles.store');
         Route::delete('/roles/{role}', [RolePermissionController::class, 'destroy'])->name('roles.destroy');
         Route::patch('/roles/{role}/permissions', [RolePermissionController::class, 'updatePermissions'])->name('roles.permissions.update');
+
+        // Admin feature-screen shells.
+        Route::inertia('/jobs', 'Admin/JobManagement')->name('jobs');
+        Route::inertia('/audit-logs', 'Admin/AuditLogs')->name('audit-logs');
     });
 });
 
