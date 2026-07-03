@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
 use App\Models\JobPosting;
+use App\Notifications\ApplicationReceived;
+use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -26,13 +28,16 @@ class JobApplicationController extends Controller
         $existing = $job->applications()->where('graduate_profile_id', $profile->id)->exists();
         abort_if($existing, 422, 'You have already applied to this position.');
 
-        $job->applications()->create([
+        $application = $job->applications()->create([
             'graduate_profile_id' => $profile->id,
             'resume_id' => $request->resume_id,
             'cover_letter' => $request->cover_letter,
             'status' => 'submitted',
             'applied_at' => now(),
         ]);
+
+        // Notify the employer who posted the role.
+        $job->postedBy?->notify(new ApplicationReceived($application));
 
         return back()->with('success', 'Application submitted.');
     }
@@ -55,6 +60,9 @@ class JobApplicationController extends Controller
         );
 
         $application->update(['status' => $request->status]);
+
+        // Notify the applicant of the status change.
+        $application->graduateProfile->user->notify(new ApplicationStatusUpdated($application));
 
         return back()->with('success', 'Application status updated.');
     }

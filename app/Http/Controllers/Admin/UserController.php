@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUpdateUserRequest;
 use App\Models\Department;
 use App\Models\User;
+use App\Notifications\AccountApproved;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -62,11 +63,18 @@ class UserController extends Controller
      */
     public function update(AdminUpdateUserRequest $request, User $user): RedirectResponse
     {
+        $wasInactive = $user->status !== 'active';
+
         $user->update([
             'status' => $request->status,
             'department_id' => $request->department_id,
         ]);
         $user->syncRoles($request->roles);
+
+        // Notify the user when their pending account is approved.
+        if ($wasInactive && $request->status === 'active') {
+            $user->notify(new AccountApproved);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User updated.');
     }

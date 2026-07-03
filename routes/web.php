@@ -16,6 +16,7 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeController;
@@ -136,7 +137,9 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Feature-screen shells (design shells so every sidebar link resolves).
     Route::inertia('/skill-gap', 'SkillGap')->name('skill-gap');
     Route::inertia('/messages', 'Messages')->name('messages');
-    Route::inertia('/notifications', 'Notifications')->name('notifications');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::inertia('/settings', 'Settings')->name('settings');
     Route::inertia('/applications', 'Applications')->name('applications.index');
     Route::inertia('/reports', 'ReportsHub')->name('reports.index');

@@ -28,7 +28,12 @@ class ResumeAnalysisTest extends TestCase
     private function profileWithResume(string $resumeText): GraduateProfile
     {
         $user = User::factory()->alumni()->create();
-        $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
+        // Deterministic status so the "employed but no current job" check does
+        // not fire from the factory's random employment status.
+        $profile = GraduateProfile::factory()->create([
+            'user_id' => $user->id,
+            'current_employment_status' => 'unemployed',
+        ]);
         Resume::factory()->for($profile)->create([
             'is_primary' => true,
             'embedding_status' => 'done',

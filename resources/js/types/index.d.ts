@@ -23,4 +23,17 @@ export type PageProps<
         success?: string;
         error?: string;
     };
+    notifications?: {
+        unread: number;
+        items: NotificationItem[];
+    };
 };
+
+export interface NotificationItem {
+    id: string;
+    title: string;
+    message: string;
+    url: string | null;
+    read: boolean;
+    time: string;
+}

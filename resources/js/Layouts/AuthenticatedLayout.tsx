@@ -15,12 +15,6 @@ import {
 } from 'lucide-react';
 import { PropsWithChildren, useState } from 'react';
 
-const NOTIFICATIONS = [
-    { id: 1, text: 'New job match: Backend Developer at Sugbo Software Labs', time: '5m ago', unread: true },
-    { id: 2, text: 'Your résumé finished processing', time: '1h ago', unread: true },
-    { id: 3, text: 'Tracer survey reminder — closes soon', time: '1d ago', unread: false },
-];
-
 function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
     const initials = name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
     const s = size === 'sm' ? 'h-9 w-9 text-xs' : 'h-10 w-10 text-sm';
@@ -32,8 +26,10 @@ function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
 }
 
 export default function AuthenticatedLayout({ children }: PropsWithChildren) {
-    const { auth } = usePage<PageProps>().props;
+    const { auth, notifications } = usePage<PageProps>().props;
     const user = auth.user;
+    const unread = notifications?.unread ?? 0;
+    const notifItems = notifications?.items ?? [];
     const navSections: NavSection[] = getNavFor(user);
     const currentPath = usePage().url.split('?')[0];
     const primaryRole = user.roles[0] ?? '';
@@ -170,22 +166,45 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                                 aria-label="Notifications"
                             >
                                 <Bell size={18} />
-                                <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
+                                {unread > 0 && (
+                                    <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                                        {unread > 9 ? '9+' : unread}
+                                    </span>
+                                )}
                             </button>
                             {notifOpen && (
                                 <div className="absolute right-0 top-12 z-50 w-80 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                                     <div className="flex items-center justify-between border-b border-border p-4">
                                         <span className="text-sm font-semibold text-foreground">Notifications</span>
-                                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700">2 new</span>
+                                        {unread > 0 && (
+                                            <button
+                                                onClick={() => router.patch(route('notifications.read-all'), {}, { preserveScroll: true, onSuccess: () => setNotifOpen(false) })}
+                                                className="text-xs font-semibold text-primary hover:underline"
+                                            >
+                                                Mark all read
+                                            </button>
+                                        )}
                                     </div>
                                     <div className="max-h-72 overflow-y-auto">
-                                        {NOTIFICATIONS.map((n) => (
-                                            <div key={n.id} className={`cursor-pointer border-b border-border p-4 last:border-0 hover:bg-muted/50 ${n.unread ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}>
-                                                <p className="text-sm leading-snug text-foreground">{n.text}</p>
+                                        {notifItems.length === 0 && (
+                                            <p className="p-6 text-center text-sm text-muted-foreground">You’re all caught up.</p>
+                                        )}
+                                        {notifItems.map((n) => (
+                                            <Link
+                                                key={n.id}
+                                                href={n.url ?? route('notifications')}
+                                                onClick={() => setNotifOpen(false)}
+                                                className={`block cursor-pointer border-b border-border p-4 last:border-0 hover:bg-muted/50 ${!n.read ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}
+                                            >
+                                                <p className="text-sm font-medium leading-snug text-foreground">{n.title}</p>
+                                                <p className="text-sm leading-snug text-muted-foreground">{n.message}</p>
                                                 <p className="mt-1 text-xs text-muted-foreground">{n.time}</p>
-                                            </div>
+                                            </Link>
                                         ))}
                                     </div>
+                                    <Link href={route('notifications')} onClick={() => setNotifOpen(false)} className="block border-t border-border p-3 text-center text-sm font-semibold text-primary hover:bg-muted/50">
+                                        View all notifications
+                                    </Link>
                                 </div>
                             )}
                         </div>
