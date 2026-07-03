@@ -1,7 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import axios from 'axios';
+import { FormEvent, useEffect, useState } from 'react';
+
+interface SkillSuggestion { id: number | null; name: string; source: string }
 
 /** Format an ISO date string (e.g. "2025-04-21T00:00:00.000000Z") as "Apr 2025". */
 function formatMonthYear(value: string | null): string {
@@ -135,7 +138,67 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
             : [...data.skills, skillId]);
     }
 
-    const skillsByCategory = allSkills.reduce<Record<string, Skill[]>>((acc, skill) => {
+    // Skills library starts from the seeded list and grows as the user adds
+    // custom, AI-validated skills.
+    const [skillLibrary, setSkillLibrary] = useState<Skill[]>(allSkills);
+    const [skillQuery, setSkillQuery] = useState('');
+    const [suggestions, setSuggestions] = useState<SkillSuggestion[]>([]);
+    const [skillLoading, setSkillLoading] = useState(false);
+    const [addingSkill, setAddingSkill] = useState(false);
+    const [skillError, setSkillError] = useState<string | null>(null);
+
+    // Debounced AI + library autocomplete.
+    useEffect(() => {
+        const query = skillQuery.trim();
+        if (query.length < 2) {
+            setSuggestions([]);
+            return;
+        }
+        setSkillLoading(true);
+        const handle = setTimeout(() => {
+            axios.get(route('skills.suggest'), { params: { q: query } })
+                .then((response) => setSuggestions(response.data.suggestions ?? []))
+                .catch(() => setSuggestions([]))
+                .finally(() => setSkillLoading(false));
+        }, 300);
+        return () => clearTimeout(handle);
+    }, [skillQuery]);
+
+    function selectSkill(skillId: number, skill?: Skill) {
+        if (skill && !skillLibrary.some((s) => s.id === skillId)) {
+            setSkillLibrary((prev) => [...prev, skill]);
+        }
+        if (!data.skills.includes(skillId)) {
+            setData('skills', [...data.skills, skillId]);
+        }
+        setSkillQuery('');
+        setSuggestions([]);
+    }
+
+    async function addSuggestion(item: SkillSuggestion) {
+        setSkillError(null);
+
+        // Library skills already exist — just select them.
+        if (item.id) {
+            selectSkill(item.id, { id: item.id, name: item.name, category: 'My Skills', slug: '' });
+            return;
+        }
+
+        // AI / free-typed skills are validated + created server-side first.
+        setAddingSkill(true);
+        try {
+            const response = await axios.post(route('skills.store'), { name: item.name });
+            const skill: Skill = { ...response.data.skill, category: response.data.skill.category ?? 'My Skills' };
+            selectSkill(skill.id, skill);
+        } catch (error) {
+            const errData = (error as { response?: { data?: { errors?: { name?: string[] }; message?: string } } }).response?.data;
+            setSkillError(errData?.errors?.name?.[0] ?? errData?.message ?? 'Could not add that skill.');
+        } finally {
+            setAddingSkill(false);
+        }
+    }
+
+    const skillsByCategory = skillLibrary.reduce<Record<string, Skill[]>>((acc, skill) => {
         const cat = skill.category ?? 'Other';
         acc[cat] = [...(acc[cat] ?? []), skill];
         return acc;
@@ -324,6 +387,50 @@ export default function ProfileEdit({ profile, allSkills }: Props) {
                 {/* Skills */}
                 {tab === 'skills' && (
                     <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+                        {/* Add a custom skill with AI autocomplete */}
+                        <div className="relative">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Add a skill</label>
+                            <input
+                                type="text"
+                                value={skillQuery}
+                                onChange={(e) => { setSkillQuery(e.target.value); setSkillError(null); }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        if (skillQuery.trim().length >= 2) {
+                                            addSuggestion({ id: null, name: skillQuery.trim(), source: 'typed' });
+                                        }
+                                    }
+                                }}
+                                placeholder="Type a skill, e.g. Kubernetes"
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                            <p className="mt-1 text-xs text-gray-400">
+                                Suggestions are checked by AI so only real skills are added. Press Enter to add what you typed.
+                            </p>
+                            {skillError && <p className="mt-1 text-xs text-red-600">{skillError}</p>}
+
+                            {(skillLoading || suggestions.length > 0) && skillQuery.trim().length >= 2 && (
+                                <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+                                    {skillLoading && suggestions.length === 0 && (
+                                        <p className="px-3 py-2 text-sm text-gray-400">Searching…</p>
+                                    )}
+                                    {suggestions.map((item, index) => (
+                                        <button
+                                            key={`${item.name}-${index}`}
+                                            type="button"
+                                            disabled={addingSkill}
+                                            onClick={() => addSuggestion(item)}
+                                            className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-indigo-50 disabled:opacity-50">
+                                            <span className="text-gray-800">{item.name}</span>
+                                            <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium ${item.source === 'library' ? 'bg-gray-100 text-gray-500' : 'bg-indigo-50 text-indigo-600'}`}>
+                                                {item.source === 'library' ? 'In library' : 'AI suggested'}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         {Object.entries(skillsByCategory).map(([cat, catSkills]) => (
                             <div key={cat}>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">{cat}</p>

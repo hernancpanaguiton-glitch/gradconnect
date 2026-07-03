@@ -15,6 +15,7 @@ use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
 use Illuminate\Foundation\Application;
@@ -42,6 +43,11 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::middleware('role:alumni|student')->group(function () {
         Route::get('/graduate/profile/edit', [GraduateProfileController::class, 'edit'])->name('graduate.profile.edit');
         Route::patch('/graduate/profile', [GraduateProfileController::class, 'update'])->name('graduate.profile.update');
+
+        // Skills (custom skills with AI autocomplete/validation)
+        Route::get('/graduate/skills/suggest', [SkillController::class, 'suggest'])
+            ->middleware('throttle:30,1')->name('skills.suggest');
+        Route::post('/graduate/skills', [SkillController::class, 'store'])->name('skills.store');
 
         // Education records
         Route::post('/graduate/education', [EducationRecordController::class, 'store'])->name('education.store');
