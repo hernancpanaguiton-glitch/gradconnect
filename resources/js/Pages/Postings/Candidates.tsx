@@ -50,7 +50,9 @@ export default function Candidates({ posting, applications }: Props) {
                             {applications.data.map((app) => (
                                 <tr key={app.id} className="hover:bg-gray-50">
                                     <td className="px-4 py-3 font-medium text-gray-900">
-                                        {app.graduate_profile.user.name}
+                                        <Link href={route('candidates.show', app.graduate_profile.id)} className="hover:text-indigo-600">
+                                            {app.graduate_profile.user.name}
+                                        </Link>
                                         {app.graduate_profile.department && (
                                             <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
                                         )}

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\JobMatchController;
+use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CandidateMatchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
@@ -130,6 +131,12 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::middleware('role:department_head')->group(function () {
         Route::patch('/department-head/college', [DepartmentHeadController::class, 'updateCollege'])
             ->name('department-head.college.update');
+    });
+
+    // Read-only candidate profile + résumé (employers reviewing candidates)
+    Route::middleware('permission:candidates.view_resumes')->group(function () {
+        Route::get('/candidates/{graduateProfile}', [CandidateController::class, 'show'])->name('candidates.show');
+        Route::get('/candidates/resume/{resume}', [CandidateController::class, 'resume'])->name('candidates.resume');
     });
 
     // AI matching — trigger + poll status

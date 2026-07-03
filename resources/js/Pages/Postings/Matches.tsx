@@ -80,13 +80,19 @@ export default function PostingsMatches({ posting, matches }: Props) {
                         <div key={match.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="min-w-0 flex-1">
-                                    <p className="font-semibold text-gray-900">{match.graduate_profile.user.name}</p>
-                                    <p className="text-sm text-gray-600 mt-0.5">{match.graduate_profile.user.email}</p>
+                                    <Link href={route('candidates.show', match.graduate_profile.id)}
+                                        className="text-base font-semibold text-gray-900 hover:text-indigo-600">
+                                        {match.graduate_profile.user.name}
+                                    </Link>
                                     {match.graduate_profile.headline && (
-                                        <p className="text-xs text-gray-400 mt-0.5">{match.graduate_profile.headline}</p>
+                                        <p className="text-sm text-gray-600 mt-0.5">{match.graduate_profile.headline}</p>
                                     )}
+                                    <p className="text-xs text-gray-400 mt-0.5">{match.graduate_profile.user.email}</p>
                                     {match.resume && (
-                                        <p className="text-xs text-gray-400 mt-1">Resume: {match.resume.original_filename}</p>
+                                        <a href={route('candidates.resume', match.resume.id)} target="_blank" rel="noreferrer"
+                                            className="mt-1 inline-block text-xs font-medium text-indigo-600 hover:text-indigo-800">
+                                            View résumé: {match.resume.original_filename}
+                                        </a>
                                     )}
                                 </div>
                                 <div className="w-40 shrink-0">
