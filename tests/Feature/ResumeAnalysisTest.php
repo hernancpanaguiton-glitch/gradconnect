@@ -27,7 +27,7 @@ class ResumeAnalysisTest extends TestCase
 
     private function profileWithResume(string $resumeText): GraduateProfile
     {
-        $user = User::factory()->alumni()->create();
+        $user = User::factory()->alumni()->create(['first_name' => 'Maria', 'last_name' => 'Santos']);
         // Deterministic status so the "employed but no current job" check does
         // not fire from the factory's random employment status.
         $profile = GraduateProfile::factory()->create([
@@ -72,12 +72,22 @@ class ResumeAnalysisTest extends TestCase
 
     public function test_no_discrepancies_when_consistent(): void
     {
-        $profile = $this->profileWithResume('PHP, Laravel and Kubernetes engineer.');
+        $profile = $this->profileWithResume('Maria Santos — PHP, Laravel and Kubernetes engineer.');
         $profile->skills()->attach(Skill::findOrCreateByName('Kubernetes')->id, ['source' => 'self']);
 
         $result = app(ResumeAnalysisService::class)->analyze($profile->fresh());
 
         $this->assertEmpty($result['discrepancies']);
+    }
+
+    public function test_flags_name_not_on_resume(): void
+    {
+        // Résumé text with none of the profile's name (Maria Santos).
+        $profile = $this->profileWithResume('Backend developer skilled in PHP and Laravel.');
+
+        $result = app(ResumeAnalysisService::class)->analyze($profile->fresh());
+
+        $this->assertContains('Name not found on résumé', collect($result['discrepancies'])->pluck('title'));
     }
 
     public function test_no_resume_state(): void

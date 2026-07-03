@@ -17,7 +17,7 @@ class ResumeAnalysisService
      */
     public function analyze(GraduateProfile $profile): array
     {
-        $profile->loadMissing(['skills', 'educationRecords', 'employmentRecords', 'primaryResume']);
+        $profile->loadMissing(['user', 'skills', 'educationRecords', 'employmentRecords', 'primaryResume']);
         $resume = $profile->primaryResume;
 
         if (! $resume) {
@@ -55,6 +55,28 @@ class ResumeAnalysisService
             ];
 
             return $discrepancies;
+        }
+
+        // Name: does the résumé belong to this graduate? Check the profile's
+        // name appears in the résumé.
+        $user = $profile->user;
+        $first = trim((string) $user?->first_name);
+        $last = trim((string) $user?->last_name);
+        $hasFirst = $first !== '' && $mentions($first);
+        $hasLast = $last !== '' && $mentions($last);
+
+        if (($first !== '' || $last !== '') && ! $hasFirst && ! $hasLast) {
+            $discrepancies[] = [
+                'severity' => 'warning',
+                'title' => 'Name not found on résumé',
+                'detail' => "Your profile name ({$user->name}) does not appear in the résumé. Make sure you uploaded your own résumé and that the name matches your profile.",
+            ];
+        } elseif ($first !== '' && $last !== '' && (! $hasFirst || ! $hasLast)) {
+            $discrepancies[] = [
+                'severity' => 'info',
+                'title' => 'Name may not match your profile',
+                'detail' => "Only part of your name appears in the résumé. Confirm the résumé name matches your profile: {$user->name}.",
+            ];
         }
 
         // Skills listed on the profile but not found in the résumé.
