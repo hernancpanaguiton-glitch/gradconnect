@@ -15,17 +15,24 @@ function Logo({ className = 'h-8 w-8' }: { className?: string }) {
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10">
-            <Link href="/" className="flex items-center gap-2 text-indigo-600">
-                <Logo className="h-9 w-9" />
-                <span className="text-2xl font-bold tracking-tight text-gray-900">GradConnect</span>
-            </Link>
+        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 px-4 py-10">
+            {/* Ambient glow to match the Figma hero */}
+            <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" aria-hidden="true" />
 
-            <div className="mt-6 w-full overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-sm ring-1 ring-gray-200 sm:max-w-md sm:px-8">
+            <Link href="/" className="relative flex items-center gap-2 text-white">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15">
+                    <Logo className="h-6 w-6" />
+                </span>
+                <span className="text-2xl font-bold tracking-tight">GradConnect</span>
+            </Link>
+            <p className="relative mt-2 text-sm text-slate-400">UCLM Career Platform</p>
+
+            <div className="relative mt-6 w-full overflow-hidden rounded-2xl bg-white px-6 py-8 shadow-2xl shadow-slate-950/40 sm:max-w-md sm:px-8">
                 {children}
             </div>
 
-            <p className="mt-6 text-xs text-gray-400">
+            <p className="relative mt-6 text-xs text-slate-500">
                 University of Cebu — Lapu-Lapu &amp; Mandaue
             </p>
         </div>
