@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    /* Headings use the display face (Plus Jakarta Sans); body stays Inter. */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        font-family: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: -0.01em;
+    }
+}

@@ -6,9 +6,9 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
+        <!-- Fonts (GradConnect design system: Plus Jakarta Sans display + Inter body + DM Mono) -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|inter:300,400,500,600,700|dm-mono:400,500&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @routes
