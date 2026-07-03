@@ -4,6 +4,18 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        {{-- Apply the saved theme before paint to avoid a flash of the wrong mode --}}
+        <script>
+            (function () {
+                try {
+                    var t = localStorage.getItem('theme');
+                    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                        document.documentElement.classList.add('dark');
+                    }
+                } catch (e) {}
+            })();
+        </script>
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts (GradConnect design system: Plus Jakarta Sans display + Inter body + DM Mono) -->

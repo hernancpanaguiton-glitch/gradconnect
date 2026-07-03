@@ -2,7 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── GradConnect design tokens (from the Figma theme) ─────────────────────── */
+:root {
+    --background: #f0f4f9;
+    --foreground: #0f1f3d;
+    --card: #ffffff;
+    --card-foreground: #0f1f3d;
+    --popover: #ffffff;
+    --popover-foreground: #0f1f3d;
+    --primary: #1a56db;
+    --primary-foreground: #ffffff;
+    --secondary: #e8eef7;
+    --secondary-foreground: #1a3a6b;
+    --muted: #e4eaf3;
+    --muted-foreground: #5a6a85;
+    --accent: #0ea5e9;
+    --accent-foreground: #ffffff;
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+    --border: rgba(26, 86, 219, 0.12);
+    --input: #ffffff;
+    --ring: #1a56db;
+    --chart-1: #1a56db;
+    --chart-2: #0ea5e9;
+    --chart-3: #10b981;
+    --chart-4: #f59e0b;
+    --chart-5: #8b5cf6;
+    --sidebar: #0f1f3d;
+    --sidebar-foreground: #cbd5e8;
+    --sidebar-primary: #1a56db;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #1a3a6b;
+    --sidebar-accent-foreground: #e8eef7;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+}
+
+.dark {
+    --background: #0d1526;
+    --foreground: #e8eef7;
+    --card: #1a2744;
+    --card-foreground: #e8eef7;
+    --popover: #1a2744;
+    --popover-foreground: #e8eef7;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --secondary: #1a3a6b;
+    --secondary-foreground: #e8eef7;
+    --muted: #1e305a;
+    --muted-foreground: #8ba3c9;
+    --accent: #0ea5e9;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: #1e305a;
+    --ring: #3b82f6;
+    --chart-1: #3b82f6;
+    --chart-2: #0ea5e9;
+    --chart-3: #10b981;
+    --chart-4: #f59e0b;
+    --chart-5: #8b5cf6;
+    --sidebar: #07101f;
+    --sidebar-foreground: #cbd5e8;
+    --sidebar-primary: #3b82f6;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #1a3a6b;
+    --sidebar-accent-foreground: #e8eef7;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+}
+
 @layer base {
+    body {
+        background-color: var(--background);
+        color: var(--foreground);
+    }
+
     /* Headings use the display face (Plus Jakarta Sans); body stays Inter. */
     h1,
     h2,
