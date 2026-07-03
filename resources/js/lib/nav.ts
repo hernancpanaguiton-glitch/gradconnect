@@ -36,7 +36,7 @@ export interface NavSection {
 
 /** Human-readable role label shown in the sidebar. */
 export const ROLE_LABELS: Record<string, string> = {
-    admin: 'Administrator',
+    admin: 'Admin',
     alumni_affairs: 'Alumni Affairs',
     department_head: 'Department Head',
     industry_partner: 'Industry Partner',
