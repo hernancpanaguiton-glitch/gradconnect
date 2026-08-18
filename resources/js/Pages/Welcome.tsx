@@ -48,9 +48,10 @@ export default function Welcome({ auth }: PageProps) {
                             </div>
                         </div>
                         <div className="hidden items-center gap-8 md:flex">
-                            {['Features', 'About', 'For Employers', 'Contact'].map((l) => (
+                            {['Features', 'For Employers', 'Contact'].map((l) => (
                                 <span key={l} className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">{l}</span>
                             ))}
+                            <Link href={route('about')} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">About</Link>
                         </div>
                         <div className="flex items-center gap-3">
                             {auth.user ? (
@@ -219,7 +220,8 @@ export default function Welcome({ auth }: PageProps) {
                         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 md:flex-row">
                             <p className="text-sm text-blue-300">© {new Date().getFullYear()} University of Cebu Lapu-Lapu and Mandaue. All rights reserved.</p>
                             <div className="flex gap-6">
-                                {['Privacy Policy', 'Terms of Service', 'Accessibility'].map((l) => (
+                                <Link href={route('privacy')} className="text-sm text-blue-300 transition-colors hover:text-white">Privacy Policy</Link>
+                                {['Terms of Service', 'Accessibility'].map((l) => (
                                     <span key={l} className="cursor-pointer text-sm text-blue-300 transition-colors hover:text-white">{l}</span>
                                 ))}
                             </div>

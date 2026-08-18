@@ -8,9 +8,37 @@ use App\Notifications\ApplicationReceived;
 use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class JobApplicationController extends Controller
 {
+    /**
+     * The applicant's own application list + status (FR6 "monitor application
+     * status"). This is what ApplicationStatusUpdated notifications link to.
+     */
+    public function index(Request $request): Response
+    {
+        $profile = $request->user()->graduateProfile;
+
+        $applications = $profile
+            ? $profile->jobApplications()
+                ->with(['jobPosting.company'])
+                ->latest('applied_at')
+                ->get()
+            : collect();
+
+        return Inertia::render('Applications', [
+            'hasProfile' => $profile !== null,
+            'applications' => $applications,
+            'stats' => [
+                'total' => $applications->count(),
+                'shortlisted' => $applications->where('status', 'shortlisted')->count(),
+                'hired' => $applications->where('status', 'hired')->count(),
+            ],
+        ]);
+    }
+
     /**
      * Apply to a job posting.
      */

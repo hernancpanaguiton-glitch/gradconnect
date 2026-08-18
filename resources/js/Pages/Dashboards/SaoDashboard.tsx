@@ -1,13 +1,14 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { placementByProgram } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Activity, GraduationCap, Target, Users } from 'lucide-react';
+import { Activity, FileCheck2, TrendingUp, Users } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-export default function SaoDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface ProgramRate { dept: string; rate: number }
+
+export default function SaoDashboard({ stats, profileCompletionByProgram }: PageProps<{ stats: Stat[]; profileCompletionByProgram: ProgramRate[] }>) {
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
 
     return (
@@ -25,25 +26,34 @@ export default function SaoDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
 
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     <StatTile icon={Users} color="blue" label="Total Students" value={byLabel('Total Students')} />
-                    <StatTile icon={Target} color="green" label="Career Readiness" value={byLabel('Career Readiness')} sub="Assessment average" />
-                    <StatTile icon={Activity} color="amber" label="Skill-Gap Alerts" value={byLabel('Skill-Gap Alerts')} sub="Flagged this term" />
-                    <StatTile icon={GraduationCap} color="violet" label="Active Scholarships" value={byLabel('Active Scholarships')} sub="Current recipients" />
+                    <StatTile icon={TrendingUp} color="green" label="Avg. Profile Completion" value={byLabel('Avg. Profile Completion')} sub="Across all students" />
+                    <StatTile icon={FileCheck2} color="amber" label="Students With Résumés" value={byLabel('Students With Résumés')} sub="Career-ready for AI matching" />
+                    <StatTile icon={Activity} color="violet" label="AI Job Matches" value={byLabel('AI Job Matches Generated')} sub="For your students" />
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                    <h2 className="mb-1 text-base font-semibold text-foreground">Career Readiness by Program</h2>
-                    <p className="mb-4 text-sm text-muted-foreground">Where to focus co-curricular and welfare initiatives.</p>
-                    <div className="h-72">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={placementByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                                <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                                <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                <Bar dataKey="rate" name="Readiness %" fill="var(--accent)" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
+                    <h2 className="mb-1 text-base font-semibold text-foreground">Average Profile Completion by Program</h2>
+                    <p className="mb-4 text-sm text-muted-foreground">
+                        A proxy for career readiness until the Career Readiness Assessment ships — where to focus
+                        co-curricular and welfare initiatives.
+                    </p>
+                    {profileCompletionByProgram.length === 0 ? (
+                        <p className="flex h-72 items-center justify-center text-center text-sm text-muted-foreground">
+                            No students with an assigned program yet.
+                        </p>
+                    ) : (
+                        <div className="h-72">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={profileCompletionByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                                    <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
+                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
+                                    <Bar dataKey="rate" name="Avg. completion %" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    )}
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm">

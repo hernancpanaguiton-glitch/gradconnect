@@ -1,13 +1,14 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { skillRadar } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { BarChart2, Briefcase, Target } from 'lucide-react';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { AlertTriangle, BarChart2, Briefcase, CheckCircle2, Target } from 'lucide-react';
 
-export default function StudentDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface RankedSkill { skill: string; count: number; percent: number }
+interface SkillPreview { gaps: RankedSkill[]; strengths: RankedSkill[]; hasMatches: boolean }
+
+export default function StudentDashboard({ stats, skillPreview }: PageProps<{ stats: Stat[]; skillPreview: SkillPreview }>) {
     const { auth } = usePage<PageProps>().props;
     const user = auth.user;
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
@@ -34,19 +35,47 @@ export default function StudentDashboard({ stats }: PageProps<{ stats: Stat[] }>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     <div className="rounded-xl border border-border bg-card p-6 shadow-sm lg:col-span-2">
-                        <h2 className="mb-1 text-base font-semibold text-foreground">Your Skills vs Market Demand</h2>
-                        <p className="mb-2 text-sm text-muted-foreground">Where to focus before you graduate.</p>
-                        <div className="h-72">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart data={skillRadar} outerRadius="72%">
-                                    <PolarGrid stroke="var(--border)" />
-                                    <PolarAngleAxis dataKey="skill" tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }} />
-                                    <Radar name="You" dataKey="you" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.3} />
-                                    <Radar name="Market" dataKey="market" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.12} />
-                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                </RadarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <h2 className="mb-1 text-base font-semibold text-foreground">Skills vs. Job Matches</h2>
+                        <p className="mb-4 text-sm text-muted-foreground">
+                            Ranked from how often each skill shows up across your AI job matches.{' '}
+                            <Link href={route('skill-gap')} className="font-medium text-primary hover:underline">Full analysis →</Link>
+                        </p>
+                        {!skillPreview.hasMatches ? (
+                            <p className="flex h-40 items-center justify-center text-center text-sm text-muted-foreground">
+                                Upload a résumé to start generating AI job matches.
+                            </p>
+                        ) : (
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                <div>
+                                    <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+                                        <AlertTriangle size={14} className="text-amber-500" /> Priority gaps
+                                    </div>
+                                    <ul className="space-y-1.5">
+                                        {skillPreview.gaps.length === 0 && <li className="text-sm text-muted-foreground">None found.</li>}
+                                        {skillPreview.gaps.map((s) => (
+                                            <li key={s.skill} className="flex items-center justify-between text-sm">
+                                                <span className="text-foreground">{s.skill}</span>
+                                                <span className="text-amber-600 dark:text-amber-400">{s.percent}%</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-foreground">
+                                        <CheckCircle2 size={14} className="text-emerald-500" /> Your strengths
+                                    </div>
+                                    <ul className="space-y-1.5">
+                                        {skillPreview.strengths.length === 0 && <li className="text-sm text-muted-foreground">None found.</li>}
+                                        {skillPreview.strengths.map((s) => (
+                                            <li key={s.skill} className="flex items-center justify-between text-sm">
+                                                <span className="text-foreground">{s.skill}</span>
+                                                <span className="text-emerald-600 dark:text-emerald-400">{s.percent}%</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-500/20 dark:bg-indigo-500/10">

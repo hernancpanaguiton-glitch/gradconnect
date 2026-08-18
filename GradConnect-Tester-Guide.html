@@ -274,7 +274,7 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
     <section id="logins">
       <p class="eyebrow">Sign in</p>
       <h2>Login accounts</h2>
-      <p class="section-intro">Every demo account uses the password <span class="pill">password</span>. Pick the role you want to test. (New self-registrations start with no role assigned, so use these instead &mdash; an Admin can grant roles afterward.)</p>
+      <p class="section-intro">Every demo account uses the password <span class="pill">password</span>. Pick the role you want to test. (Self-registering gets your chosen role right away, but non-graduate roles stay <code>pending</code> until an Admin approves them &mdash; these seeded logins are already active, so use them instead for faster testing.)</p>
       <div class="card" style="padding:6px 8px;">
         <div class="table-scroll">
           <table>
@@ -518,13 +518,15 @@ Skills: Python, SQL, Data Analysis, Communication, Problem Solving.</div>
     <section id="notes">
       <p class="eyebrow">Set expectations</p>
       <h2>Known gaps &mdash; not bugs</h2>
-      <p class="section-intro">This build covers the foundation plus the AI matching feature. A few menu items are intentional placeholders for future work &mdash; please don't log these as defects:</p>
+      <p class="section-intro">This build covers the foundation, RBAC, the AI matching feature, and real (non-demo) dashboards and reports. A few menu items are still intentional design-shell placeholders for future work &mdash; please don't log these as defects:</p>
       <div class="card">
         <ul class="does">
-          <li>Sidebar links that do nothing yet: <span class="pill">Career Resources</span>, <span class="pill">Talent Search</span>, <span class="pill">Job Moderation</span>, <span class="pill">System Reports</span>, <span class="pill">Settings</span>, <span class="pill">Alumni Records</span>, <span class="pill">Career Activities</span>, <span class="pill">Graduate Profiles</span>.</li>
-          <li>The Employability Report is a basic summary (totals and status breakdown), not a full analytics suite.</li>
+          <li>Sidebar links that render but have no backend data yet: <span class="pill">Messages</span>, <span class="pill">Settings</span>, <span class="pill">Alumni Events</span> / <span class="pill">Student Events</span>, <span class="pill">Scholarships</span>, <span class="pill">Clearance &amp; Records</span>, Admin &rarr; <span class="pill">Audit Logs</span>.</li>
+          <li><span class="pill">Talent Search</span>, <span class="pill">Skill Gap Analysis</span>, <span class="pill">Career Progression</span>, <span class="pill">My Applications</span>, <span class="pill">Reports Hub</span>, and Admin &rarr; <span class="pill">Job Management</span> are all fully functional now &mdash; none of them are placeholders anymore.</li>
+          <li>All 7 role dashboards show real charts computed from live data (employment, industry, hiring funnel, skill gaps, etc.) &mdash; there is no more demo/sample data anywhere in the app.</li>
+          <li>The Employability Report and Reports Hub are still a basic summary and a permission-scoped directory respectively, not a full cross-report analytics suite (skill trends by program, curriculum evaluation, CSV/PDF export are still planned).</li>
           <li>Dashboard numbers reflect current data &mdash; AI match counts climb only after résumés are uploaded and scored.</li>
-          <li>Self-registration creates an account with no role; an Admin assigns roles afterward. For testing, use the seeded logins above.</li>
+          <li>Self-registration assigns the chosen role immediately. Student and Alumni accounts activate right away (email verification still required); every other role (Alumni Officer, Dean/Department Head, Industry Partner, SAO) is created with a role but a <code>pending</code> status until an Admin approves it under User Management. For testing, use the seeded logins above.</li>
         </ul>
       </div>
       <p class="muted" style="margin-top:18px;">Found a real issue? Note the <strong>role</strong>, the <strong>page</strong>, and what you <strong>expected vs. saw</strong> &mdash; that's enough to reproduce it quickly.</p>

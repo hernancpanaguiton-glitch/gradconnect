@@ -47,6 +47,7 @@ class RolePermissionSeeder extends Seeder
             'employability_reports.generate',
             'career_activities.manage',
             'reports.employability.view',
+            'graduate_profiles.view_all',
 
             // Department Head (read-only, scoped to department)
             'reports.department.view',
@@ -102,20 +103,21 @@ class RolePermissionSeeder extends Seeder
             'alumni.manage', 'tracer_studies.manage', 'alumni_engagement.monitor',
             'surveys.manage', 'employability_reports.generate',
             'career_activities.manage', 'reports.employability.view',
-            'users.manage',
+            'users.manage', 'graduate_profiles.view_all',
         ]);
 
         $departmentHead = Role::firstOrCreate(['name' => 'department_head', 'guard_name' => 'web']);
         $departmentHead->syncPermissions([
             'reports.department.view', 'reports.employability.view',
             'program_outcomes.view', 'accreditation.support',
+            'graduate_profiles.view_all',
         ]);
 
         $sao = Role::firstOrCreate(['name' => 'sao', 'guard_name' => 'web']);
         $sao->syncPermissions([
             'students.manage', 'scholarships.manage', 'student_events.manage',
             'clearance.manage', 'student_analytics.view', 'reports.employability.view',
-            'candidates.search', 'candidates.view_resumes',
+            'candidates.search', 'candidates.view_resumes', 'graduate_profiles.view_all',
         ]);
 
         // Admin super-role gets every permission

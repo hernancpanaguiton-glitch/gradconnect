@@ -1,16 +1,19 @@
 <?php
 
+use App\Http\Controllers\Admin\JobModerationController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\JobMatchController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CandidateMatchController;
+use App\Http\Controllers\CareerProgressionController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentHeadController;
 use App\Http\Controllers\EducationRecordController;
 use App\Http\Controllers\EmployabilityReportController;
 use App\Http\Controllers\EmploymentRecordController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\GraduateProfileController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobAssistController;
@@ -18,9 +21,11 @@ use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\SkillGapController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\TalentSearchController;
@@ -37,6 +42,10 @@ Route::get('/', function () {
     ]);
 });
 
+// Public marketing pages (storyboard Screen 1: landing page "About Us" / "Privacy Policy").
+Route::inertia('/about', 'About')->name('about');
+Route::inertia('/privacy', 'Privacy')->name('privacy');
+
 Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -44,6 +53,10 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Topbar global search (Table 5, "Search Bar") — scoped per-permission inside the controller.
+    Route::get('/search', [GlobalSearchController::class, 'index'])
+        ->middleware('throttle:30,1')->name('search');
 
     // Shared skill helpers (AI autocomplete + validate) — used by both the
     // graduate profile and the job posting form.
@@ -134,15 +147,22 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/resume-analysis', [ResumeAnalysisController::class, 'index'])
         ->middleware('role:alumni|student')->name('resume-analysis');
 
+    // Individual skill-gap analysis (manuscript Figure 29 — Alumni/Graduate Student only).
+    Route::get('/skill-gap', [SkillGapController::class, 'index'])
+        ->middleware('role:alumni|student')->name('skill-gap');
+
+    // Employment-history timeline (FR8 Employment Tracking).
+    Route::get('/career-progression', [CareerProgressionController::class, 'index'])
+        ->middleware('role:alumni|student')->name('career-progression');
+
     // Feature-screen shells (design shells so every sidebar link resolves).
-    Route::inertia('/skill-gap', 'SkillGap')->name('skill-gap');
     Route::inertia('/messages', 'Messages')->name('messages');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::inertia('/settings', 'Settings')->name('settings');
-    Route::inertia('/applications', 'Applications')->name('applications.index');
-    Route::inertia('/reports', 'ReportsHub')->name('reports.index');
+    Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::inertia('/events', 'Events')->name('events');
     Route::inertia('/scholarships', 'Scholarships')->name('scholarships');
     Route::inertia('/clearance', 'Clearance')->name('clearance');
@@ -182,8 +202,12 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::delete('/roles/{role}', [RolePermissionController::class, 'destroy'])->name('roles.destroy');
         Route::patch('/roles/{role}/permissions', [RolePermissionController::class, 'updatePermissions'])->name('roles.permissions.update');
 
+        // Job moderation — act on any partner's posting, not just your own.
+        Route::get('/jobs', [JobModerationController::class, 'index'])->name('jobs');
+        Route::patch('/jobs/{posting}/status', [JobModerationController::class, 'updateStatus'])->name('jobs.update-status');
+        Route::delete('/jobs/{posting}', [JobModerationController::class, 'destroy'])->name('jobs.destroy');
+
         // Admin feature-screen shells.
-        Route::inertia('/jobs', 'Admin/JobManagement')->name('jobs');
         Route::inertia('/audit-logs', 'Admin/AuditLogs')->name('audit-logs');
     });
 });

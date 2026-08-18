@@ -1,3 +1,4 @@
+import GlobalSearch from '@/Components/GlobalSearch';
 import ThemeToggle from '@/Components/ThemeToggle';
 import { getNavFor, NavSection, ROLE_LABELS } from '@/lib/nav';
 import { PageProps } from '@/types';
@@ -8,7 +9,6 @@ import {
     GraduationCap,
     LogOut,
     Menu,
-    Search,
     Settings,
     User as UserIcon,
     X,
@@ -147,13 +147,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                     </button>
 
                     {/* Search */}
-                    <div className="relative hidden max-w-sm flex-1 md:block">
-                        <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <input
-                            className="w-full rounded-lg border border-transparent bg-muted py-2 pl-9 pr-4 text-sm text-foreground transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                            placeholder="Search jobs, graduates, companies…"
-                        />
-                    </div>
+                    <GlobalSearch />
 
                     <div className="ml-auto flex items-center gap-2">
                         <ThemeToggle />

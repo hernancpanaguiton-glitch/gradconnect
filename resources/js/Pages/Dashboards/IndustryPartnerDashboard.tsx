@@ -1,13 +1,14 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { applicationFunnel } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Brain, Briefcase, CheckCircle2, Users } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-export default function IndustryPartnerDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface MonthlyFunnel { month: string; applied: number; shortlisted: number; hired: number }
+
+export default function IndustryPartnerDashboard({ stats, hiringFunnel }: PageProps<{ stats: Stat[]; hiringFunnel: MonthlyFunnel[] }>) {
     const { auth } = usePage<PageProps>().props;
     const user = auth.user;
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
@@ -40,15 +41,15 @@ export default function IndustryPartnerDashboard({ stats }: PageProps<{ stats: S
                     </div>
                     <div className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={applicationFunnel} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                            <BarChart data={hiringFunnel} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                                 <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                                 <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
                                 <Legend wrapperStyle={{ fontSize: 12 }} />
                                 <Bar dataKey="applied" name="Applied" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="interview" name="Interview" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="offer" name="Offer" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="shortlisted" name="Shortlisted" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="hired" name="Hired" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

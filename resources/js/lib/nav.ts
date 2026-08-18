@@ -9,6 +9,7 @@ import {
     ClipboardList,
     Database,
     FileText,
+    FolderKanban,
     GraduationCap,
     LayoutDashboard,
     ListChecks,
@@ -64,6 +65,7 @@ export function getNavFor(user: User): NavSection[] {
                 title: 'System',
                 items: [
                     { label: 'Reports', href: '/reports/employability', icon: BarChart2 },
+                    { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Audit Logs', href: '/admin/audit-logs', icon: Activity },
                     { label: 'Settings', href: '/settings', icon: Settings },
                 ],
@@ -80,6 +82,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'Alumni Database', href: '/admin/users', icon: Database },
                     { label: 'Tracer Survey', href: '/surveys', icon: ListChecks },
                     { label: 'Employability Reports', href: '/reports/employability', icon: BarChart2 },
+                    { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Alumni Events', href: '/events', icon: Calendar },
                     { label: 'Messages', href: '/messages', icon: Bell },
                     { label: 'Settings', href: '/settings', icon: Settings },
@@ -94,9 +97,18 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Analytics',
                 items: [
+                    // NOTE: "Employment Statistics" and "Graduate Outcomes" both point at the
+                    // same report today because department-scoped analytics don't exist yet
+                    // (see completion plan Phase 3). Collapsed to one link rather than two
+                    // identical ones; Phase 3 should split this back out once there's a real
+                    // second destination (program-outcomes / curriculum analytics).
                     { label: 'Employment Statistics', href: '/reports/employability', icon: BarChart2 },
-                    { label: 'Graduate Outcomes', href: '/reports/employability', icon: GraduationCap },
-                    { label: 'Skills Gap Analysis', href: '/skill-gap', icon: Target },
+                    // "Skills Gap Analysis" here means department-scoped aggregate skill-gap
+                    // reporting (FDD Department Head box), which is a different feature from
+                    // the individual graduate-facing /skill-gap page (manuscript Figure 29 —
+                    // actors: Alumni, Graduate Student only). Points at Reports Hub until the
+                    // department-scoped version is built (completion plan Phase 3).
+                    { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Settings', href: '/settings', icon: Settings },
                 ],
             },
@@ -114,6 +126,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'Student Events', href: '/events', icon: Calendar },
                     { label: 'Clearance & Records', href: '/clearance', icon: ListChecks },
                     { label: 'Student Analytics', href: '/reports/employability', icon: BarChart2 },
+                    { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Settings', href: '/settings', icon: Settings },
                 ],
             },
@@ -145,6 +158,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'My Profile', href: '/graduate/profile/edit', icon: UserIcon },
                     { label: 'AI Resume Analysis', href: '/resume-analysis', icon: FileText },
                     { label: 'Jobs & Internships', href: '/jobs', icon: Briefcase },
+                    { label: 'My Applications', href: '/applications', icon: FolderKanban },
                     { label: 'Recommendations', href: '/recommendations', icon: Star },
                     { label: 'Skill Gap Analysis', href: '/skill-gap', icon: Target },
                     { label: 'Surveys', href: '/surveys', icon: ClipboardList },
@@ -164,8 +178,9 @@ export function getNavFor(user: User): NavSection[] {
                 { label: 'My Resumes', href: '/graduate/resumes', icon: FileText },
                 { label: 'AI Resume Analysis', href: '/resume-analysis', icon: Target },
                 { label: 'Job Board', href: '/jobs', icon: Briefcase },
+                { label: 'My Applications', href: '/applications', icon: FolderKanban },
                 { label: 'Recommendations', href: '/recommendations', icon: Star },
-                { label: 'Career Progression', href: '/skill-gap', icon: TrendingUp },
+                { label: 'Career Progression', href: '/career-progression', icon: TrendingUp },
                 { label: 'Surveys', href: '/surveys', icon: ClipboardList },
                 { label: 'Settings', href: '/settings', icon: Settings },
             ],

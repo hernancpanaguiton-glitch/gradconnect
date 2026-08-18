@@ -1,13 +1,14 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { placementByProgram } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { GraduationCap, Target, TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-export default function DepartmentHeadDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface ProgramRate { dept: string; rate: number }
+
+export default function DepartmentHeadDashboard({ stats, placementByProgram }: PageProps<{ stats: Stat[]; placementByProgram: ProgramRate[] }>) {
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
 
     return (
@@ -30,17 +31,23 @@ export default function DepartmentHeadDashboard({ stats }: PageProps<{ stats: St
 
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
                     <h2 className="mb-4 text-base font-semibold text-foreground">Placement Rate by Program</h2>
-                    <div className="h-72">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={placementByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                                <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                                <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                <Bar dataKey="rate" name="Placement %" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
+                    {placementByProgram.length === 0 ? (
+                        <p className="flex h-72 items-center justify-center text-center text-sm text-muted-foreground">
+                            No programs assigned to your department yet.
+                        </p>
+                    ) : (
+                        <div className="h-72">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={placementByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                                    <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
+                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
+                                    <Bar dataKey="rate" name="Placement %" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    )}
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm">

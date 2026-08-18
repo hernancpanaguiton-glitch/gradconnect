@@ -1,13 +1,14 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { industryDistribution } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Briefcase, Clock, Shield, Users } from 'lucide-react';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
-export default function AdminDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface IndustrySlice { name: string; value: number; color: string }
+
+export default function AdminDashboard({ stats, industryDistribution }: PageProps<{ stats: Stat[]; industryDistribution: IndustrySlice[] }>) {
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
 
     return (
@@ -47,19 +48,25 @@ export default function AdminDashboard({ stats }: PageProps<{ stats: Stat[] }>) 
 
                     <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
                         <h2 className="mb-4 text-base font-semibold text-foreground">Graduate Industries</h2>
-                        <div className="h-64">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie data={industryDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
-                                        {industryDistribution.map((d) => (
-                                            <Cell key={d.name} fill={d.color} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
+                        {industryDistribution.length === 0 ? (
+                            <p className="flex h-64 items-center justify-center text-center text-sm text-muted-foreground">
+                                No current employment records with an industry on file yet.
+                            </p>
+                        ) : (
+                            <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={industryDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
+                                            {industryDistribution.map((d) => (
+                                                <Cell key={d.name} fill={d.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
+                                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -7,36 +7,42 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { CheckCircle2, Circle, ClipboardList, ListChecks, Star, Target } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-const ACTIVITY = [
-    { month: 'Jan', applied: 3 },
-    { month: 'Feb', applied: 5 },
-    { month: 'Mar', applied: 7 },
-    { month: 'Apr', applied: 6 },
-    { month: 'May', applied: 8 },
-    { month: 'Jun', applied: 7 },
-];
+interface MonthlyApplied { month: string; applied: number }
+interface RecentApplication {
+    company: string;
+    position: string;
+    match: number | null;
+    status: 'submitted' | 'under_review' | 'shortlisted' | 'rejected' | 'hired' | 'withdrawn';
+    date: string | null;
+}
+interface ChecklistItem { label: string; done: boolean }
 
-const CHECKLIST = [
-    { label: 'Basic Info', done: true },
-    { label: 'Education', done: true },
-    { label: 'Skills', done: true },
-    { label: 'Employment', done: true },
-    { label: 'Résumé', done: false },
-];
+interface Props extends PageProps<{
+    stats: Stat[];
+    applicationActivity: MonthlyApplied[];
+    recentApplications: RecentApplication[];
+    profileChecklist: ChecklistItem[];
+}> {}
 
-const RECENT = [
-    { company: 'Sugbo Software Labs', position: 'Backend Developer', match: 95, status: 'Shortlisted', date: 'Jun 28' },
-    { company: 'Mactan Digital Solutions', position: 'Full Stack Developer', match: 88, status: 'Under review', date: 'Jun 21' },
-    { company: 'Visayas Cloud Systems', position: 'DevOps Engineer', match: 60, status: 'Submitted', date: 'Jun 15' },
-];
-
-const statusStyles: Record<string, string> = {
-    Shortlisted: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
-    'Under review': 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
-    Submitted: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300',
+const STATUS_LABELS: Record<RecentApplication['status'], string> = {
+    submitted: 'Submitted',
+    under_review: 'Under Review',
+    shortlisted: 'Shortlisted',
+    rejected: 'Rejected',
+    hired: 'Hired',
+    withdrawn: 'Withdrawn',
 };
 
-export default function AlumniDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+const statusStyles: Record<RecentApplication['status'], string> = {
+    submitted: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300',
+    under_review: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+    shortlisted: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
+    rejected: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
+    hired: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
+    withdrawn: 'bg-muted text-muted-foreground',
+};
+
+export default function AlumniDashboard({ stats, applicationActivity, recentApplications, profileChecklist }: Props) {
     const { auth } = usePage<PageProps>().props;
     const user = auth.user;
 
@@ -79,7 +85,7 @@ export default function AlumniDashboard({ stats }: PageProps<{ stats: Stat[] }>)
                         </div>
                         <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={ACTIVITY} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                                <AreaChart data={applicationActivity} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="applied" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
@@ -88,7 +94,7 @@ export default function AlumniDashboard({ stats }: PageProps<{ stats: Stat[] }>)
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                                     <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                                     <Tooltip
                                         contentStyle={{
                                             background: 'var(--card)',
@@ -110,7 +116,7 @@ export default function AlumniDashboard({ stats }: PageProps<{ stats: Stat[] }>)
                             <ProgressRing value={completion} />
                         </div>
                         <ul className="mt-5 space-y-2">
-                            {CHECKLIST.map((c) => (
+                            {profileChecklist.map((c) => (
                                 <li key={c.label} className="flex items-center gap-2 text-sm">
                                     {c.done ? (
                                         <CheckCircle2 size={16} className="text-emerald-500" />
@@ -128,37 +134,45 @@ export default function AlumniDashboard({ stats }: PageProps<{ stats: Stat[] }>)
                 <div className="rounded-xl border border-border bg-card shadow-sm">
                     <div className="flex items-center justify-between border-b border-border p-5">
                         <h2 className="text-base font-semibold text-foreground">Recent Applications</h2>
-                        <Link href={route('recommendations.index')} className="text-sm font-medium text-primary hover:underline">
+                        <Link href={route('applications.index')} className="text-sm font-medium text-primary hover:underline">
                             View all
                         </Link>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-sm">
-                            <thead>
-                                <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
-                                    <th className="px-5 py-3 font-medium">Company</th>
-                                    <th className="px-5 py-3 font-medium">Position</th>
-                                    <th className="px-5 py-3 font-medium">AI Match</th>
-                                    <th className="px-5 py-3 font-medium">Status</th>
-                                    <th className="px-5 py-3 font-medium">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-border">
-                                {RECENT.map((r) => (
-                                    <tr key={r.company} className="text-foreground">
-                                        <td className="px-5 py-3 font-medium">{r.company}</td>
-                                        <td className="px-5 py-3 text-muted-foreground">{r.position}</td>
-                                        <td className="px-5 py-3 font-semibold text-primary">{r.match}%</td>
-                                        <td className="px-5 py-3">
-                                            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[r.status] ?? ''}`}>{r.status}</span>
-                                        </td>
-                                        <td className="px-5 py-3 text-muted-foreground">{r.date}</td>
+                    {recentApplications.length === 0 ? (
+                        <p className="p-8 text-center text-muted-foreground">
+                            You haven't applied to any jobs yet.{' '}
+                            <Link href={route('jobs.index')} className="font-medium text-primary hover:underline">Browse the job board</Link>.
+                        </p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead>
+                                    <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
+                                        <th className="px-5 py-3 font-medium">Company</th>
+                                        <th className="px-5 py-3 font-medium">Position</th>
+                                        <th className="px-5 py-3 font-medium">AI Match</th>
+                                        <th className="px-5 py-3 font-medium">Status</th>
+                                        <th className="px-5 py-3 font-medium">Date</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <p className="border-t border-border px-5 py-2 text-xs text-muted-foreground">Sample data — wired to live applications later.</p>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {recentApplications.map((r, i) => (
+                                        <tr key={i} className="text-foreground">
+                                            <td className="px-5 py-3 font-medium">{r.company}</td>
+                                            <td className="px-5 py-3 text-muted-foreground">{r.position}</td>
+                                            <td className="px-5 py-3 font-semibold text-primary">{r.match !== null ? `${r.match}%` : '—'}</td>
+                                            <td className="px-5 py-3">
+                                                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[r.status]}`}>
+                                                    {STATUS_LABELS[r.status]}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3 text-muted-foreground">{r.date ?? '—'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -1,13 +1,21 @@
 import StatTile from '@/Components/StatTile';
 import { Stat } from '@/Components/StatCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { employmentTrend, industryDistribution } from '@/lib/demoData';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { ClipboardList, ListChecks, TrendingUp, Users } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-export default function AlumniAffairsDashboard({ stats }: PageProps<{ stats: Stat[] }>) {
+interface IndustrySlice { name: string; value: number; color: string }
+interface MonthlyPlacements { month: string; placements: number }
+
+type Props = PageProps<{
+    stats: Stat[];
+    industryDistribution: IndustrySlice[];
+    employmentTrend: MonthlyPlacements[];
+}>;
+
+export default function AlumniAffairsDashboard({ stats, industryDistribution, employmentTrend }: Props) {
     const byLabel = (label: string) => stats.find((s) => s.label === label)?.value ?? '—';
 
     return (
@@ -28,8 +36,9 @@ export default function AlumniAffairsDashboard({ stats }: PageProps<{ stats: Sta
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     <div className="rounded-xl border border-border bg-card p-6 shadow-sm lg:col-span-2">
-                        <h2 className="mb-4 text-base font-semibold text-foreground">Employment Trend</h2>
-                        <div className="h-64">
+                        <h2 className="mb-1 text-base font-semibold text-foreground">New Employment Placements</h2>
+                        <p className="mb-3 text-sm text-muted-foreground">Graduates who started a job each month, last 6 months.</p>
+                        <div className="h-56">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={employmentTrend} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                                     <defs>
@@ -40,9 +49,9 @@ export default function AlumniAffairsDashboard({ stats }: PageProps<{ stats: Sta
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                                     <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                                     <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                    <Area type="monotone" dataKey="employed" name="Employed %" stroke="var(--primary)" strokeWidth={2} fill="url(#emp)" />
+                                    <Area type="monotone" dataKey="placements" name="New placements" stroke="var(--primary)" strokeWidth={2} fill="url(#emp)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
@@ -50,19 +59,25 @@ export default function AlumniAffairsDashboard({ stats }: PageProps<{ stats: Sta
 
                     <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
                         <h2 className="mb-4 text-base font-semibold text-foreground">Industry Distribution</h2>
-                        <div className="h-64">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie data={industryDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
-                                        {industryDistribution.map((d) => (
-                                            <Cell key={d.name} fill={d.color} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
+                        {industryDistribution.length === 0 ? (
+                            <p className="flex h-64 items-center justify-center text-center text-sm text-muted-foreground">
+                                No current employment records with an industry on file yet.
+                            </p>
+                        ) : (
+                            <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={industryDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
+                                            {industryDistribution.map((d) => (
+                                                <Cell key={d.name} fill={d.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
+                                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        )}
                     </div>
                 </div>
 
