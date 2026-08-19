@@ -27,6 +27,10 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
         router.delete(route('surveys.destroy', id));
     }
 
+    function remind(id: number) {
+        router.post(route('surveys.remind', id), {}, { preserveScroll: true });
+    }
+
     return (
         <AuthenticatedLayout>
             <Head title="Surveys" />
@@ -68,6 +72,12 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
                                 <div className="flex items-center gap-2 shrink-0 flex-wrap">
                                     {canManage ? (
                                         <>
+                                            {survey.status === 'open' && (
+                                                <button onClick={() => remind(survey.id)}
+                                                    className="rounded-lg px-3 py-1.5 text-sm text-amber-600 ring-1 ring-amber-200 hover:bg-amber-50">
+                                                    Send Reminder
+                                                </button>
+                                            )}
                                             <Link href={route('surveys.results', survey.id)}
                                                 className="rounded-lg px-3 py-1.5 text-sm text-indigo-600 ring-1 ring-indigo-200 hover:bg-indigo-50">
                                                 Results

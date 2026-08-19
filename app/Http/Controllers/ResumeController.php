@@ -48,6 +48,7 @@ class ResumeController extends Controller
             'mime_type' => $uploadedFile->getMimeType(),
             'size_bytes' => $uploadedFile->getSize(),
             'is_primary' => $isFirst,
+            'source' => 'uploaded',
             'embedding_status' => 'pending',
         ]);
 

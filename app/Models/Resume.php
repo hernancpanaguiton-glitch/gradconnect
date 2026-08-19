@@ -12,7 +12,7 @@ class Resume extends Model
 
     protected $fillable = [
         'graduate_profile_id', 'original_filename', 'path', 'mime_type',
-        'size_bytes', 'extracted_text', 'is_primary',
+        'size_bytes', 'extracted_text', 'is_primary', 'source',
         'embedding_status', 'embedded_at',
     ];
 

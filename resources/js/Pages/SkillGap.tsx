@@ -1,12 +1,21 @@
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle2, Target } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ExternalLink, Target } from 'lucide-react';
+
+interface RecommendedResource {
+    id: number;
+    title: string;
+    type: string;
+    provider: string | null;
+    url: string | null;
+}
 
 interface RankedSkill {
     skill: string;
     count: number;
     percent: number;
+    resources?: RecommendedResource[];
 }
 
 interface Props {
@@ -36,6 +45,21 @@ function RankedList({ items, tone }: { items: RankedSkill[]; tone: 'gap' | 'stre
                     <div className="h-2 overflow-hidden rounded-full bg-muted">
                         <div className={`h-full rounded-full ${barClass}`} style={{ width: `${Math.max(s.percent, 4)}%` }} />
                     </div>
+                    {tone === 'gap' && s.resources && s.resources.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                            {s.resources.map((r) => (
+                                <a
+                                    key={r.id}
+                                    href={r.url ?? undefined}
+                                    target={r.url ? '_blank' : undefined}
+                                    rel="noreferrer"
+                                    className="flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-xs text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-500/15 dark:text-indigo-300"
+                                >
+                                    {r.title}{r.url && <ExternalLink size={10} />}
+                                </a>
+                            ))}
+                        </div>
+                    )}
                 </div>
             ))}
         </div>

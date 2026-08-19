@@ -48,6 +48,8 @@ class RolePermissionSeeder extends Seeder
             'career_activities.manage',
             'reports.employability.view',
             'graduate_profiles.view_all',
+            'announcements.manage',
+            'learning_resources.manage',
 
             // Department Head (read-only, scoped to department)
             'reports.department.view',
@@ -103,7 +105,8 @@ class RolePermissionSeeder extends Seeder
             'alumni.manage', 'tracer_studies.manage', 'alumni_engagement.monitor',
             'surveys.manage', 'employability_reports.generate',
             'career_activities.manage', 'reports.employability.view',
-            'users.manage', 'graduate_profiles.view_all',
+            'users.manage', 'graduate_profiles.view_all', 'announcements.manage',
+            'learning_resources.manage',
         ]);
 
         $departmentHead = Role::firstOrCreate(['name' => 'department_head', 'guard_name' => 'web']);

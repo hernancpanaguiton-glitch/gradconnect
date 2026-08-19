@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSurveyRequest;
 use App\Models\Survey;
+use App\Notifications\SurveyInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SurveyController extends Controller
 {
     /**
-     * List surveys — all for managers, open ones for respondents.
+     * List surveys — all for managers, open + targeted-at-them for respondents.
      */
     public function index(Request $request): Response
     {
@@ -21,7 +23,7 @@ class SurveyController extends Controller
         $query = Survey::query()->latest();
 
         if (! $user->hasPermissionTo('surveys.manage')) {
-            $query->open();
+            $query->open()->visibleTo($user);
         }
 
         $surveys = $query->withCount('responses')->get();
@@ -72,6 +74,10 @@ class SurveyController extends Controller
             ]);
         }
 
+        if ($survey->status === 'open') {
+            Notification::send($survey->eligibleRespondents(), new SurveyInvitation($survey));
+        }
+
         return redirect()->route('surveys.index')->with('success', 'Survey created.');
     }
 
@@ -96,6 +102,8 @@ class SurveyController extends Controller
     {
         $this->authorize('update', $survey);
 
+        $wasOpen = $survey->status === 'open';
+
         $survey->fill($request->except('questions'))->save();
 
         // Delete and recreate questions to maintain ordering
@@ -112,7 +120,34 @@ class SurveyController extends Controller
             ]);
         }
 
+        // Only invite the first time a survey goes live, not on every edit.
+        if (! $wasOpen && $survey->status === 'open') {
+            Notification::send($survey->eligibleRespondents(), new SurveyInvitation($survey));
+        }
+
         return back()->with('success', 'Survey updated.');
+    }
+
+    /**
+     * Nudge whoever hasn't responded yet (FR7 "distribution... reminders").
+     */
+    public function remind(Survey $survey): RedirectResponse
+    {
+        $this->authorize('update', $survey);
+
+        abort_unless($survey->isOpen(), 422, 'Reminders can only be sent while the survey is open.');
+
+        $respondedUserIds = $survey->responses()->where('status', 'submitted')->pluck('user_id');
+        $pending = $survey->eligibleRespondents()->reject(fn ($user) => $respondedUserIds->contains($user->id));
+
+        if ($pending->isNotEmpty()) {
+            Notification::send($pending, new SurveyInvitation($survey, isReminder: true));
+        }
+
+        return back()->with(
+            'success',
+            $pending->isEmpty() ? 'Everyone eligible has already responded.' : "Reminder sent to {$pending->count()} pending respondent(s).",
+        );
     }
 
     /**

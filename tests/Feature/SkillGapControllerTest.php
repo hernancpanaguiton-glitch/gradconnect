@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Company;
 use App\Models\GraduateProfile;
 use App\Models\JobPosting;
+use App\Models\LearningResource;
 use App\Models\Skill;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -119,5 +120,32 @@ class SkillGapControllerTest extends TestCase
         $partner = User::factory()->industryPartner()->create();
 
         $this->actingAs($partner)->get(route('skill-gap'))->assertForbidden();
+    }
+
+    public function test_gaps_include_recommended_learning_resources(): void
+    {
+        $alumni = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->for($alumni, 'user')->create();
+        $docker = Skill::findOrCreateByName('Docker');
+
+        $resource = LearningResource::factory()->create(['title' => 'Docker for Beginners']);
+        $resource->skills()->attach($docker->id);
+
+        $unrelated = LearningResource::factory()->create(['title' => 'Public Speaking 101']);
+        $unrelated->skills()->attach(Skill::findOrCreateByName('Communication')->id);
+
+        $job = $this->makeOpenPosting();
+        $profile->matchResults()->create([
+            'job_posting_id' => $job->id, 'fit_score' => 50,
+            'skill_gaps' => ['Docker'], 'matched_skills' => [],
+        ]);
+
+        $this->actingAs($alumni)->get(route('skill-gap'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('gaps.0.skill', 'Docker')
+                ->has('gaps.0.resources', 1)
+                ->where('gaps.0.resources.0.title', 'Docker for Beginners')
+            );
     }
 }

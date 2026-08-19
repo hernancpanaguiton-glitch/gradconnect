@@ -10,6 +10,13 @@ class EmployerFeedback extends Model
 {
     use HasFactory;
 
+    /**
+     * Laravel's pluralizer treats "Feedback" as uncountable, so the implicit
+     * table name would resolve to 'employer_feedback' (singular) — the
+     * migration created 'employer_feedbacks' (plural), so this must be explicit.
+     */
+    protected $table = 'employer_feedbacks';
+
     protected $fillable = [
         'company_id', 'job_application_id', 'graduate_profile_id',
         'submitted_by_user_id', 'competency_ratings', 'overall_rating', 'comments',

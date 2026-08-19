@@ -3,15 +3,18 @@
 use App\Http\Controllers\Admin\JobModerationController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Api\JobMatchController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CandidateMatchController;
 use App\Http\Controllers\CareerProgressionController;
+use App\Http\Controllers\CareerReadinessController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentHeadController;
 use App\Http\Controllers\EducationRecordController;
 use App\Http\Controllers\EmployabilityReportController;
+use App\Http\Controllers\EmployerFeedbackController;
 use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\GraduateProfileController;
@@ -19,10 +22,12 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
+use App\Http\Controllers\LearningResourceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResumeAnalysisController;
+use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SkillGapController;
@@ -89,6 +94,10 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::delete('/graduate/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
         Route::patch('/graduate/resumes/{resume}/primary', [ResumeController::class, 'setPrimary'])->name('resumes.set-primary');
 
+        // Résumé Builder — generate a resume from existing profile data.
+        Route::get('/graduate/resume-builder', [ResumeBuilderController::class, 'index'])->name('resume-builder.index');
+        Route::post('/graduate/resume-builder', [ResumeBuilderController::class, 'store'])->name('resume-builder.store');
+
         // Ranked job recommendations
         Route::get('/recommendations', [JobRecommendationController::class, 'index'])->name('recommendations.index');
     });
@@ -126,6 +135,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::post('/jobs/{job}/apply', [JobApplicationController::class, 'store'])->name('applications.store');
     Route::patch('/applications/{application}/status', [JobApplicationController::class, 'updateStatus'])->name('applications.update-status');
     Route::patch('/applications/{application}/withdraw', [JobApplicationController::class, 'withdraw'])->name('applications.withdraw');
+    Route::post('/applications/{application}/feedback', [EmployerFeedbackController::class, 'store'])->name('applications.feedback.store');
 
     // Surveys
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys.index');
@@ -135,10 +145,30 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::patch('/surveys/{survey}', [SurveyController::class, 'update'])->name('surveys.update');
     Route::delete('/surveys/{survey}', [SurveyController::class, 'destroy'])->name('surveys.destroy');
     Route::get('/surveys/{survey}/results', [SurveyController::class, 'results'])->name('surveys.results');
+    Route::post('/surveys/{survey}/remind', [SurveyController::class, 'remind'])->name('surveys.remind');
 
     // Survey responses
     Route::get('/surveys/{survey}/respond', [SurveyResponseController::class, 'show'])->name('surveys.respond');
     Route::post('/surveys/{survey}/respond', [SurveyResponseController::class, 'store'])->name('surveys.respond.store');
+
+    // Announcements (FR11 Administration) — management-only; other roles
+    // read announcements through the existing Notifications inbox.
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::patch('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+
+    // Learning resources — Skill Bridge Mitigation (Scope §p.6) + guidance
+    // resources (FDD Graduate Student). Managers (AAO/Admin) curate; students
+    // browse their own program's catalogue.
+    Route::get('/learning-resources', [LearningResourceController::class, 'index'])->name('learning-resources.index');
+    Route::get('/learning-resources/create', [LearningResourceController::class, 'create'])->name('learning-resources.create');
+    Route::post('/learning-resources', [LearningResourceController::class, 'store'])->name('learning-resources.store');
+    Route::get('/learning-resources/{learningResource}/edit', [LearningResourceController::class, 'edit'])->name('learning-resources.edit');
+    Route::patch('/learning-resources/{learningResource}', [LearningResourceController::class, 'update'])->name('learning-resources.update');
+    Route::delete('/learning-resources/{learningResource}', [LearningResourceController::class, 'destroy'])->name('learning-resources.destroy');
 
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
@@ -154,6 +184,9 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Employment-history timeline (FR8 Employment Tracking).
     Route::get('/career-progression', [CareerProgressionController::class, 'index'])
         ->middleware('role:alumni|student')->name('career-progression');
+
+    // Career Readiness Assessment (FDD Graduate Student; SAO aggregate view).
+    Route::get('/career-readiness', [CareerReadinessController::class, 'index'])->name('career-readiness');
 
     // Feature-screen shells (design shells so every sidebar link resolves).
     Route::inertia('/messages', 'Messages')->name('messages');

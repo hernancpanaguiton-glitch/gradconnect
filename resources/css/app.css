@@ -87,3 +87,15 @@
         letter-spacing: -0.01em;
     }
 }
+
+/* Hide the app shell when printing, so pages like the Résumé Builder print cleanly. */
+@media print {
+    aside,
+    header {
+        display: none !important;
+    }
+
+    main {
+        padding: 0 !important;
+    }
+}

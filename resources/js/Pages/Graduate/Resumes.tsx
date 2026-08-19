@@ -1,11 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
 interface Resume {
     id: number; original_filename: string; size_bytes: number;
     is_primary: boolean; embedding_status: string; created_at: string;
+    source: 'uploaded' | 'built';
 }
 interface Props extends PageProps { profile: { id: number }; resumes: Resume[] }
 
@@ -45,8 +46,12 @@ export default function Resumes({ resumes }: Props) {
             <Head title="My Resumes" />
 
             <div className="max-w-2xl space-y-5">
-                <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
-
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
+                    <Link href={route('resume-builder.index')} className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100">
+                        Build from My Profile
+                    </Link>
+                </div>
 
                 {/* Upload */}
                 <form onSubmit={handleUpload} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
@@ -62,7 +67,7 @@ export default function Resumes({ resumes }: Props) {
                             Upload
                         </button>
                     </div>
-                    <p className="text-xs text-gray-400">PDF, DOCX or TXT, max 10 MB.</p>
+                    <p className="text-xs text-gray-400">PDF, DOCX or TXT, max 10 MB. Or build one automatically from your profile above.</p>
                 </form>
 
                 {/* Resume list */}
@@ -75,6 +80,9 @@ export default function Resumes({ resumes }: Props) {
                                         <p className="font-medium text-gray-900 truncate">{resume.original_filename}</p>
                                         {resume.is_primary && (
                                             <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">Primary</span>
+                                        )}
+                                        {resume.source === 'built' && (
+                                            <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">Built from Profile</span>
                                         )}
                                         <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[resume.embedding_status] ?? 'bg-gray-100 text-gray-600'}`}>
                                             {resume.embedding_status}

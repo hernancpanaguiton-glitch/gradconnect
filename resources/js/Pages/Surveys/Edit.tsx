@@ -16,6 +16,13 @@ interface Survey {
 interface Props extends PageProps { survey: Survey }
 
 const QUESTION_TYPES = ['text','textarea','single_choice','multi_choice','rating','boolean','number'];
+const MAPS_TO_OPTIONS = [
+    { value: '', label: '(none)' },
+    { value: 'employment_status', label: 'Employment status' },
+    { value: 'current_employer', label: 'Current employer name' },
+    { value: 'job_title', label: 'Current job title' },
+    { value: 'industry', label: 'Industry' },
+];
 
 function toLocalDatetime(iso: string | null): string {
     if (!iso) return '';
@@ -25,7 +32,7 @@ function toLocalDatetime(iso: string | null): string {
 export default function SurveyEdit({ survey }: Props) {
     const { data, setData, patch, processing, errors } = useForm<{
         title: string; description: string; type: string; status: string;
-        target_role: string; opens_at: string; closes_at: string;
+        target_role: string; target_graduation_year: string; opens_at: string; closes_at: string;
         questions: SurveyQuestion[];
     }>({
         title: survey.title,
@@ -33,6 +40,7 @@ export default function SurveyEdit({ survey }: Props) {
         type: survey.type,
         status: survey.status,
         target_role: survey.target_role ?? '',
+        target_graduation_year: survey.target_graduation_year ? String(survey.target_graduation_year) : '',
         opens_at: toLocalDatetime(survey.opens_at),
         closes_at: toLocalDatetime(survey.closes_at),
         questions: survey.questions.map((q) => ({
@@ -89,8 +97,12 @@ export default function SurveyEdit({ survey }: Props) {
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                                     <option value="employability">Employability</option>
                                     <option value="tracer">Tracer</option>
+                                    <option value="readiness">Career Readiness Assessment</option>
                                     <option value="custom">Custom</option>
                                 </select>
+                                {data.type === 'readiness' && (
+                                    <p className="mt-1 text-xs text-gray-500">Only "rating" questions (1–5) count toward the readiness score.</p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -100,6 +112,21 @@ export default function SurveyEdit({ survey }: Props) {
                                     <option value="open">Open</option>
                                     <option value="closed">Closed</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Target Role</label>
+                                <select value={data.target_role} onChange={(e) => setData('target_role', e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                    <option value="">All</option>
+                                    <option value="alumni">Alumni</option>
+                                    <option value="student">Student</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Target Graduation Year</label>
+                                <input type="number" value={data.target_graduation_year} onChange={(e) => setData('target_graduation_year', e.target.value)}
+                                    placeholder="Leave blank for all years"
+                                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Opens At</label>
@@ -147,6 +174,13 @@ export default function SurveyEdit({ survey }: Props) {
                                         placeholder="Options, comma-separated"
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                                 )}
+                                <div>
+                                    <label className="mb-1 block text-xs text-gray-500">Feed this answer into (optional)</label>
+                                    <select value={q.maps_to} onChange={(e) => updateQuestion(i, 'maps_to', e.target.value)}
+                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                        {MAPS_TO_OPTIONS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                                    </select>
+                                </div>
                             </div>
                         ))}
                     </div>
