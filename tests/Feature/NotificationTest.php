@@ -109,7 +109,7 @@ class NotificationTest extends TestCase
         $this->post('/register', [
             'first_name' => 'Dean', 'last_name' => 'Cruz',
             'email' => 'dean@example.com', 'password' => 'password',
-            'password_confirmation' => 'password', 'role' => 'dean',
+            'password_confirmation' => 'password', 'role' => 'dean', 'consent' => true,
         ])->assertRedirect(route('login'));
 
         Notification::assertSentTo($admin, NewAccountPendingApproval::class);
@@ -123,7 +123,7 @@ class NotificationTest extends TestCase
         $this->post('/register', [
             'first_name' => 'Stu', 'last_name' => 'Dent',
             'email' => 'stu@example.com', 'password' => 'password',
-            'password_confirmation' => 'password', 'role' => 'student',
+            'password_confirmation' => 'password', 'role' => 'student', 'consent' => true,
         ]);
 
         Notification::assertNotSentTo($admin, NewAccountPendingApproval::class);

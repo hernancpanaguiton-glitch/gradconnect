@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\JobModerationController;
+use App\Http\Controllers\Admin\PlatformStatusController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AccountDataExportController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Api\JobMatchController;
 use App\Http\Controllers\CandidateController;
@@ -285,9 +290,24 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::patch('/jobs/{posting}/status', [JobModerationController::class, 'updateStatus'])->name('jobs.update-status');
         Route::delete('/jobs/{posting}', [JobModerationController::class, 'destroy'])->name('jobs.destroy');
 
-        // Admin feature-screen shells.
-        Route::inertia('/audit-logs', 'Admin/AuditLogs')->name('audit-logs');
+        // Audit trail (Fig. 15 "System Logs & Audit Trail").
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs');
+
+        // System settings (FDD Admin "manage system settings").
+        Route::get('/settings', [SystemSettingController::class, 'index'])->name('settings.index');
+        Route::patch('/settings', [SystemSettingController::class, 'update'])->name('settings.update');
+
+        // Data & backups (Fig. 15 "Manage Data & Backups"; NFR backup & recovery).
+        Route::get('/backups', [BackupController::class, 'index'])->name('backups.index');
+        Route::post('/backups', [BackupController::class, 'store'])->name('backups.store');
+        Route::get('/backups/{filename}/download', [BackupController::class, 'download'])->name('backups.download');
+
+        // Platform performance monitoring (FDD Admin).
+        Route::get('/platform-status', [PlatformStatusController::class, 'index'])->name('platform-status');
     });
+
+    // Self-service data export (Data Privacy Act of 2012 / RA 10173).
+    Route::get('/account/export', [AccountDataExportController::class, 'export'])->name('account.export');
 });
 
 require __DIR__.'/auth.php';

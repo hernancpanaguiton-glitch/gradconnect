@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -71,6 +72,7 @@ class HandleInertiaRequests extends Middleware
                     ])
                     : [],
             ],
+            'maintenanceBanner' => fn () => $user ? (Setting::get('maintenance_banner_message') ?: null) : null,
         ];
     }
 }

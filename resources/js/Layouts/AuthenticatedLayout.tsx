@@ -26,7 +26,7 @@ function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
 }
 
 export default function AuthenticatedLayout({ children }: PropsWithChildren) {
-    const { auth, notifications } = usePage<PageProps>().props;
+    const { auth, notifications, maintenanceBanner } = usePage<PageProps>().props;
     const user = auth.user;
     const unread = notifications?.unread ?? 0;
     const notifItems = notifications?.items ?? [];
@@ -233,6 +233,12 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                         </div>
                     </div>
                 </header>
+
+                {maintenanceBanner && (
+                    <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm font-medium text-amber-800 dark:border-amber-900 dark:bg-amber-500/10 dark:text-amber-300 sm:px-6">
+                        {maintenanceBanner}
+                    </div>
+                )}
 
                 <FlashMessages />
 

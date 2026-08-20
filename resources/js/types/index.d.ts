@@ -27,6 +27,7 @@ export type PageProps<
         unread: number;
         items: NotificationItem[];
     };
+    maintenanceBanner?: string | null;
 };
 
 export interface NotificationItem {

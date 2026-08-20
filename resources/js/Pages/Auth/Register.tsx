@@ -1,3 +1,4 @@
+import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -14,6 +15,7 @@ export default function Register() {
         password: '',
         password_confirmation: '',
         role: 'student',
+        consent: false as boolean,
     });
 
     const roleOptions = [
@@ -157,6 +159,25 @@ export default function Register() {
                         message={errors.password_confirmation}
                         className="mt-2"
                     />
+                </div>
+
+                <div className="mt-4 block">
+                    <label className="flex items-start gap-2">
+                        <Checkbox
+                            name="consent"
+                            checked={data.consent}
+                            onChange={(e) => setData('consent', e.target.checked)}
+                        />
+                        <span className="text-sm text-gray-600">
+                            I have read and agree to the{' '}
+                            <Link href="/privacy" target="_blank" className="text-indigo-600 underline hover:text-indigo-800">
+                                Privacy Policy
+                            </Link>
+                            , and consent to the collection and processing of my data as described, in accordance
+                            with the Data Privacy Act of 2012 (RA 10173).
+                        </span>
+                    </label>
+                    <InputError message={errors.consent} className="mt-2" />
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">

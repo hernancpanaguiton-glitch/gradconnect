@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUpdateUserRequest;
+use App\Models\AuditLog;
 use App\Models\Department;
 use App\Models\User;
 use App\Notifications\AccountApproved;
@@ -71,6 +72,12 @@ class UserController extends Controller
         ]);
         $user->syncRoles($request->roles);
 
+        AuditLog::record(
+            'user.updated',
+            $request->user(),
+            "Updated {$user->email}: status={$request->status}, roles=".implode(',', $request->roles),
+        );
+
         // Notify the user when their pending account is approved.
         if ($wasInactive && $request->status === 'active') {
             $user->notify(new AccountApproved);
@@ -82,8 +89,10 @@ class UserController extends Controller
     /**
      * Delete a user.
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(Request $request, User $user): RedirectResponse
     {
+        AuditLog::record('user.deleted', $request->user(), "Deleted {$user->email}");
+
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted.');

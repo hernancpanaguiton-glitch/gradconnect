@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Setting;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Auth\Events\Registered;
@@ -32,6 +33,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'role' => 'student',
+            'consent' => true,
         ], $overrides);
     }
 
@@ -109,5 +111,23 @@ class RegistrationTest extends TestCase
             ->assertSessionHasErrors('role');
 
         $this->assertGuest();
+    }
+
+    public function test_consent_is_required(): void
+    {
+        $this->post('/register', $this->payload(['consent' => false]))
+            ->assertSessionHasErrors('consent');
+
+        $this->assertGuest();
+    }
+
+    public function test_registration_is_rejected_when_disabled(): void
+    {
+        Setting::set('registration_enabled', '0');
+
+        $this->post('/register', $this->payload())->assertForbidden();
+
+        $this->assertGuest();
+        $this->assertNull(User::firstWhere('email', 'test@example.com'));
     }
 }

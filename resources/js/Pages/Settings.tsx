@@ -1,8 +1,8 @@
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { Settings as SettingsIcon } from 'lucide-react';
+import { Download, Settings as SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 
 const TABS = ['Account', 'Password', 'Notifications', 'Privacy', 'Theme'];
@@ -80,8 +80,37 @@ export default function Settings() {
                                 <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-blue-700">Update password</button>
                             </div>
                         )}
-                        {(tab === 'Privacy' || tab === 'Theme') && (
-                            <p className="text-sm text-muted-foreground">{tab} preferences will appear here.</p>
+                        {tab === 'Privacy' && (
+                            <div className="space-y-6">
+                                <h2 className="font-bold text-foreground">Privacy &amp; Your Data</h2>
+                                <p className="text-sm text-muted-foreground">
+                                    Under the Data Privacy Act of 2012 (RA 10173), you can download a copy of your data
+                                    or request account deletion at any time. See our{' '}
+                                    <Link href="/privacy" className="text-primary underline" target="_blank">Privacy Policy</Link> for details.
+                                </p>
+                                <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
+                                    <div>
+                                        <p className="text-sm font-medium text-foreground">Export my data</p>
+                                        <p className="text-xs text-muted-foreground">Download your profile, records, and application history as a JSON file.</p>
+                                    </div>
+                                    <a href={route('account.export')}
+                                        className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+                                        <Download size={15} /> Export
+                                    </a>
+                                </div>
+                                <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
+                                    <div>
+                                        <p className="text-sm font-medium text-foreground">Delete my account</p>
+                                        <p className="text-xs text-muted-foreground">Permanently erase your account and associated data.</p>
+                                    </div>
+                                    <Link href={route('profile.edit')} className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-500/10">
+                                        Go to Account Page
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+                        {tab === 'Theme' && (
+                            <p className="text-sm text-muted-foreground">Theme preferences will appear here.</p>
                         )}
                     </div>
                 </div>

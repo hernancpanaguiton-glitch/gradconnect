@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\Setting;
 use App\Models\User;
 use App\Notifications\NewAccountPendingApproval;
 use Illuminate\Auth\Events\Registered;
@@ -49,6 +50,8 @@ class RegisteredUserController extends Controller
      */
     public function store(RegisterRequest $request): RedirectResponse
     {
+        abort_unless(Setting::getBool('registration_enabled', true), 403, 'Registration is currently disabled.');
+
         $role = self::ROLE_MAP[$request->role];
         $isSelfService = in_array($request->role, self::SELF_SERVICE_ROLES, true);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
+use App\Models\AuditLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -55,17 +56,21 @@ class RolePermissionController extends Controller
             'guard_name' => 'web',
         ]);
 
+        AuditLog::record('role.created', $request->user(), "Created role \"{$request->name}\"");
+
         return redirect()->route('admin.roles.index')->with('success', 'Role created.');
     }
 
     /**
      * Delete a role (protected roles cannot be removed).
      */
-    public function destroy(Role $role): RedirectResponse
+    public function destroy(Request $request, Role $role): RedirectResponse
     {
         if (in_array($role->name, self::PROTECTED_ROLES, strict: true)) {
             return back()->with('error', "The \"{$role->name}\" role is protected and cannot be deleted.");
         }
+
+        AuditLog::record('role.deleted', $request->user(), "Deleted role \"{$role->name}\"");
 
         $role->delete();
 
@@ -83,6 +88,8 @@ class RolePermissionController extends Controller
         ]);
 
         $role->syncPermissions($request->input('permissions', []));
+
+        AuditLog::record('role.permissions_updated', $request->user(), "Updated permissions for \"{$role->name}\"");
 
         return back()->with('success', 'Permissions updated.');
     }

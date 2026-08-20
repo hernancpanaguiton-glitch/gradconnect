@@ -7,6 +7,7 @@ import {
     Building2,
     Calendar,
     ClipboardList,
+    Cpu,
     Database,
     FileText,
     FolderKanban,
@@ -71,7 +72,9 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'Reports', href: '/reports/employability', icon: BarChart2 },
                     { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Audit Logs', href: '/admin/audit-logs', icon: Activity },
-                    { label: 'Settings', href: '/settings', icon: Settings },
+                    { label: 'Platform Status', href: '/admin/platform-status', icon: Cpu },
+                    { label: 'Data & Backups', href: '/admin/backups', icon: Database },
+                    { label: 'System Settings', href: '/admin/settings', icon: Settings },
                 ],
             },
         ];
