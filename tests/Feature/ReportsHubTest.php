@@ -28,7 +28,7 @@ class ReportsHubTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('ReportsHub')
-                ->has('reports', 4)
+                ->has('reports', 5)
             );
     }
 

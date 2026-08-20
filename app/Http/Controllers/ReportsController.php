@@ -10,10 +10,8 @@ class ReportsController extends Controller
 {
     /**
      * A permission-filtered directory of the reports the caller can run
-     * (FR9 "Reports and Analytics", Table 5 "Generate Reports"). Kept
-     * intentionally simple — each report's own analytics live on its own
-     * page; deeper cross-report analytics (skill trends by program,
-     * curriculum evaluation) are tracked as Phase 3 of the completion plan.
+     * (FR9 "Reports and Analytics", Table 5 "Generate Reports"). Each
+     * report's own filters, metrics, and export live on its own page.
      */
     public function index(Request $request): Response
     {
@@ -25,6 +23,12 @@ class ReportsController extends Controller
                 'desc' => 'Employment status breakdown and totals across all graduates.',
                 'href' => route('reports.employability'),
                 'visible' => $user->hasPermissionTo('reports.employability.view'),
+            ],
+            [
+                'title' => 'Program Outcomes',
+                'desc' => 'Skill gaps and employer-rated competencies for your programs — curriculum evaluation and accreditation support.',
+                'href' => route('reports.program-outcomes'),
+                'visible' => $user->hasPermissionTo('program_outcomes.view'),
             ],
             [
                 'title' => 'Tracer & Employability Surveys',

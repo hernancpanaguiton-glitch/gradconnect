@@ -22,6 +22,21 @@ class Department extends Model
         return $query->where('type', 'college');
     }
 
+    /**
+     * A department ID plus its child program IDs, if it has any (a college
+     * expands to include every program under it; a program with no
+     * children just returns itself). Shared by User::scopedDepartmentIds()
+     * and report filtering (college_id → its programs too).
+     *
+     * @return array<int, int>
+     */
+    public static function expandToProgramIds(int $departmentId): array
+    {
+        $childIds = static::where('parent_id', $departmentId)->pluck('id')->all();
+
+        return array_merge([$departmentId], $childIds);
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'parent_id');

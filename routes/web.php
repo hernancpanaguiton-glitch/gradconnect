@@ -25,6 +25,7 @@ use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\LearningResourceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramOutcomesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeBuilderController;
@@ -172,6 +173,11 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
 
     // Employability report
     Route::get('/reports/employability', [EmployabilityReportController::class, 'index'])->name('reports.employability');
+    Route::get('/reports/employability/export', [EmployabilityReportController::class, 'export'])->name('reports.employability.export');
+
+    // Program outcomes / curriculum evaluation (FR14) — department head only.
+    Route::get('/reports/program-outcomes', [ProgramOutcomesController::class, 'index'])->name('reports.program-outcomes');
+    Route::get('/reports/program-outcomes/export', [ProgramOutcomesController::class, 'export'])->name('reports.program-outcomes.export');
 
     // AI résumé analysis (real feature for graduates).
     Route::get('/resume-analysis', [ResumeAnalysisController::class, 'index'])

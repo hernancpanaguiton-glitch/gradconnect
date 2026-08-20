@@ -47,7 +47,7 @@ class DashboardController extends Controller
             $props['employmentTrend'] = $this->monthlyEmploymentPlacements();
         } elseif ($user->hasRole('department_head')) {
             $props['colleges'] = Department::colleges()->orderBy('name')->get(['id', 'name', 'code']);
-            $props['placementByProgram'] = $this->placementByProgram($this->departmentScope($user));
+            $props['placementByProgram'] = $this->placementByProgram($user->scopedDepartmentIds());
         } elseif ($user->hasRole('industry_partner')) {
             $postingIds = $user->company?->jobPostings()->pluck('id') ?? collect();
             $props['hiringFunnel'] = $this->hiringFunnel($postingIds);
@@ -99,7 +99,7 @@ class DashboardController extends Controller
      */
     private function departmentHeadStats(User $user): array
     {
-        $departmentIds = $this->departmentScope($user);
+        $departmentIds = $user->scopedDepartmentIds();
 
         $profileIds = GraduateProfile::whereIn('department_id', $departmentIds)->pluck('id');
         $total = $profileIds->count();
@@ -459,22 +459,6 @@ class DashboardController extends Controller
         }
 
         return $series;
-    }
-
-    /**
-     * Department head analytics include the head's own department and its child programs.
-     *
-     * @return array<int, int>
-     */
-    private function departmentScope(User $user): array
-    {
-        if ($user->department_id === null) {
-            return [];
-        }
-
-        $childIds = Department::where('parent_id', $user->department_id)->pluck('id')->all();
-
-        return array_merge([$user->department_id], $childIds);
     }
 
     private function percent(int $part, int $whole): string

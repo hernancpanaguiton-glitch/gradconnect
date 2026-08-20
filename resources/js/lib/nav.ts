@@ -102,17 +102,12 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Analytics',
                 items: [
-                    // NOTE: "Employment Statistics" and "Graduate Outcomes" both point at the
-                    // same report today because department-scoped analytics don't exist yet
-                    // (see completion plan Phase 3). Collapsed to one link rather than two
-                    // identical ones; Phase 3 should split this back out once there's a real
-                    // second destination (program-outcomes / curriculum analytics).
                     { label: 'Employment Statistics', href: '/reports/employability', icon: BarChart2 },
-                    // "Skills Gap Analysis" here means department-scoped aggregate skill-gap
-                    // reporting (FDD Department Head box), which is a different feature from
-                    // the individual graduate-facing /skill-gap page (manuscript Figure 29 —
-                    // actors: Alumni, Graduate Student only). Points at Reports Hub until the
-                    // department-scoped version is built (completion plan Phase 3).
+                    // Department-scoped skill-gap/curriculum analytics (FDD Department Head
+                    // box) — a different feature from the individual graduate-facing
+                    // /skill-gap page (manuscript Figure 29 — actors: Alumni, Graduate
+                    // Student only).
+                    { label: 'Program Outcomes', href: '/reports/program-outcomes', icon: Target },
                     { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Settings', href: '/settings', icon: Settings },
                 ],

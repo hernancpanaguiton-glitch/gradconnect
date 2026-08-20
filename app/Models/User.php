@@ -88,4 +88,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Survey::class, 'created_by_user_id');
     }
+
+    /**
+     * A department head's analytics scope: their own department plus its
+     * child programs (e.g. a college head sees every program under that
+     * college). Empty if they have no department assigned.
+     *
+     * @return array<int, int>
+     */
+    public function scopedDepartmentIds(): array
+    {
+        if ($this->department_id === null) {
+            return [];
+        }
+
+        return Department::expandToProgramIds($this->department_id);
+    }
 }
