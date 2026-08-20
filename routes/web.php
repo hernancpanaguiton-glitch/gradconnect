@@ -9,6 +9,8 @@ use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CandidateMatchController;
 use App\Http\Controllers\CareerProgressionController;
 use App\Http\Controllers\CareerReadinessController;
+use App\Http\Controllers\ClearanceController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentHeadController;
@@ -16,6 +18,7 @@ use App\Http\Controllers\EducationRecordController;
 use App\Http\Controllers\EmployabilityReportController;
 use App\Http\Controllers\EmployerFeedbackController;
 use App\Http\Controllers\EmploymentRecordController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\GraduateProfileController;
 use App\Http\Controllers\JobApplicationController;
@@ -23,6 +26,7 @@ use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\LearningResourceController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramOutcomesController;
@@ -30,8 +34,10 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SkillGapController;
+use App\Http\Controllers\StudentCaseController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\TalentSearchController;
@@ -194,17 +200,50 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Career Readiness Assessment (FDD Graduate Student; SAO aggregate view).
     Route::get('/career-readiness', [CareerReadinessController::class, 'index'])->name('career-readiness');
 
-    // Feature-screen shells (design shells so every sidebar link resolves).
-    Route::inertia('/messages', 'Messages')->name('messages');
+    // Messaging (graduate <-> employer/office).
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages');
+    Route::get('/messages/{conversation}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/start', [MessageController::class, 'start'])->name('messages.start');
+    Route::post('/messages/{conversation}', [MessageController::class, 'sendMessage'])->name('messages.send');
+
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::inertia('/settings', 'Settings')->name('settings');
     Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
-    Route::inertia('/events', 'Events')->name('events');
-    Route::inertia('/scholarships', 'Scholarships')->name('scholarships');
-    Route::inertia('/clearance', 'Clearance')->name('clearance');
+
+    // Events (FDD AAO "alumni engagement activities" + SAO "student events") — one shared board.
+    Route::get('/events', [EventController::class, 'index'])->name('events');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::patch('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+    Route::post('/events/{event}/rsvp', [EventController::class, 'rsvp'])->name('events.rsvp');
+
+    // Scholarships (FDD SAO) — institutional oversight, not a public application portal.
+    Route::get('/scholarships', [ScholarshipController::class, 'index'])->name('scholarships');
+    Route::post('/scholarships', [ScholarshipController::class, 'store'])->name('scholarships.store');
+    Route::patch('/scholarships/{scholarship}', [ScholarshipController::class, 'update'])->name('scholarships.update');
+    Route::delete('/scholarships/{scholarship}', [ScholarshipController::class, 'destroy'])->name('scholarships.destroy');
+    Route::post('/scholarships/{scholarship}/recipients', [ScholarshipController::class, 'addRecipient'])->name('scholarships.recipients.store');
+    Route::delete('/scholarship-recipients/{recipient}', [ScholarshipController::class, 'removeRecipient'])->name('scholarships.recipients.destroy');
+
+    // Clearance (FDD SAO) — SAO manages any graduate's checklist; graduates see only their own.
+    Route::get('/clearance', [ClearanceController::class, 'index'])->name('clearance');
+    Route::patch('/clearance/{graduateProfile}', [ClearanceController::class, 'updateOffice'])->name('clearance.update');
+
+    // Student concerns / case management (FDD SAO).
+    Route::get('/student-cases', [StudentCaseController::class, 'index'])->name('student-cases.index');
+    Route::post('/student-cases', [StudentCaseController::class, 'store'])->name('student-cases.store');
+    Route::patch('/student-cases/{studentCase}', [StudentCaseController::class, 'update'])->name('student-cases.update');
+
+    // Alumni Community (FR15; FDD Alumni "Join Alumni Community").
+    Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+    Route::post('/community', [CommunityController::class, 'store'])->name('community.store');
+    Route::delete('/community/{communityPost}', [CommunityController::class, 'destroy'])->name('community.destroy');
+    Route::post('/community/{communityPost}/comments', [CommunityController::class, 'storeComment'])->name('community.comments.store');
+    Route::delete('/community/comments/{communityComment}', [CommunityController::class, 'destroyComment'])->name('community.comments.destroy');
+
     Route::get('/talent-search', [TalentSearchController::class, 'index'])
         ->middleware('permission:candidates.search')->name('talent-search');
 

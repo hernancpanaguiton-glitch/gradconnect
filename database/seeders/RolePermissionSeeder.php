@@ -23,6 +23,7 @@ class RolePermissionSeeder extends Seeder
             'career.track',
             'recommendations.view',
             'surveys.respond',
+            'community.participate',
 
             // Graduating student extras
             'career.resources.view',
@@ -50,6 +51,7 @@ class RolePermissionSeeder extends Seeder
             'graduate_profiles.view_all',
             'announcements.manage',
             'learning_resources.manage',
+            'community.moderate',
 
             // Department Head (read-only, scoped to department)
             'reports.department.view',
@@ -62,6 +64,7 @@ class RolePermissionSeeder extends Seeder
             'student_events.manage',
             'clearance.manage',
             'student_analytics.view',
+            'students.cases.manage',
 
             // Admin (+ absorbed CSO: job moderation, system reports)
             'users.manage',
@@ -81,6 +84,7 @@ class RolePermissionSeeder extends Seeder
             'profile.edit', 'resume.upload', 'resume.manage',
             'jobs.view', 'jobs.apply', 'career.track',
             'recommendations.view', 'surveys.respond', 'matching.trigger',
+            'community.participate',
         ]);
 
         $student = Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
@@ -106,7 +110,7 @@ class RolePermissionSeeder extends Seeder
             'surveys.manage', 'employability_reports.generate',
             'career_activities.manage', 'reports.employability.view',
             'users.manage', 'graduate_profiles.view_all', 'announcements.manage',
-            'learning_resources.manage',
+            'learning_resources.manage', 'community.moderate',
         ]);
 
         $departmentHead = Role::firstOrCreate(['name' => 'department_head', 'guard_name' => 'web']);
@@ -121,6 +125,7 @@ class RolePermissionSeeder extends Seeder
             'students.manage', 'scholarships.manage', 'student_events.manage',
             'clearance.manage', 'student_analytics.view', 'reports.employability.view',
             'candidates.search', 'candidates.view_resumes', 'graduate_profiles.view_all',
+            'students.cases.manage',
         ]);
 
         // Admin super-role gets every permission
