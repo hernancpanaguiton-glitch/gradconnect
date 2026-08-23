@@ -38,11 +38,13 @@ class SystemSettingControllerTest extends TestCase
             'registration_enabled' => false,
             'support_email' => 'help@gradconnect.edu.ph',
             'maintenance_banner_message' => 'Scheduled downtime tonight.',
+            'matching_min_fit_score' => 40,
         ])->assertRedirect();
 
         $this->assertFalse(Setting::getBool('registration_enabled'));
         $this->assertSame('help@gradconnect.edu.ph', Setting::get('support_email'));
         $this->assertSame('Scheduled downtime tonight.', Setting::get('maintenance_banner_message'));
+        $this->assertSame(40, Setting::getInt('matching_min_fit_score'));
 
         $this->assertDatabaseHas('audit_logs', ['action' => 'settings.updated', 'user_id' => $admin->id]);
     }
@@ -60,7 +62,16 @@ class SystemSettingControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)->patch(route('admin.settings.update'), [
-            'registration_enabled' => true, 'support_email' => 'not-an-email',
+            'registration_enabled' => true, 'support_email' => 'not-an-email', 'matching_min_fit_score' => 0,
         ])->assertSessionHasErrors('support_email');
+    }
+
+    public function test_fit_score_threshold_must_be_between_0_and_100(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->patch(route('admin.settings.update'), [
+            'registration_enabled' => true, 'matching_min_fit_score' => 150,
+        ])->assertSessionHasErrors('matching_min_fit_score');
     }
 }

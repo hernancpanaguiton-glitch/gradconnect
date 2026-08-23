@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\JobModerationController;
 use App\Http\Controllers\Admin\PlatformStatusController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\SkillTaxonomyController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AccountDataExportController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\JobAssistController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\JobRecommendationController;
 use App\Http\Controllers\LearningResourceController;
+use App\Http\Controllers\MatchFeedbackController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
@@ -112,6 +114,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
 
         // Ranked job recommendations
         Route::get('/recommendations', [JobRecommendationController::class, 'index'])->name('recommendations.index');
+        Route::post('/recommendations/{jobMatchResult}/feedback', [MatchFeedbackController::class, 'store'])->name('recommendations.feedback');
     });
 
     // Company (industry partner)
@@ -305,6 +308,13 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         // Platform performance monitoring (FDD Admin).
         Route::get('/platform-status', [PlatformStatusController::class, 'index'])->name('platform-status');
     });
+
+    // Skill taxonomy (AI architecture Layer 2.4 "skill standardization") —
+    // AAO + Admin, like /learning-resources; not under role:admin since AAO
+    // needs it too (both hold learning_resources.manage).
+    Route::get('/skill-taxonomy', [SkillTaxonomyController::class, 'index'])->name('skill-taxonomy.index');
+    Route::post('/skill-taxonomy/{skill}/aliases', [SkillTaxonomyController::class, 'storeAlias'])->name('skill-taxonomy.aliases.store');
+    Route::delete('/skill-taxonomy/aliases/{skillAlias}', [SkillTaxonomyController::class, 'destroyAlias'])->name('skill-taxonomy.aliases.destroy');
 
     // Self-service data export (Data Privacy Act of 2012 / RA 10173).
     Route::get('/account/export', [AccountDataExportController::class, 'export'])->name('account.export');

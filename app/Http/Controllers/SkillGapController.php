@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LearningResource;
+use App\Services\LearningResourceMatcher;
 use App\Services\SkillGapAnalyzer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SkillGapController extends Controller
 {
-    public function __construct(private readonly SkillGapAnalyzer $analyzer) {}
+    public function __construct(
+        private readonly SkillGapAnalyzer $analyzer,
+        private readonly LearningResourceMatcher $resourceMatcher,
+    ) {}
 
     /**
      * Aggregate skill-gap analysis for a graduate/alumnus (manuscript Figure 29,
@@ -52,39 +54,12 @@ class SkillGapController extends Controller
         ]);
     }
 
-    /**
-     * Skill Bridge Mitigation (Scope §p.6): for each skill flagged as a gap,
-     * attach any curated LearningResource that targets it — matched by slug
-     * since AI-generated skill_gaps are free text, not Skill IDs.
-     */
     private function attachRecommendedResources(Collection $gaps): Collection
     {
-        $gapSlugs = $gaps->pluck('skill')->map(fn (string $skill) => Str::slug($skill))->all();
+        $bySkillName = $this->resourceMatcher->match($gaps->pluck('skill')->all());
 
-        $resourcesBySlug = [];
-        if (! empty($gapSlugs)) {
-            $matchingResources = LearningResource::with('skills')
-                ->whereHas('skills', fn ($query) => $query->whereIn('slug', $gapSlugs))
-                ->get();
-
-            foreach ($matchingResources as $resource) {
-                foreach ($resource->skills as $skill) {
-                    if (! in_array($skill->slug, $gapSlugs, true)) {
-                        continue;
-                    }
-                    $resourcesBySlug[$skill->slug][] = [
-                        'id' => $resource->id,
-                        'title' => $resource->title,
-                        'type' => $resource->type,
-                        'provider' => $resource->provider,
-                        'url' => $resource->url,
-                    ];
-                }
-            }
-        }
-
-        return $gaps->map(function (array $gap) use ($resourcesBySlug) {
-            $gap['resources'] = $resourcesBySlug[Str::slug($gap['skill'])] ?? [];
+        return $gaps->map(function (array $gap) use ($bySkillName) {
+            $gap['resources'] = $bySkillName[$gap['skill']] ?? [];
 
             return $gap;
         })->values();

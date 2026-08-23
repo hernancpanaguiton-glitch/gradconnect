@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Skill;
+use App\Models\SkillAlias;
 use Illuminate\Support\Str;
 
 class SkillSuggestionService
@@ -30,6 +31,17 @@ class SkillSuggestionService
             ->get(['id', 'name'])
             ->map(fn (Skill $skill): array => ['id' => $skill->id, 'name' => $skill->name, 'source' => 'library'])
             ->all();
+
+        // Skill standardization (Layer 2.4): "JS" should surface the
+        // canonical "JavaScript" skill, not a dead end.
+        $aliasMatches = SkillAlias::with('skill')
+            ->where('alias', 'like', '%'.$query.'%')
+            ->limit(8)
+            ->get()
+            ->map(fn (SkillAlias $alias): array => ['id' => $alias->skill->id, 'name' => $alias->skill->name, 'source' => 'library'])
+            ->all();
+
+        $library = collect([...$library, ...$aliasMatches])->unique('id')->values()->all();
 
         $seen = collect($library)->map(fn (array $item): string => Str::lower($item['name']))->all();
 

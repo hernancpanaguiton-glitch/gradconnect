@@ -3,9 +3,12 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Company;
+use App\Models\EmployerFeedback;
 use App\Models\GraduateProfile;
+use App\Models\JobApplication;
 use App\Models\JobMatchResult;
 use App\Models\JobPosting;
+use App\Models\MatchFeedback;
 use App\Models\Resume;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -91,6 +94,64 @@ class PlatformStatusControllerTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->where('embeddingSuccessRate', null)
                 ->where('matchScoringSuccessRate', null)
+                ->where('feedbackHelpfulRate', null)
+                ->where('feedbackTotal', 0)
+                ->where('hireCalibration.sampleSize', 0)
+            );
+    }
+
+    public function test_feedback_helpful_rate_and_provider_breakdown_are_computed(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $profile = GraduateProfile::factory()->for(User::factory()->alumni())->create();
+
+        $partner = User::factory()->create();
+        $company = Company::factory()->for($partner, 'owner')->create();
+        $postingA = JobPosting::factory()->for($company)->for($partner, 'postedBy')->open()->create();
+        $postingB = JobPosting::factory()->for($company)->for($partner, 'postedBy')->open()->create();
+        $postingC = JobPosting::factory()->for($company)->for($partner, 'postedBy')->open()->create();
+
+        $matchGroq1 = JobMatchResult::create(['job_posting_id' => $postingA->id, 'graduate_profile_id' => $profile->id, 'fit_score' => 80, 'scored_by' => 'groq']);
+        $matchGroq2 = JobMatchResult::create(['job_posting_id' => $postingB->id, 'graduate_profile_id' => $profile->id, 'fit_score' => 40, 'scored_by' => 'groq']);
+        $matchGemini = JobMatchResult::create(['job_posting_id' => $postingC->id, 'graduate_profile_id' => $profile->id, 'fit_score' => 60, 'scored_by' => 'gemini']);
+
+        $rater = $profile->user;
+        MatchFeedback::create(['job_match_result_id' => $matchGroq1->id, 'user_id' => $rater->id, 'rating' => 'helpful']);
+        MatchFeedback::create(['job_match_result_id' => $matchGroq2->id, 'user_id' => $rater->id, 'rating' => 'not_helpful']);
+        MatchFeedback::create(['job_match_result_id' => $matchGemini->id, 'user_id' => $rater->id, 'rating' => 'helpful']);
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page
+                ->where('feedbackTotal', 3)
+                ->where('feedbackHelpfulRate', 67)
+                ->has('helpfulRateByProvider', 2)
+            );
+    }
+
+    public function test_hire_calibration_correlates_fit_score_with_employer_rating(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $profile = GraduateProfile::factory()->for(User::factory()->alumni())->create();
+
+        $partner = User::factory()->create();
+        $company = Company::factory()->for($partner, 'owner')->create();
+        $posting = JobPosting::factory()->for($company)->for($partner, 'postedBy')->open()->create();
+
+        JobMatchResult::create(['job_posting_id' => $posting->id, 'graduate_profile_id' => $profile->id, 'fit_score' => 90]);
+        $application = JobApplication::create([
+            'job_posting_id' => $posting->id, 'graduate_profile_id' => $profile->id,
+            'status' => 'hired', 'applied_at' => now(),
+        ]);
+        EmployerFeedback::create([
+            'company_id' => $company->id, 'job_application_id' => $application->id, 'graduate_profile_id' => $profile->id,
+            'submitted_by_user_id' => $partner->id, 'overall_rating' => 5,
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page
+                ->where('hireCalibration.sampleSize', 1)
+                ->where('hireCalibration.avgFitScore', 90)
+                ->where('hireCalibration.avgEmployerRating', 5)
             );
     }
 }

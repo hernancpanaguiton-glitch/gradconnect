@@ -4,8 +4,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import axios from 'axios';
+import { ExternalLink, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { useState } from 'react';
 
+interface LearningResource { id: number; title: string; type: string; provider: string | null; url: string | null }
 interface Match {
     id: number;
     similarity: number | null;
@@ -14,6 +16,8 @@ interface Match {
     skill_gaps: string[] | null;
     matched_skills: string[] | null;
     recommendation: string | null;
+    learning_resources: Record<string, LearningResource[]>;
+    my_feedback: 'helpful' | 'not_helpful' | null;
     job_posting: {
         id: number;
         title: string;
@@ -22,6 +26,28 @@ interface Match {
         is_remote: boolean;
         company: { id: number; name: string; industry: string | null };
     };
+}
+
+function MatchFeedbackButtons({ matchId, current }: { matchId: number; current: 'helpful' | 'not_helpful' | null }) {
+    function rate(rating: 'helpful' | 'not_helpful') {
+        router.post(route('recommendations.feedback', matchId), { rating }, { preserveScroll: true, preserveState: true });
+    }
+
+    return (
+        <div className="flex items-center gap-1">
+            <span className="mr-1 text-xs text-gray-400">Helpful?</span>
+            <button onClick={() => rate('helpful')}
+                className={`rounded-lg p-1.5 ${current === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'text-gray-400 hover:bg-gray-100'}`}
+                aria-label="Mark as helpful">
+                <ThumbsUp size={14} />
+            </button>
+            <button onClick={() => rate('not_helpful')}
+                className={`rounded-lg p-1.5 ${current === 'not_helpful' ? 'bg-red-100 text-red-700' : 'text-gray-400 hover:bg-gray-100'}`}
+                aria-label="Mark as not helpful">
+                <ThumbsDown size={14} />
+            </button>
+        </div>
+    );
 }
 
 interface Props extends PageProps {
@@ -100,6 +126,22 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
                             {match.explanation && <p className="mt-3 text-sm text-gray-600">{match.explanation}</p>}
                             <div className="mt-3">
                                 <SkillGapList matchedSkills={match.matched_skills} skillGaps={match.skill_gaps} />
+                            </div>
+                            {Object.keys(match.learning_resources).length > 0 && (
+                                <div className="mt-3 border-t border-gray-100 pt-3">
+                                    <p className="mb-1.5 text-xs font-medium text-gray-500">Suggested resources to close the gap:</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {Object.values(match.learning_resources).flat().map((r) => (
+                                            <a key={r.id} href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel="noreferrer"
+                                                className="flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-xs text-indigo-700 hover:bg-indigo-100">
+                                                {r.title}{r.url && <ExternalLink size={10} />}
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="mt-3 flex justify-end border-t border-gray-100 pt-3">
+                                <MatchFeedbackButtons matchId={match.id} current={match.my_feedback} />
                             </div>
                         </div>
                     ))}

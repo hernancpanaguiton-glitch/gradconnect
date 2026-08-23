@@ -41,6 +41,13 @@ class Setting extends Model
         return $value === null ? $default : filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
+    public static function getInt(string $key, int $default = 0): int
+    {
+        $value = self::get($key);
+
+        return $value === null || $value === '' ? $default : (int) $value;
+    }
+
     public static function set(string $key, ?string $value): void
     {
         static::query()->updateOrCreate(['key' => $key], ['value' => $value]);

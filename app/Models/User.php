@@ -97,6 +97,11 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    public function matchFeedback(): HasMany
+    {
+        return $this->hasMany(MatchFeedback::class);
+    }
+
     /**
      * A department head's analytics scope: their own department plus its
      * child programs (e.g. a college head sees every program under that

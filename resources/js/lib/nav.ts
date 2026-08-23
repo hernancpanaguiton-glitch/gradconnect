@@ -13,6 +13,7 @@ import {
     FolderKanban,
     GraduationCap,
     LayoutDashboard,
+    Layers,
     Lightbulb,
     LifeBuoy,
     ListChecks,
@@ -75,6 +76,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'Platform Status', href: '/admin/platform-status', icon: Cpu },
                     { label: 'Data & Backups', href: '/admin/backups', icon: Database },
                     { label: 'System Settings', href: '/admin/settings', icon: Settings },
+                    { label: 'Skill Taxonomy', href: '/skill-taxonomy', icon: Layers },
                 ],
             },
         ];
@@ -92,6 +94,7 @@ export function getNavFor(user: User): NavSection[] {
                     { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Announcements', href: '/announcements', icon: Megaphone },
                     { label: 'Learning Resources', href: '/learning-resources', icon: Lightbulb },
+                    { label: 'Skill Taxonomy', href: '/skill-taxonomy', icon: Layers },
                     { label: 'Alumni Events', href: '/events', icon: Calendar },
                     { label: 'Alumni Community', href: '/community', icon: Users },
                     { label: 'Messages', href: '/messages', icon: Bell },

@@ -10,6 +10,7 @@ interface Props extends PageProps {
         registration_enabled: boolean;
         support_email: string;
         maintenance_banner_message: string;
+        matching_min_fit_score: number;
     };
 }
 
@@ -18,6 +19,7 @@ export default function SystemSettings({ settings }: Props) {
         registration_enabled: settings.registration_enabled,
         support_email: settings.support_email,
         maintenance_banner_message: settings.maintenance_banner_message,
+        matching_min_fit_score: settings.matching_min_fit_score,
     });
 
     function submit(e: FormEvent) {
@@ -58,6 +60,19 @@ export default function SystemSettings({ settings }: Props) {
                             placeholder="e.g. Scheduled maintenance this Saturday, 10 PM–12 AM."
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
                         {errors.maintenance_banner_message && <p className="mt-1 text-xs text-red-500">{errors.maintenance_banner_message}</p>}
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-foreground">Minimum AI fit score</label>
+                        <p className="mb-2 text-xs text-muted-foreground">
+                            Recommendations scored below this are hidden from graduates. Tune this using the helpful/not-helpful
+                            rate on the Platform Status page — this is the actual "AI tuning" lever available with an
+                            API-based LLM (there's no local model here to retrain).
+                        </p>
+                        <input type="number" min={0} max={100} value={data.matching_min_fit_score}
+                            onChange={(e) => setData('matching_min_fit_score', Number(e.target.value))}
+                            className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                        {errors.matching_min_fit_score && <p className="mt-1 text-xs text-red-500">{errors.matching_min_fit_score}</p>}
                     </div>
 
                     <div className="flex items-center gap-3">

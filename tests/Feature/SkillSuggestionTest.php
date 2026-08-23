@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Skill;
+use App\Models\SkillAlias;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SkillSuggestionTest extends TestCase
@@ -43,6 +45,22 @@ class SkillSuggestionTest extends TestCase
         $names = collect($response->json('suggestions'))->pluck('name');
         $this->assertContains('Java', $names);        // library
         $this->assertContains('JavaScript', $names);  // AI
+    }
+
+    public function test_suggest_surfaces_the_canonical_skill_via_a_registered_alias(): void
+    {
+        $javascript = Skill::findOrCreateByName('JavaScript');
+        SkillAlias::create(['skill_id' => $javascript->id, 'alias' => 'JS', 'alias_slug' => Str::slug('JS')]);
+        config(['services.groq.api_key' => null, 'services.gemini.api_key' => null]);
+        Http::preventStrayRequests();
+
+        $user = User::factory()->alumni()->create();
+
+        $response = $this->actingAs($user)->getJson(route('skills.suggest', ['q' => 'JS']));
+
+        $response->assertOk();
+        $names = collect($response->json('suggestions'))->pluck('name');
+        $this->assertContains('JavaScript', $names);
     }
 
     public function test_store_valid_skill_creates_and_attaches(): void

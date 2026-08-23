@@ -3,29 +3,77 @@ import StatTile from '@/Components/StatTile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import { AlertTriangle, Cpu, ListChecks, Target } from 'lucide-react';
+import { AlertTriangle, Cpu, ListChecks, ThumbsUp, Target } from 'lucide-react';
 
 interface FailedJob { uuid: string; connection: string; queue: string; failed_at: string }
+interface ProviderRate { provider: string; total: number; helpfulRate: number }
+interface HireCalibration { sampleSize: number; avgFitScore: number | null; avgEmployerRating: number | null }
 interface Props extends PageProps {
     queueDepth: number;
     failedJobsCount: number;
     embeddingSuccessRate: number | null;
     matchScoringSuccessRate: number | null;
     recentFailedJobs: FailedJob[];
+    feedbackTotal: number;
+    feedbackHelpfulRate: number | null;
+    helpfulRateByProvider: ProviderRate[];
+    hireCalibration: HireCalibration;
 }
 
-export default function PlatformStatus({ queueDepth, failedJobsCount, embeddingSuccessRate, matchScoringSuccessRate, recentFailedJobs }: Props) {
+export default function PlatformStatus({
+    queueDepth, failedJobsCount, embeddingSuccessRate, matchScoringSuccessRate, recentFailedJobs,
+    feedbackTotal, feedbackHelpfulRate, helpfulRateByProvider, hireCalibration,
+}: Props) {
     return (
         <AuthenticatedLayout>
             <Head title="Platform Status" />
             <div className="space-y-6">
-                <PageHeader icon={Cpu} title="Platform Status" subtitle="Queue health and AI pipeline success rates." />
+                <PageHeader icon={Cpu} title="Platform Status" subtitle="Queue health, AI pipeline success rates, and recommendation accuracy." />
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     <StatTile icon={ListChecks} color="blue" label="Queued Jobs" value={queueDepth} sub="Waiting to run" />
                     <StatTile icon={AlertTriangle} color={failedJobsCount > 0 ? 'red' : 'green'} label="Failed Jobs" value={failedJobsCount} sub="All-time" />
                     <StatTile icon={Cpu} color="violet" label="Embedding Success" value={embeddingSuccessRate !== null ? `${embeddingSuccessRate}%` : '—'} sub="Résumés & postings embedded" />
                     <StatTile icon={Target} color="amber" label="AI Scoring Success" value={matchScoringSuccessRate !== null ? `${matchScoringSuccessRate}%` : '—'} sub="Matches scored by an AI provider" />
+                </div>
+
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                    <h2 className="mb-1 font-semibold text-foreground">Recommendation Accuracy (Feedback Loop)</h2>
+                    <p className="mb-4 text-xs text-muted-foreground">
+                        From graduates rating their job recommendations as helpful or not — use this to tune the
+                        "Minimum fit score" setting, not to retrain the AI (there's no local model to retrain).
+                    </p>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <StatTile icon={ThumbsUp} color="green" label="Helpful Rate" value={feedbackHelpfulRate !== null ? `${feedbackHelpfulRate}%` : '—'} sub={`${feedbackTotal} rating(s) submitted`} />
+                        <div className="rounded-xl border border-border p-4">
+                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">By AI Provider</p>
+                            {helpfulRateByProvider.length === 0 ? (
+                                <p className="text-sm text-muted-foreground">No feedback yet.</p>
+                            ) : (
+                                <div className="space-y-2">
+                                    {helpfulRateByProvider.map((p) => (
+                                        <div key={p.provider} className="flex items-center justify-between text-sm">
+                                            <span className="capitalize text-foreground">{p.provider}</span>
+                                            <span className="text-muted-foreground">{p.helpfulRate}% helpful ({p.total})</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="mt-4 border-t border-border pt-4">
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Hire Calibration</p>
+                        {hireCalibration.sampleSize === 0 ? (
+                            <p className="text-sm text-muted-foreground">No hired candidates with employer feedback yet.</p>
+                        ) : (
+                            <p className="text-sm text-foreground">
+                                Across {hireCalibration.sampleSize} hired candidate(s) with employer feedback: average AI fit score{' '}
+                                <strong>{hireCalibration.avgFitScore}</strong> vs. average employer rating{' '}
+                                <strong>{hireCalibration.avgEmployerRating}/5</strong>.
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
