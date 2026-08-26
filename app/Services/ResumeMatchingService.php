@@ -72,22 +72,36 @@ class ResumeMatchingService
             ['required_skills' => $jobPosting->requiredSkillNames()],
         );
 
+        // The vector stage succeeded to get here, so similarity is always
+        // worth recording.
+        $attributes = [
+            'resume_id' => $resume->id,
+            'similarity' => $similarity,
+        ];
+
+        // Only overwrite the AI fields when scoring actually returned something.
+        // Writing nulls on failure used to wipe a previously good score — one
+        // provider outage (an expired or retired model, say) silently degraded
+        // every existing recommendation to "unscored", and because the job
+        // still completed, nothing surfaced that anything had gone wrong.
+        if ($matchResult !== null) {
+            $attributes += [
+                'fit_score' => $matchResult->fitScore,
+                'explanation' => $matchResult->explanation,
+                'skill_gaps' => $matchResult->skillGaps,
+                'matched_skills' => $matchResult->matchedSkills,
+                'recommendation' => $matchResult->recommendation,
+                'scored_by' => $matchResult->provider,
+                'scored_at' => now(),
+            ];
+        }
+
         return JobMatchResult::updateOrCreate(
             [
                 'job_posting_id' => $jobPosting->id,
                 'graduate_profile_id' => $resume->graduate_profile_id,
             ],
-            [
-                'resume_id' => $resume->id,
-                'similarity' => $similarity,
-                'fit_score' => $matchResult?->fitScore,
-                'explanation' => $matchResult?->explanation,
-                'skill_gaps' => $matchResult?->skillGaps,
-                'matched_skills' => $matchResult?->matchedSkills,
-                'recommendation' => $matchResult?->recommendation,
-                'scored_by' => $matchResult?->provider,
-                'scored_at' => $matchResult ? now() : null,
-            ],
+            $attributes,
         );
     }
 }

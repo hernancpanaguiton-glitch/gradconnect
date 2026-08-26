@@ -35,15 +35,19 @@ return [
         ],
     ],
 
+    // NOTE: hosted model names get retired. If match scoring starts returning
+    // 404s, list the live models (Groq: GET /openai/v1/models, Gemini: GET
+    // /v1beta/models) and update these — the previous defaults,
+    // llama-3.3-70b-versatile and gemini-2.5-flash, were both retired.
     'groq' => [
         'api_key' => env('GROQ_API_KEY'),
-        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        'model' => env('GROQ_MODEL', 'openai/gpt-oss-120b'),
         'api_url' => 'https://api.groq.com/openai/v1/chat/completions',
     ],
 
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
-        'chat_model' => env('GEMINI_CHAT_MODEL', 'gemini-2.5-flash'),
+        'chat_model' => env('GEMINI_CHAT_MODEL', 'gemini-3.6-flash'),
         'embedding_model' => env('GEMINI_EMBEDDING_MODEL', 'gemini-embedding-001'),
         'chat_url' => 'https://generativelanguage.googleapis.com/v1beta/models',
         'embedding_url' => 'https://generativelanguage.googleapis.com/v1beta/models',

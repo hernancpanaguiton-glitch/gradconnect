@@ -91,6 +91,47 @@ class ResumeMatchingServiceTest extends TestCase
         ]);
     }
 
+    /**
+     * Regression: a failed re-score used to write nulls over the existing
+     * row, so one provider outage (a retired model, say) silently degraded
+     * every previously-scored recommendation to "unscored" — and because the
+     * job still completed, nothing surfaced that anything had gone wrong.
+     */
+    public function test_a_failed_rescore_keeps_the_previous_score(): void
+    {
+        $posting = $this->makeJobPosting();
+        [$profile, $resume] = $this->makeProfileWithResume();
+
+        $vectorSearch = $this->createMock(VectorSearch::class);
+        $vectorSearch->method('nearestResumesToJob')->willReturn(collect([
+            (object) ['resume_id' => $resume->id, 'graduate_profile_id' => $profile->id, 'similarity' => 0.91],
+        ]));
+
+        // First pass succeeds.
+        $working = $this->createMock(AiManager::class);
+        $working->method('scoreWithFallback')->willReturn(
+            new MatchResult(82, 'strong', 'Strong overlap', ['Docker'], ['PHP'], 'groq')
+        );
+        (new ResumeMatchingService($vectorSearch, $working))->matchJobToCandidates($posting);
+
+        // Second pass: the provider is down.
+        $down = $this->createMock(AiManager::class);
+        $down->method('scoreWithFallback')->willReturn(null);
+        (new ResumeMatchingService($vectorSearch, $down))->matchJobToCandidates($posting);
+
+        $match = JobMatchResult::where('job_posting_id', $posting->id)
+            ->where('graduate_profile_id', $profile->id)
+            ->firstOrFail();
+
+        // The good score survives...
+        $this->assertSame(82, $match->fit_score);
+        $this->assertSame('strong', $match->recommendation);
+        $this->assertSame('groq', $match->scored_by);
+        $this->assertSame(['PHP'], $match->matched_skills);
+        // ...while the fresh similarity from the vector stage is still recorded.
+        $this->assertEqualsWithDelta(0.91, $match->similarity, 0.0001);
+    }
+
     public function test_re_matching_the_same_pair_updates_rather_than_duplicates(): void
     {
         $posting = $this->makeJobPosting();
