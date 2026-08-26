@@ -253,6 +253,96 @@ class SurveyDistributionTest extends TestCase
         $this->assertSame(0, EmploymentRecord::where('graduate_profile_id', $profile->id)->count());
     }
 
+    // ─── Response authorization (regressions) ────────────────────────────────
+
+    public function test_industry_partner_cannot_respond_to_a_survey(): void
+    {
+        $staff = User::factory()->alumniAffairs()->create();
+        $survey = Survey::factory()->for($staff, 'createdBy')->create(['status' => 'open']);
+        $question = SurveyQuestion::factory()->for($survey)->create();
+
+        $partner = User::factory()->industryPartner()->create();
+
+        $this->actingAs($partner)->get("/surveys/{$survey->id}/respond")->assertForbidden();
+        $this->actingAs($partner)->post("/surveys/{$survey->id}/respond", [
+            'answers' => [$question->id => 'x'],
+        ])->assertForbidden();
+
+        $this->assertDatabaseCount('survey_responses', 0);
+    }
+
+    public function test_survey_managers_cannot_respond_to_their_own_surveys(): void
+    {
+        $staff = User::factory()->alumniAffairs()->create();
+        $survey = Survey::factory()->for($staff, 'createdBy')->create(['status' => 'open']);
+        $question = SurveyQuestion::factory()->for($survey)->create();
+
+        $this->actingAs($staff)->post("/surveys/{$survey->id}/respond", [
+            'answers' => [$question->id => 'x'],
+        ])->assertForbidden();
+    }
+
+    /**
+     * Regression: targeting was enforced only on the listing, so a non-target
+     * could bypass it by navigating straight to the respond URL.
+     */
+    public function test_a_non_target_cannot_bypass_targeting_via_the_respond_url(): void
+    {
+        $staff = User::factory()->alumniAffairs()->create();
+        $survey = Survey::factory()->for($staff, 'createdBy')->targetingRole('student')->create(['status' => 'open']);
+        $question = SurveyQuestion::factory()->for($survey)->create();
+
+        $alumni = User::factory()->alumni()->create();
+
+        $this->actingAs($alumni)->get("/surveys/{$survey->id}/respond")->assertForbidden();
+        $this->actingAs($alumni)->post("/surveys/{$survey->id}/respond", [
+            'answers' => [$question->id => 'x'],
+        ])->assertForbidden();
+    }
+
+    /**
+     * Regression: answers were written for any submitted question ID, so a
+     * crafted payload could reach applyMapsToWriteBack() and corrupt
+     * employment data via another survey's mapped question.
+     */
+    public function test_answers_referencing_another_surveys_question_are_rejected(): void
+    {
+        $staff = User::factory()->alumniAffairs()->create();
+
+        $target = Survey::factory()->for($staff, 'createdBy')->create(['status' => 'open']);
+        SurveyQuestion::factory()->for($target)->create();
+
+        $other = Survey::factory()->for($staff, 'createdBy')->create(['status' => 'open']);
+        $foreignQuestion = SurveyQuestion::factory()->for($other)->create(['maps_to' => 'employment_status']);
+
+        $alumni = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->for($alumni, 'user')->create(['current_employment_status' => 'unemployed']);
+
+        $this->actingAs($alumni)->post("/surveys/{$target->id}/respond", [
+            'answers' => [$foreignQuestion->id => 'employed'],
+        ])->assertStatus(422);
+
+        $this->assertDatabaseCount('survey_answers', 0);
+        $this->assertSame('unemployed', $profile->fresh()->current_employment_status);
+    }
+
+    /**
+     * Regression: show() used firstOrCreate, so a GET created an in_progress
+     * row and inflated the response count managers see.
+     */
+    public function test_viewing_the_respond_form_does_not_create_a_response_row(): void
+    {
+        $staff = User::factory()->alumniAffairs()->create();
+        $survey = Survey::factory()->for($staff, 'createdBy')->create(['status' => 'open']);
+        SurveyQuestion::factory()->for($survey)->create();
+
+        $alumni = User::factory()->alumni()->create();
+
+        $this->actingAs($alumni)->get("/surveys/{$survey->id}/respond")->assertOk();
+
+        $this->assertDatabaseCount('survey_responses', 0);
+    }
+
     public function test_questions_without_maps_to_do_not_affect_the_profile(): void
     {
         $staff = User::factory()->alumniAffairs()->create();

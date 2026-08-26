@@ -21,6 +21,8 @@ interface Props extends PageProps {
     surveyResponseRates: SurveyRate[];
     colleges: College[];
     programs: Program[];
+    scopeLocked: boolean;
+    scopeLabel: string | null;
     filters: Filters;
 }
 
@@ -36,7 +38,7 @@ const COLORS: Record<string, string> = {
 export default function EmployabilityReport({
     totalGraduates, employmentBreakdown, willingToRelocate, jobRelevanceRate,
     salaryDistribution, avgTimeToEmploymentMonths, surveyResponseRates,
-    colleges, programs, filters,
+    colleges, programs, scopeLocked, scopeLabel, filters,
 }: Props) {
     const employed = employmentBreakdown.employed ?? 0;
     const employmentRate = totalGraduates > 0 ? Math.round((employed / totalGraduates) * 100) : 0;
@@ -79,17 +81,25 @@ export default function EmployabilityReport({
                 </div>
 
                 {/* Filters */}
-                <div className="flex flex-wrap gap-3 print:hidden">
-                    <select value={filters.college_id ?? ''} onChange={(e) => updateFilter('college_id', e.target.value)}
-                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        <option value="">All Colleges</option>
-                        {colleges.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                    </select>
-                    <select value={filters.program_id ?? ''} onChange={(e) => updateFilter('program_id', e.target.value)}
-                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        <option value="">All Programs</option>
-                        {visiblePrograms.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-                    </select>
+                <div className="flex flex-wrap items-center gap-3 print:hidden">
+                    {scopeLocked ? (
+                        <span className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
+                            Scoped to <strong>{scopeLabel}</strong>
+                        </span>
+                    ) : (
+                        <>
+                            <select value={filters.college_id ?? ''} onChange={(e) => updateFilter('college_id', e.target.value)}
+                                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="">All Colleges</option>
+                                {colleges.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+                            <select value={filters.program_id ?? ''} onChange={(e) => updateFilter('program_id', e.target.value)}
+                                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="">All Programs</option>
+                                {visiblePrograms.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                            </select>
+                        </>
+                    )}
                     <input type="number" placeholder="Graduation Year" value={filters.graduation_year ?? ''}
                         onChange={(e) => updateFilter('graduation_year', e.target.value)}
                         className="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />

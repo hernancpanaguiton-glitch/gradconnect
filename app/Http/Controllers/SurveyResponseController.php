@@ -18,27 +18,22 @@ class SurveyResponseController extends Controller
      */
     public function show(Request $request, Survey $survey): Response
     {
-        abort_unless($survey->isOpen(), 422, 'This survey is not currently open.');
+        $this->assertCanRespond($request, $survey);
 
         $user = $request->user();
-        $profile = $user->graduateProfile;
 
-        $response = SurveyResponse::firstOrCreate(
-            [
-                'survey_id' => $survey->id,
-                'user_id' => $user->id,
-            ],
-            [
-                'graduate_profile_id' => $profile?->id,
-                'status' => 'in_progress',
-            ],
-        );
+        // Read-only: a GET must not create state. Previously this used
+        // firstOrCreate, so merely opening a survey created an in_progress
+        // row and inflated the response count shown to survey managers.
+        $existing = SurveyResponse::where('survey_id', $survey->id)
+            ->where('user_id', $user->id)
+            ->first();
 
         $survey->load('questions');
 
         return Inertia::render('Surveys/Respond', [
             'survey' => $survey,
-            'existingAnswers' => $response->load('answers')->answers,
+            'existingAnswers' => $existing ? $existing->load('answers')->answers : [],
         ]);
     }
 
@@ -47,11 +42,25 @@ class SurveyResponseController extends Controller
      */
     public function store(Request $request, Survey $survey): RedirectResponse
     {
-        abort_unless($survey->isOpen(), 422, 'This survey is not currently open.');
+        $this->assertCanRespond($request, $survey);
 
         $request->validate([
             'answers' => ['required', 'array'],
         ]);
+
+        // Only accept answers for questions that actually belong to THIS
+        // survey. Without this, a crafted payload could write answers keyed
+        // to another survey's question IDs, which then flow into
+        // applyMapsToWriteBack() and corrupt employment records.
+        $ownQuestionIds = $survey->questions()->pluck('id')->all();
+        $submitted = array_keys($request->answers);
+        $unknown = array_diff($submitted, $ownQuestionIds);
+
+        abort_unless(
+            $unknown === [],
+            422,
+            'This submission references questions that do not belong to this survey.',
+        );
 
         $user = $request->user();
         $profile = $user->graduateProfile;
@@ -80,6 +89,32 @@ class SurveyResponseController extends Controller
         }
 
         return redirect()->route('surveys.index')->with('success', 'Survey submitted. Thank you!');
+    }
+
+    /**
+     * Guard both the form and the submission.
+     *
+     * Survey targeting (target_role / target_graduation_year) was previously
+     * enforced only in SurveyController@index, so it could be bypassed by
+     * navigating straight to /surveys/{id}/respond. Survey managers are
+     * excluded here so that who MAY respond matches who gets invited by
+     * Survey::eligibleRespondents() — otherwise staff answers would pollute
+     * the tracer statistics those same staff then report on.
+     */
+    private function assertCanRespond(Request $request, Survey $survey): void
+    {
+        abort_unless($survey->isOpen(), 422, 'This survey is not currently open.');
+
+        $user = $request->user();
+
+        abort_unless($user->hasPermissionTo('surveys.respond'), 403);
+        abort_if($user->hasPermissionTo('surveys.manage'), 403, 'Survey managers do not submit responses.');
+
+        abort_unless(
+            Survey::whereKey($survey->id)->visibleTo($user)->exists(),
+            403,
+            'This survey is not addressed to you.',
+        );
     }
 
     /**

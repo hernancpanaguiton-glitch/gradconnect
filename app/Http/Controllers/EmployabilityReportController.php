@@ -34,10 +34,16 @@ class EmployabilityReportController extends Controller
             'graduation_year' => $this->graduationYearFromRequest($request),
         ];
 
+        // A department head's scope is fixed, so don't offer college/program
+        // selectors that would be silently overridden.
+        $scopeLocked = $this->callerIsDepartmentScoped($request->user());
+
         return Inertia::render('Reports/Employability', [
             ...$this->reports->employabilitySummary($filters),
             'colleges' => Department::colleges()->orderBy('name')->get(['id', 'name']),
             'programs' => Department::where('type', 'program')->orderBy('name')->get(['id', 'name', 'parent_id']),
+            'scopeLocked' => $scopeLocked,
+            'scopeLabel' => $scopeLocked ? ($request->user()->department?->name ?? 'your department') : null,
             'filters' => [
                 'college_id' => $request->integer('college_id') ?: null,
                 'program_id' => $request->integer('program_id') ?: null,
