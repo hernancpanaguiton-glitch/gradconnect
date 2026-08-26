@@ -85,7 +85,7 @@ class Survey extends Model
     {
         return User::where('status', 'active')
             ->when($this->target_role, fn (Builder $q) => $q->role($this->target_role))
-            ->with('graduateProfile')
+            ->with(['graduateProfile', 'notificationPreferences'])
             ->get()
             ->reject(fn (User $u) => $u->hasPermissionTo('surveys.manage'))
             ->filter(function (User $u) {

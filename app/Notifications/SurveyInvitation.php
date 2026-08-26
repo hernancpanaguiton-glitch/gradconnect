@@ -19,7 +19,7 @@ class SurveyInvitation extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->wantsNotification('survey_invitations') ? ['database', 'mail'] : [];
     }
 
     public function toMail(object $notifiable): MailMessage

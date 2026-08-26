@@ -102,6 +102,23 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(MatchFeedback::class);
     }
 
+    public function notificationPreferences(): HasMany
+    {
+        return $this->hasMany(NotificationPreference::class);
+    }
+
+    /**
+     * Whether this user still wants a given notification category. Absence of
+     * a row means "not yet configured", which defaults to on — so existing
+     * users keep receiving what they always did.
+     */
+    public function wantsNotification(string $key): bool
+    {
+        return $this->notificationPreferences
+            ->firstWhere('preference_key', $key)
+            ?->enabled ?? true;
+    }
+
     /**
      * A department head's analytics scope: their own department plus its
      * child programs (e.g. a college head sees every program under that

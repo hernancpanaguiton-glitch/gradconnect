@@ -57,6 +57,8 @@ class Announcement extends Model
             ? User::role($this->audience)
             : User::query();
 
-        return $query->where('status', 'active')->get();
+        // Eager-load preferences: each notification's via() consults them, so
+        // without this a fan-out to every user is an N+1.
+        return $query->where('status', 'active')->with('notificationPreferences')->get();
     }
 }

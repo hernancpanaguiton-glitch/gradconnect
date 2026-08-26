@@ -20,7 +20,7 @@ class ApplicationStatusUpdated extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->wantsNotification('application_updates') ? ['database', 'mail'] : [];
     }
 
     public function toMail(object $notifiable): MailMessage

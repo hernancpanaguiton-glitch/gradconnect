@@ -19,7 +19,7 @@ class ApplicationReceived extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $notifiable->wantsNotification('application_received') ? ['database', 'mail'] : [];
     }
 
     public function toMail(object $notifiable): MailMessage

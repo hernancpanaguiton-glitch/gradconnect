@@ -42,6 +42,7 @@ use App\Http\Controllers\ResumeAnalysisController;
 use App\Http\Controllers\ResumeBuilderController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ScholarshipController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SkillGapController;
 use App\Http\Controllers\StudentCaseController;
@@ -217,7 +218,9 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
-    Route::inertia('/settings', 'Settings')->name('settings');
+    // Personal settings (distinct from /admin/settings, which is platform-wide).
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::patch('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
     Route::get('/applications', [JobApplicationController::class, 'index'])->name('applications.index');
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 
