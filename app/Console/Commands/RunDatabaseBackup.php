@@ -19,10 +19,36 @@ class RunDatabaseBackup extends Command
 
     protected $description = 'Create a pg_dump snapshot of the database into storage/app/private/backups.';
 
+    /**
+     * Whether a PostgreSQL client binary is actually callable on this host.
+     *
+     * pg_dump ships with the Postgres *client* tools, which are frequently
+     * absent on a machine that talks to Postgres over TCP (or runs it in
+     * Docker). Without this check the failure surfaces as a generic "backup
+     * failed", which is indistinguishable from a real backup error.
+     */
+    public static function binaryAvailable(string $binary = 'pg_dump'): bool
+    {
+        try {
+            return Process::run([$binary, '--version'])->successful();
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     public function handle(): int
     {
         if (DB::connection()->getDriverName() !== 'pgsql') {
             $this->warn('Backups are only supported on PostgreSQL. Current driver: '.DB::connection()->getDriverName());
+
+            return self::FAILURE;
+        }
+
+        if (! self::binaryAvailable()) {
+            $this->error(
+                'pg_dump was not found on PATH. Install the PostgreSQL client tools '.
+                '(or run this inside the Docker app container, which has them) and try again.'
+            );
 
             return self::FAILURE;
         }

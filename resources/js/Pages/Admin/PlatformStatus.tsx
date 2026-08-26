@@ -14,6 +14,9 @@ interface Props extends PageProps {
     embeddingSuccessRate: number | null;
     matchScoringSuccessRate: number | null;
     recentFailedJobs: FailedJob[];
+    queueReserved: number;
+    queueOldestWaitMinutes: number | null;
+    queueStalled: boolean;
     feedbackTotal: number;
     feedbackHelpfulRate: number | null;
     helpfulRateByProvider: ProviderRate[];
@@ -22,6 +25,7 @@ interface Props extends PageProps {
 
 export default function PlatformStatus({
     queueDepth, failedJobsCount, embeddingSuccessRate, matchScoringSuccessRate, recentFailedJobs,
+    queueOldestWaitMinutes, queueStalled,
     feedbackTotal, feedbackHelpfulRate, helpfulRateByProvider, hireCalibration,
 }: Props) {
     return (
@@ -29,6 +33,23 @@ export default function PlatformStatus({
             <Head title="Platform Status" />
             <div className="space-y-6">
                 <PageHeader icon={Cpu} title="Platform Status" subtitle="Queue health, AI pipeline success rates, and recommendation accuracy." />
+
+                {queueStalled && (
+                    <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-500/10">
+                        <p className="font-semibold text-amber-900 dark:text-amber-300">
+                            No queue worker appears to be running
+                        </p>
+                        <p className="mt-1 text-sm text-amber-800 dark:text-amber-300/90">
+                            {queueDepth} job{queueDepth === 1 ? '' : 's'} {queueDepth === 1 ? 'has' : 'have'} been waiting
+                            for {queueOldestWaitMinutes} minute{queueOldestWaitMinutes === 1 ? '' : 's'} with nothing
+                            picking them up. Résumé embeddings, AI match scoring, and all notification email stay pending
+                            until a worker runs — start one with{' '}
+                            <code className="rounded bg-amber-100 px-1 py-0.5 dark:bg-amber-500/20">php artisan queue:work</code>{' '}
+                            (or <code className="rounded bg-amber-100 px-1 py-0.5 dark:bg-amber-500/20">composer dev</code>,
+                            which runs one alongside the server).
+                        </p>
+                    </div>
+                )}
 
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     <StatTile icon={ListChecks} color="blue" label="Queued Jobs" value={queueDepth} sub="Waiting to run" />

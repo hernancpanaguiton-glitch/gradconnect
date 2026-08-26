@@ -6,7 +6,7 @@ import { Database, Download } from 'lucide-react';
 import { useState } from 'react';
 
 interface Backup { name: string; size: number; created_at: string }
-interface Props extends PageProps { backups: Backup[]; isPostgres: boolean }
+interface Props extends PageProps { backups: Backup[]; isPostgres: boolean; pgDumpAvailable: boolean }
 
 function formatBytes(bytes: number): string {
     if (bytes < 1024) return `${bytes} B`;
@@ -14,8 +14,9 @@ function formatBytes(bytes: number): string {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function Backups({ backups, isPostgres }: Props) {
+export default function Backups({ backups, isPostgres, pgDumpAvailable }: Props) {
     const [creating, setCreating] = useState(false);
+    const canBackup = isPostgres && pgDumpAvailable;
 
     function createBackup() {
         setCreating(true);
@@ -30,7 +31,7 @@ export default function Backups({ backups, isPostgres }: Props) {
                     icon={Database}
                     title="Data & Backups"
                     subtitle="Snapshot the database for disaster recovery."
-                    action={isPostgres ? (
+                    action={canBackup ? (
                         <button onClick={createBackup} disabled={creating}
                             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-blue-700 disabled:opacity-50">
                             {creating ? 'Creating…' : 'Create Backup Now'}
@@ -41,6 +42,19 @@ export default function Backups({ backups, isPostgres }: Props) {
                 {!isPostgres && (
                     <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-500/10 dark:text-amber-300">
                         Backups require a PostgreSQL connection. The current database driver doesn't support pg_dump snapshots.
+                    </div>
+                )}
+
+                {isPostgres && !pgDumpAvailable && (
+                    <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-500/10">
+                        <p className="font-semibold text-amber-900 dark:text-amber-300">
+                            pg_dump is not installed on this server
+                        </p>
+                        <p className="mt-1 text-sm text-amber-800 dark:text-amber-300/90">
+                            The database is reachable, but the PostgreSQL client tools that actually produce the
+                            snapshot are not on this machine's PATH, so backups cannot run here. Install the
+                            PostgreSQL client tools, or run the app from the Docker container, which includes them.
+                        </p>
                     </div>
                 )}
 

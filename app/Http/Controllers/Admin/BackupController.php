@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Console\Commands\RunDatabaseBackup;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +40,9 @@ class BackupController extends Controller
         return Inertia::render('Admin/Backups', [
             'backups' => $backups,
             'isPostgres' => DB::connection()->getDriverName() === 'pgsql',
+            // Say plainly that the client tools are missing rather than letting
+            // the user discover it as an opaque "backup failed".
+            'pgDumpAvailable' => RunDatabaseBackup::binaryAvailable(),
         ]);
     }
 

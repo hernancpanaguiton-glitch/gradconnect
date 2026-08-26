@@ -100,6 +100,70 @@ class PlatformStatusControllerTest extends TestCase
             );
     }
 
+    /**
+     * Every AI job and notification is ShouldQueue, so a stopped worker makes
+     * the whole system silently do nothing. That has to be visible.
+     */
+    public function test_a_backlog_with_no_consumer_is_reported_as_stalled(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        DB::table('jobs')->insert([
+            'queue' => 'default', 'payload' => '{}', 'attempts' => 0,
+            'reserved_at' => null,
+            'available_at' => now()->subMinutes(30)->timestamp,
+            'created_at' => now()->subMinutes(30)->timestamp,
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page
+                ->where('queueStalled', true)
+                ->where('queueReserved', 0)
+                ->where('queueOldestWaitMinutes', 30)
+            );
+    }
+
+    public function test_a_job_currently_being_worked_is_not_reported_as_stalled(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        DB::table('jobs')->insert([
+            'queue' => 'default', 'payload' => '{}', 'attempts' => 1,
+            'reserved_at' => now()->timestamp,
+            'available_at' => now()->subMinutes(30)->timestamp,
+            'created_at' => now()->subMinutes(30)->timestamp,
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page->where('queueStalled', false));
+    }
+
+    public function test_a_freshly_queued_job_is_not_reported_as_stalled(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        DB::table('jobs')->insert([
+            'queue' => 'default', 'payload' => '{}', 'attempts' => 0,
+            'reserved_at' => null,
+            'available_at' => now()->timestamp,
+            'created_at' => now()->timestamp,
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page->where('queueStalled', false));
+    }
+
+    public function test_an_empty_queue_is_not_reported_as_stalled(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->get(route('admin.platform-status'))
+            ->assertInertia(fn ($page) => $page
+                ->where('queueStalled', false)
+                ->where('queueOldestWaitMinutes', null)
+            );
+    }
+
     public function test_feedback_helpful_rate_and_provider_breakdown_are_computed(): void
     {
         $admin = User::factory()->admin()->create();

@@ -42,6 +42,7 @@ class PlatformStatusController extends Controller
         return Inertia::render('Admin/PlatformStatus', [
             'queueDepth' => DB::table('jobs')->count(),
             'failedJobsCount' => DB::table('failed_jobs')->count(),
+            ...$this->queueHealth(),
             'embeddingSuccessRate' => $embeddingTotal > 0 ? (int) round($embeddingDone / $embeddingTotal * 100) : null,
             'matchScoringSuccessRate' => $matchTotal > 0 ? (int) round($matchScored / $matchTotal * 100) : null,
             'recentFailedJobs' => DB::table('failed_jobs')
@@ -52,6 +53,34 @@ class PlatformStatusController extends Controller
                 ->all(),
             ...$this->recommendationAccuracy(),
         ]);
+    }
+
+    /**
+     * Detect a queue with work but no consumer.
+     *
+     * Every AI job and every notification is ShouldQueue, so with no worker
+     * running nothing embeds, nothing scores, and no mail is delivered — all
+     * silently. Surfacing it here turns a mystifying "nothing happens" into a
+     * stated cause.
+     *
+     * @return array<string, mixed>
+     */
+    private function queueHealth(): array
+    {
+        $oldestAvailableAt = DB::table('jobs')->min('available_at');
+        $reserved = DB::table('jobs')->whereNotNull('reserved_at')->count();
+
+        $waitingMinutes = $oldestAvailableAt === null
+            ? null
+            : (int) floor((time() - (int) $oldestAvailableAt) / 60);
+
+        return [
+            'queueReserved' => $reserved,
+            'queueOldestWaitMinutes' => $waitingMinutes,
+            // Work queued, nothing picked up, and it has been sitting a while:
+            // that is a stopped worker rather than normal backlog.
+            'queueStalled' => $waitingMinutes !== null && $waitingMinutes >= 2 && $reserved === 0,
+        ];
     }
 
     /**
