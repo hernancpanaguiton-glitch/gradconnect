@@ -274,5 +274,13 @@ class DatabaseSeeder extends Seeder
             'type' => 'single_choice',
             'options' => ['Within 1 month', '1-3 months', '3-6 months', 'More than 6 months', 'Still looking'],
         ]);
+
+        // Everything above is the core record set. The activity layer on top
+        // of it — résumés, applications, employer feedback, survey responses,
+        // events, scholarships, clearance, cases, community, messaging,
+        // learning resources, announcements, AI match results — lives in
+        // DemoDataSeeder so a fresh seed produces a walkable system instead of
+        // a dozen empty screens.
+        $this->call(DemoDataSeeder::class);
     }
 }
