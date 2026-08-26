@@ -152,10 +152,14 @@
   .note { background: var(--indigo-tint); border-color: var(--indigo); }
   .warn { background: var(--amber-tint); border-color: var(--amber); }
   .tip { background: var(--green-tint); border-color: var(--green); }
-  .note strong, .warn strong, .tip strong { display: block; margin-bottom: 2px; }
-  .warn strong { color: var(--amber); }
-  .tip strong { color: var(--green); }
-  .note strong { color: var(--indigo-ink); }
+  /* Only the leading strong is the callout's heading — inline bold inside the
+     body must stay inline, or sentences break across lines. */
+  .note > strong:first-child, .warn > strong:first-child, .tip > strong:first-child {
+    display: block; margin-bottom: 2px;
+  }
+  .warn > strong:first-child { color: var(--amber); }
+  .tip > strong:first-child { color: var(--green); }
+  .note > strong:first-child { color: var(--indigo-ink); }
 
   /* ---- Code / resume blocks ---- */
   .block {
@@ -205,15 +209,16 @@
       <nav class="toc" aria-label="Contents">
         <a href="#start"><span class="num">01</span> Run with Docker</a>
         <a href="#logins"><span class="num">02</span> Login accounts</a>
-        <a href="#alumni"><span class="num">03</span> Alumni</a>
-        <a href="#student"><span class="num">04</span> Student</a>
-        <a href="#partner"><span class="num">05</span> Industry Partner</a>
-        <a href="#affairs"><span class="num">06</span> Alumni Affairs</a>
-        <a href="#dept"><span class="num">07</span> Department Head</a>
-        <a href="#sao"><span class="num">08</span> Student Affairs Office</a>
-        <a href="#admin"><span class="num">09</span> Admin</a>
-        <a href="#resumes"><span class="num">10</span> Sample résumés</a>
-        <a href="#notes"><span class="num">11</span> Known gaps</a>
+        <a href="#shared"><span class="num">03</span> Shared by every role</a>
+        <a href="#alumni"><span class="num">04</span> Alumni</a>
+        <a href="#student"><span class="num">05</span> Student</a>
+        <a href="#partner"><span class="num">06</span> Industry Partner</a>
+        <a href="#affairs"><span class="num">07</span> Alumni Affairs</a>
+        <a href="#dept"><span class="num">08</span> Department Head</a>
+        <a href="#sao"><span class="num">09</span> Student Affairs Office</a>
+        <a href="#admin"><span class="num">10</span> Admin</a>
+        <a href="#resumes"><span class="num">11</span> Sample résumés</a>
+        <a href="#notes"><span class="num">12</span> Known gaps</a>
       </nav>
     </section>
 
@@ -297,20 +302,69 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
       </div>
     </section>
 
-    <!-- 03 Alumni -->
+    <!-- 03 Shared -->
+    <section id="shared">
+      <p class="eyebrow">Common ground</p>
+      <h2>What every role gets</h2>
+      <p class="section-intro">These six features are on every account regardless of role &mdash; what they <em>show</em> changes with your permissions. The role sections that follow list only what is specific to that role, so check here first if you're wondering where something lives.</p>
+
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Feature</th><th>Where</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Sidebar, top</td><td>A different dashboard is built for each of the seven roles, with its own KPIs and charts. Every number is computed from the database &mdash; nothing is hardcoded.</td></tr>
+              <tr><td><strong>Global search</strong></td><td>Topbar search box</td><td>Searches across users, graduates, and surveys &mdash; but only the categories your role may see. An Admin gets user accounts; a partner or office gets graduates; a survey manager gets all surveys while a respondent gets only the open ones addressed to them.</td></tr>
+              <tr><td><strong>Notifications</strong></td><td>Bell icon &rarr; <span class="pill">/notifications</span></td><td>In-app inbox plus email. Covers account approval, application received, application status changed, survey invitations and reminders, and published announcements. Mark one read, or all at once.</td></tr>
+              <tr><td><strong>Personal settings</strong></td><td>Sidebar &rarr; <span class="pill">Settings</span></td><td>Four tabs: <em>Account</em> (name, email), <em>Password</em>, <em>Notifications</em> (four toggles &mdash; applications, matching, surveys &amp; announcements, community), <em>Theme</em> (light / dark / follow system, applied immediately).</td></tr>
+              <tr><td><strong>Account &amp; privacy</strong></td><td>Profile menu &rarr; <span class="pill">/profile</span></td><td>The Breeze account page, including permanent account deletion. Settings &rarr; Privacy links here rather than duplicating it.</td></tr>
+              <tr><td><strong>Download my data</strong></td><td><span class="pill">/account/export</span></td><td>Self-service JSON export of everything the platform holds about you &mdash; the Data Privacy Act (RA 10173) requirement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Messaging &mdash; who may talk to whom</strong>
+        Graduates can always start a thread with a staff office (Alumni Affairs, SAO, Department Head, Admin). A graduate and an <em>employer</em> can only message each other if that graduate actually applied to one of the employer's postings &mdash; it is not an open DM system. Staff and partners reply inside existing threads.
+      </div>
+
+      <div class="tip">
+        <strong>A good five-minute smoke test</strong>
+        Sign in as each of the seven accounts in turn and click <em>every</em> sidebar item. Each one should render real, populated content &mdash; no blank tables, no spinners that never resolve, no 403. That walk is the fastest way to spot a regression.
+      </div>
+    </section>
+
+    <!-- 04 Alumni -->
     <section id="alumni">
       <div class="role-head"><span class="chip c-alumni">Alumni</span><span class="muted cred">alumni@gradconnect.edu.ph</span></div>
       <h2>Alumni</h2>
-      <p class="section-intro">A graduate managing their career profile, résumés, job applications, and AI recommendations. This is the best account to see the AI matching in action.</p>
+      <p class="section-intro">A graduate managing their career profile, résumés, job applications, and AI recommendations. This is the best account to see the AI matching in action &mdash; it ships with a résumé already uploaded and scored.</p>
 
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>My Profile</strong> &mdash; fill in career details across four tabs: Basic Info, Education, Employment, Skills.</li>
-        <li><strong>My Résumés</strong> &mdash; upload a PDF résumé (this is what gets matched to jobs).</li>
-        <li><strong>Job Board</strong> &mdash; browse open positions, filter, and apply.</li>
-        <li><strong>Recommendations</strong> &mdash; see jobs ranked by AI fit score with explanations and skill gaps.</li>
-        <li><strong>Surveys</strong> &mdash; answer open employability &amp; tracer surveys.</li>
-      </ul>
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Application activity over time, your most recent applications, and a profile-completeness checklist that links to whatever is still missing.</td></tr>
+              <tr><td><strong>My Profile</strong></td><td>Four tabs &mdash; Basic Info, Education, Employment, Skills. Add, edit, and delete as many education and employment entries as you like. Skills use an AI autocomplete that validates real skills and rejects invented ones. Full field list below.</td></tr>
+              <tr><td><strong>My Résumés</strong></td><td>Upload PDF / DOCX / TXT (max 10&nbsp;MB), mark one as <em>primary</em>, delete any, and <strong>Build from profile</strong> &mdash; the Résumé Builder renders a formatted résumé from your profile data, saves it as a real résumé file, and sends it through the same AI pipeline as an upload. Print / Save-as-PDF from the browser.</td></tr>
+              <tr><td><strong>AI Résumé Analysis</strong></td><td>An AI review of your primary résumé: a 0&ndash;100 score, its strengths, concrete suggestions, and the keywords it did and didn't find. Separately, a set of deterministic <em>consistency checks</em> compares the résumé against your profile and flags mismatches &mdash; for example, when your name or your listed skills don't actually appear in the file. Those checks run with or without AI keys.</td></tr>
+              <tr><td><strong>Job Board</strong></td><td>Browse and filter open postings, open a posting's full detail, and apply. Draft and closed postings are not reachable, even by URL.</td></tr>
+              <tr><td><strong>My Applications</strong></td><td>Every application with its current status &mdash; submitted, under review, shortlisted, hired, or rejected &mdash; and a withdraw action.</td></tr>
+              <tr><td><strong>Recommendations</strong></td><td>Jobs ranked by AI fit score, each with a written explanation, green "matched" / amber "gap" skill chips, curated learning resources for the gaps, and a 👍/👎 feedback control that feeds the Admin's accuracy dashboard. <strong>Refresh recommendations</strong> re-runs the matcher.</td></tr>
+              <tr><td><strong>Skill Gap Analysis</strong></td><td>The skills you're missing most often across all your matches, frequency-ranked, each paired with training, seminars, or certifications from the resource catalogue.</td></tr>
+              <tr><td><strong>Career Progression</strong></td><td>Your employment history as a timeline, built from the Employment tab of your profile.</td></tr>
+              <tr><td><strong>Reports Hub</strong></td><td>Your two personal reports &mdash; Skill Gap Analysis and My Applications.</td></tr>
+              <tr><td><strong>Alumni Community</strong></td><td>Post to the alumni feed, comment on others' posts, delete your own. Alumni Affairs moderates.</td></tr>
+              <tr><td><strong>Messages</strong></td><td>Start a thread with any staff office, or with an employer you've applied to.</td></tr>
+              <tr><td><strong>Surveys</strong></td><td>Answer open tracer and employability surveys addressed to your role and graduation year. Tracer answers write back into your profile &mdash; answering "employment status" updates your profile and can create an employment record.</td></tr>
+              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <h3>What to enter &mdash; Profile tabs</h3>
       <div class="card" style="padding:6px 8px;">
@@ -341,33 +395,57 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
       <div class="warn"><strong>Résumés can be PDF, DOCX, or TXT</strong>(max 10&nbsp;MB). Other formats are rejected. New uploads only get scored while the host's queue worker is running.</div>
     </section>
 
-    <!-- 04 Student -->
+    <!-- 05 Student -->
     <section id="student">
       <div class="role-head"><span class="chip c-student">Student</span><span class="muted cred">student@gradconnect.edu.ph</span></div>
       <h2>Graduating Student</h2>
-      <p class="section-intro">A soon-to-graduate student building a career profile and browsing internships &amp; entry-level roles.</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>My Profile</strong> &mdash; same profile tabs as Alumni; set an <em>expected</em> graduation year.</li>
-        <li><strong>Jobs &amp; Internships</strong> &mdash; browse and apply to open positions.</li>
-        <li><strong>Recommendations</strong> &mdash; AI job matches once a résumé is uploaded.</li>
-        <li><strong>Surveys</strong> &mdash; respond to open surveys.</li>
-      </ul>
-      <p class="muted">Tip: build the profile, add a few skills, then upload a résumé to see recommendations populate (queue worker required for new uploads).</p>
+      <p class="section-intro">A soon-to-graduate student building a career profile and browsing internships &amp; entry-level roles. Students share the graduate features above, plus four of their own that alumni don't get.</p>
+
+      <h3>Same as Alumni</h3>
+      <p>My Profile (set an <em>expected</em> graduation year), My Résumés and the Résumé Builder, AI Résumé Analysis, My Applications, Recommendations, Skill Gap Analysis, Career Progression, Reports Hub, Messages, Surveys, and Settings all behave exactly as described in the Alumni section. <strong>Jobs &amp; Internships</strong> is the same job board.</p>
+
+      <h3>Student-only menu items</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Career Readiness</strong></td><td>Take the readiness assessment &mdash; a rating-scale questionnaire scored into a 0&ndash;100&nbsp;% band, so you can see how prepared you are before graduating. SAO sees the aggregate of everyone's scores; you see only your own.</td></tr>
+              <tr><td><strong>Guidance Resources</strong></td><td>The curated catalogue of trainings, seminars, certifications, and courses, filtered to your program. Alumni Affairs maintains it; the same resources appear against your skill gaps.</td></tr>
+              <tr><td><strong>Student Concerns</strong></td><td>File a concern with the Student Affairs Office and follow its status as SAO works through it. This is deliberately student-only &mdash; alumni concerns route through Alumni Affairs instead.</td></tr>
+              <tr><td class="muted">No Alumni Community</td><td class="muted">The community feed is an alumni feature; students don't see it in the sidebar and can't post to it.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tip"><strong>Good order to test in</strong>Fill the profile &rarr; add a few skills &rarr; upload one of the sample résumés below (or press <em>Build from profile</em>) &rarr; open Recommendations. With the queue worker running, matches appear within a few seconds of the upload finishing.</div>
     </section>
 
-    <!-- 05 Partner -->
+    <!-- 06 Partner -->
     <section id="partner">
       <div class="role-head"><span class="chip c-partner">Industry Partner</span><span class="muted cred">partner@gradconnect.edu.ph</span></div>
       <h2>Industry Partner</h2>
-      <p class="section-intro">An employer posting vacancies, reviewing applicants, and seeing AI-ranked candidates.</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>My Company</strong> &mdash; edit the company profile.</li>
-        <li><strong>Job Postings</strong> &mdash; create, edit, and close postings.</li>
-        <li><strong>Candidates</strong> &mdash; review who applied and update their status.</li>
-        <li><strong>Matches</strong> &mdash; see graduates AI-ranked against a posting.</li>
-      </ul>
+      <p class="section-intro">An employer posting vacancies, reviewing applicants, and seeing graduates AI-ranked against each posting.</p>
+
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Your hiring funnel &mdash; applications by stage, active postings, and recent applicant activity.</td></tr>
+              <tr><td><strong>My Company</strong></td><td>Create and edit the company profile that appears on every one of your postings.</td></tr>
+              <tr><td><strong>Job Postings</strong></td><td>Create, edit, close, and delete your own postings. The form has <strong>three AI writing assists</strong>: suggest job titles, draft a description, and draft qualifications. Attach skills and tick which are <em>required</em>. Full field list below.</td></tr>
+              <tr><td><strong>&hellip; &rarr; Candidates</strong></td><td>Open any posting to see who applied. Move an applicant through <em>under review &rarr; shortlisted &rarr; hired</em> or <em>rejected</em> &mdash; each change notifies them by email and in-app. Open their résumé file and profile. Once someone is hired or rejected you can submit <strong>employer feedback</strong>: competency ratings that flow into the Department Head's Program Outcomes report and the Admin's AI calibration check.</td></tr>
+              <tr><td><strong>&hellip; &rarr; Matches</strong></td><td>Graduates ranked against that posting by AI fit score, with explanations and matched/missing skills &mdash; the employer-side mirror of the graduate's Recommendations. <strong>Refresh matches</strong> re-runs it.</td></tr>
+              <tr><td><strong>Talent Search</strong></td><td>Search the whole graduate directory by college, program, skill, or résumé status, and open any graduate's profile. <em>Résumé files</em> are the exception: you can only open the résumé of someone who actually applied to one of your postings.</td></tr>
+              <tr><td><strong>Messages</strong></td><td>Reply to graduates who have applied to your postings.</td></tr>
+              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <h3>What to enter &mdash; new Job Posting</h3>
       <div class="card" style="padding:6px 8px;">
@@ -392,16 +470,35 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
       <p class="muted">After saving, open a posting's <strong>Matches</strong> and press <strong>Refresh matches</strong> to rank applicants by AI fit (queue worker required).</p>
     </section>
 
-    <!-- 06 Affairs -->
+    <!-- 07 Affairs -->
     <section id="affairs">
       <div class="role-head"><span class="chip c-affairs">Alumni Affairs</span><span class="muted cred">alumni.affairs@gradconnect.edu.ph</span></div>
       <h2>Alumni Affairs Office</h2>
-      <p class="section-intro">Runs employability &amp; tracer surveys and views employment reports.</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>Surveys</strong> &mdash; create, edit, open/close, and view results.</li>
-        <li><strong>Employability Report</strong> &mdash; graduate counts and employment-status breakdown.</li>
-      </ul>
+      <p class="section-intro">The busiest staff role &mdash; it runs the tracer studies, owns the employability reporting, curates what graduates are recommended to learn, and organises alumni engagement.</p>
+
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Alumni engagement signals &mdash; survey response rates, event attendance, community activity, and employment trends.</td></tr>
+              <tr><td><strong>Alumni Database</strong></td><td>The full graduate directory, searchable and filterable by college, program, skill, and résumé status, with read-only access to any graduate's profile and résumés.</td></tr>
+              <tr><td><strong>Tracer Survey</strong></td><td>Build surveys with seven question types, open and close them, edit, delete, and read results. <strong>Target</strong> a survey at a role and/or graduation year &mdash; only matching graduates ever see it. Publishing sends invitations; <strong>Send Reminder</strong> chases only the people who haven't responded. Map a question to a profile field (<em>maps to</em>) and the answer writes straight back into employment tracking.</td></tr>
+              <tr><td><strong>Employability Reports</strong></td><td>The full report suite, filterable by college, program, and graduation year: employment rate, status breakdown, job-relevance rate, salary-range distribution, average time from graduation to first job, and survey response rates. <strong>Export CSV</strong> or Print / Save as PDF. Every export is logged.</td></tr>
+              <tr><td><strong>Reports Hub</strong></td><td>One page listing every report this account may run &mdash; employability, surveys, and the graduate directory.</td></tr>
+              <tr><td><strong>Announcements</strong></td><td>Write announcements targeted at a specific role or everyone. Publishing notifies the audience in-app and by email; editing a published announcement doesn't re-notify.</td></tr>
+              <tr><td><strong>Learning Resources</strong></td><td>Curate the catalogue behind Skill Bridge Mitigation &mdash; trainings, seminars, certifications, and courses, each mapped to the skills it teaches and optionally to a department. These are what appear against graduates' skill gaps.</td></tr>
+              <tr><td><strong>Skill Taxonomy</strong></td><td>Keep the skill vocabulary canonical: register aliases so "JS" resolves to "JavaScript" instead of creating a duplicate skill. Applies everywhere skills are attached &mdash; profiles, postings, and résumé parsing.</td></tr>
+              <tr><td><strong>Alumni Events</strong></td><td>Create and manage career fairs, workshops, and gatherings with a capacity limit, publish them, and watch RSVPs come in. Draft events accept no RSVPs (you can still RSVP to your own draft while previewing it).</td></tr>
+              <tr><td><strong>Alumni Community</strong></td><td>Read the alumni feed and moderate it &mdash; you can delete any post or comment, not just your own.</td></tr>
+              <tr><td><strong>Messages</strong></td><td>Threads with graduates who have contacted the office.</td></tr>
+              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <h3>What to enter &mdash; new Survey</h3>
       <div class="card" style="padding:6px 8px;">
         <div class="table-scroll">
@@ -409,12 +506,15 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
             <thead><tr><th>Field</th><th>Example value</th></tr></thead>
             <tbody>
               <tr><td>Title <span class="req">*</span></td><td>Graduate Employability Survey 2026</td></tr>
-              <tr><td>Type</td><td>Employability / Tracer / Custom</td></tr>
+              <tr><td>Type</td><td>Employability / Tracer / Readiness / Custom</td></tr>
               <tr><td>Status</td><td>Open (so respondents can answer)</td></tr>
+              <tr><td>Target role</td><td>Alumni, Student, or everyone &mdash; non-matching graduates never see the survey, even by URL</td></tr>
+              <tr><td>Target graduation year</td><td>e.g. <code>2024</code>, or leave blank for all years</td></tr>
               <tr><td>Question prompt</td><td>What is your current employment status?</td></tr>
               <tr><td>Question type</td><td>text, textarea, single choice, multi choice, rating, boolean, number</td></tr>
               <tr><td>Options</td><td>for choice types: Employed, Unemployed, Self-employed&hellip;</td></tr>
               <tr><td>Required</td><td>toggle per question</td></tr>
+              <tr><td>Maps to</td><td>optional &mdash; write the answer back to the respondent's employment status or employment record</td></tr>
             </tbody>
           </table>
         </div>
@@ -422,55 +522,102 @@ docker compose down -v        # stop and wipe data for a clean restart</div>
       <p class="muted">Two surveys are already seeded and <strong>open</strong>, so the Alumni/Student accounts can answer them right away.</p>
     </section>
 
-    <!-- 07 Dept Head -->
+    <!-- 08 Dept Head -->
     <section id="dept">
       <div class="role-head"><span class="chip c-dept">Department Head</span><span class="muted cred">depthead.ccs@gradconnect.edu.ph</span></div>
       <h2>Department Head</h2>
-      <p class="section-intro">Read-only analytics scoped to their department (College of Computer Studies and its programs).</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>Dashboard</strong> &mdash; graduates in the department, employment rate, course-related employment.</li>
-        <li><strong>Employability Report</strong> &mdash; the same employment breakdown view.</li>
-      </ul>
-      <p class="muted">No data entry &mdash; this role reviews figures only.</p>
+      <p class="section-intro">A dean reviewing how their own college's graduates fare in the job market. This is a read-only analytics role &mdash; and everything it sees is locked to its own college, by design.</p>
+
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Graduates in the department, employment rate, and how many work in a job related to their course. If no college is assigned yet, a selector here lets the dean assign their own &mdash; do that first, or every figure will legitimately read zero.</td></tr>
+              <tr><td><strong>Employment Statistics</strong></td><td>The employability report, filtered to this college's programs: employment rate, status breakdown, job-relevance, salary bands, and time-to-employment. <strong>Export CSV</strong> and Print / Save as PDF.</td></tr>
+              <tr><td><strong>Program Outcomes</strong></td><td>The curriculum-evaluation report &mdash; which skills this college's graduates are systematically missing (aggregated from AI match results) alongside the competency ratings employers actually gave them. This is the accreditation-support and curriculum-improvement view. CSV export included.</td></tr>
+              <tr><td><strong>Reports Hub</strong></td><td>The two reports above, in one place.</td></tr>
+              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Worth verifying deliberately</strong>
+        Scoping is enforced on the server, not just in the filter dropdowns. Try editing the URL to request another college's data (e.g. add <code>?college_id=</code> with a different ID to the Employment Statistics page) &mdash; it should stay on your own college's numbers rather than honouring it.
+      </div>
     </section>
 
-    <!-- 08 Student Affairs Office -->
+    <!-- 09 Student Affairs Office -->
     <section id="sao">
       <div class="role-head"><span class="chip c-sao">Student Affairs</span><span class="muted cred">sao@gradconnect.edu.ph</span></div>
       <h2>Student Affairs Office</h2>
-      <p class="section-intro">Supports current students &mdash; records, scholarships, events, clearance, and student analytics.</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>Dashboard</strong> &mdash; student headcount, scholarship recipients, clearance progress, and event stats.</li>
-        <li><strong>Student Records</strong> &mdash; search the student/graduate directory and open a read-only profile (with résumés).</li>
-        <li><strong>Scholarships</strong> &mdash; scholarship programs, recipients, and budgets.</li>
-        <li><strong>Student Events</strong> &mdash; career fairs, workshops, and campus events.</li>
-        <li><strong>Clearance &amp; Records</strong> &mdash; graduation clearance progress across offices.</li>
-        <li><strong>Student Analytics</strong> &mdash; the employability report view.</li>
-      </ul>
+      <p class="section-intro">Student welfare and non-academic development &mdash; records, readiness, scholarships, events, graduation clearance, and student concerns.</p>
+
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Student headcount, scholarship recipients, clearance progress, open concerns, and event statistics.</td></tr>
+              <tr><td><strong>Student Records</strong></td><td>Search the student and graduate directory, open any profile read-only, and open their résumés.</td></tr>
+              <tr><td><strong>Career Readiness</strong></td><td>The aggregate distribution of student readiness scores &mdash; how many sit in each band &mdash; so the office can see who needs support before graduation. Students take the assessment; you read the totals.</td></tr>
+              <tr><td><strong>Scholarships</strong></td><td>Create and edit scholarship programs with their budgets, then add and remove recipients. This is an institutional oversight tool, not a public application portal &mdash; students don't apply through it.</td></tr>
+              <tr><td><strong>Student Events</strong></td><td>Create and manage campus events, workshops, and career fairs with capacity limits, and track RSVPs. Shares one events board with Alumni Affairs.</td></tr>
+              <tr><td><strong>Clearance &amp; Records</strong></td><td>Graduation clearance across six offices &mdash; library, accounting, registrar, department, student affairs, and alumni office. Tick each office off for any graduate and watch institution-wide progress. Graduates see their own checklist read-only.</td></tr>
+              <tr><td><strong>Student Concerns</strong></td><td>The case queue &mdash; read concerns students have filed, and move each one through its status as you work it.</td></tr>
+              <tr><td><strong>Student Analytics</strong></td><td>The employability report with its filters and CSV export.</td></tr>
+              <tr><td><strong>Reports Hub</strong></td><td>Every report this account may run, in one place.</td></tr>
+              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="note"><strong>Registering as SAO</strong> New Student Affairs accounts (like Alumni Officer, Dean, and Industry Partner) are held for <em>admin approval</em> before they can sign in. Use the seeded <code>sao@</code> login above to explore right away.</div>
     </section>
 
-    <!-- 09 Admin -->
+    <!-- 10 Admin -->
     <section id="admin">
       <div class="role-head"><span class="chip c-admin">Admin</span><span class="muted cred">admin@gradconnect.edu.ph</span></div>
       <h2>Administrator</h2>
-      <p class="section-intro">Manages user accounts and the dynamic roles &amp; permissions system.</p>
-      <h3>What you can do</h3>
-      <ul class="does">
-        <li><strong>User Management</strong> &mdash; search users; edit a user's <em>status</em> (active / suspended / pending) and assigned <em>roles</em>; delete users.</li>
-        <li><strong>Roles &amp; Permissions</strong> &mdash; create custom roles and toggle each permission on a matrix. Core roles are protected from deletion.</li>
-      </ul>
+      <p class="section-intro">Holds every permission in the system. Beyond accounts and roles, this is where the platform's own health, history, and configuration live &mdash; and where you can see whether the AI is actually any good.</p>
+
+      <h3>Every menu item</h3>
+      <div class="card" style="padding:6px 8px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dashboard</strong></td><td>Platform-wide totals &mdash; users, postings, applications, and activity trends.</td></tr>
+              <tr><td><strong>User Management</strong></td><td>Search every account; change a user's <em>status</em> (active / suspended / pending) and assigned <em>roles</em>; delete accounts. This is also where self-registered staff accounts get approved.</td></tr>
+              <tr><td><strong>Roles &amp; Permissions</strong></td><td>Create custom roles and toggle each permission on a matrix. The seven core roles are protected from deletion.</td></tr>
+              <tr><td><strong>Job Management</strong></td><td>Moderation across <em>every</em> partner's postings, not just your own &mdash; change status or remove a posting outright.</td></tr>
+              <tr><td><strong>Tracer Surveys</strong></td><td>The same survey builder, results, and reminders Alumni Affairs uses.</td></tr>
+              <tr><td><strong>Announcements</strong></td><td>Write and publish role-targeted announcements.</td></tr>
+              <tr><td><strong>Reports</strong> / <strong>Reports Hub</strong></td><td>The employability report suite with filters and CSV export, plus a hub listing every report available to this account.</td></tr>
+              <tr><td><strong>Audit Logs</strong></td><td>The security trail: logins, failed logins, and logouts, plus every account status change, role change, deletion, and permission sync &mdash; searchable and filterable by action.</td></tr>
+              <tr><td><strong>Platform Status</strong></td><td>Live operational health: queue depth and whether the queue has <em>stalled</em>, failed jobs, résumé-embedding and AI-scoring success rates, and an <strong>AI accuracy dashboard</strong> &mdash; the 👍/👎 helpful-rate broken down by AI provider, plus a calibration check comparing AI fit scores against the ratings employers gave people they actually hired. The <em>minimum fit score</em> setting here really does filter weak matches out of what graduates see.</td></tr>
+              <tr><td><strong>Data &amp; Backups</strong></td><td>Create a database backup on demand, list existing ones, and download any of them. Restore is command-line only, on purpose &mdash; it overwrites the live database.</td></tr>
+              <tr><td><strong>System Settings</strong></td><td>Three settings that genuinely change behaviour: turn self-registration on or off, set the support email, and set a site-wide maintenance banner that then appears for every signed-in user.</td></tr>
+              <tr><td><strong>Skill Taxonomy</strong></td><td>The canonical skill list and its aliases, shared with Alumni Affairs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="tip">
-        <strong>Good test: dynamic permissions</strong>
-        Create a role, give it a permission, assign it to a user &mdash; that user's available menu and pages change accordingly. Suspend a user and they're blocked at login.
+        <strong>Three tests worth doing as Admin</strong>
+        <strong>1.</strong> Create a role, give it one permission, assign it to a user &mdash; their sidebar and reachable pages change to match. <strong>2.</strong> Suspend a user; they're blocked at login and can't even change their own password. <strong>3.</strong> Set a maintenance banner in System Settings, then load any other account &mdash; the banner is there.
       </div>
     </section>
 
     <hr />
 
-    <!-- 09 Sample resumes -->
+    <!-- 11 Sample resumes -->
     <section id="resumes">
       <p class="eyebrow">Feed the matcher</p>
       <h2>Sample résumés to upload</h2>
@@ -514,7 +661,7 @@ Skills: Python, SQL, Data Analysis, Communication, Problem Solving.</div>
       <div class="tip"><strong>What to expect</strong>After uploading and (host-side) the queue processing it, open <strong>Recommendations</strong>: the matching role should sit at the top with a high fit score and a written explanation, while unrelated roles score low.</div>
     </section>
 
-    <!-- 10 Notes -->
+    <!-- 12 Notes -->
     <section id="notes">
       <p class="eyebrow">Set expectations</p>
       <h2>Known gaps &mdash; not bugs</h2>
