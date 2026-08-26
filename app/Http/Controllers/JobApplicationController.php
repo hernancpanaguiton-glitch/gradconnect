@@ -49,6 +49,12 @@ class JobApplicationController extends Controller
             'cover_letter' => ['nullable', 'string'],
         ]);
 
+        abort_unless($request->user()->hasPermissionTo('jobs.apply'), 403);
+
+        // A closed, draft, or moderated-away posting must not keep collecting
+        // applications just because someone kept the URL.
+        abort_unless($job->status === 'open', 422, 'This position is no longer accepting applications.');
+
         $profile = $request->user()->graduateProfile;
 
         abort_if($profile === null, 422, 'You must have a graduate profile to apply.');

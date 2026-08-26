@@ -109,8 +109,14 @@ class RolePermissionSeeder extends Seeder
             'alumni.manage', 'tracer_studies.manage', 'alumni_engagement.monitor',
             'surveys.manage', 'employability_reports.generate',
             'career_activities.manage', 'reports.employability.view',
-            'users.manage', 'graduate_profiles.view_all', 'announcements.manage',
+            'graduate_profiles.view_all', 'announcements.manage',
             'learning_resources.manage', 'community.moderate',
+            // The FDD gives this office "manage alumni records", which is the
+            // graduate directory (Talent Search) — not user-account
+            // administration. It previously held users.manage, but every route
+            // consuming that is role:admin, so the sidebar's "Alumni Database"
+            // link and the Reports Hub's user-management card both 403'd.
+            'candidates.search',
         ]);
 
         $departmentHead = Role::firstOrCreate(['name' => 'department_head', 'guard_name' => 'web']);

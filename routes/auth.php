@@ -47,12 +47,19 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
+    // These change credentials, so a suspended account must not reach them.
+    // The rest of this group stays on plain `auth`: email verification and
+    // logout should still work for an account pending approval.
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+        ->middleware('active')
         ->name('password.confirm');
 
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
+        ->middleware('active');
 
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+    Route::put('password', [PasswordController::class, 'update'])
+        ->middleware('active')
+        ->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

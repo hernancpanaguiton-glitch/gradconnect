@@ -194,6 +194,16 @@ class JobPostingController extends Controller
      */
     public function show(Request $request, JobPosting $posting): Response
     {
+        // Only open postings are public. A draft, a closed one, or one an
+        // admin has moderated away stays visible to the partner who owns it
+        // and to moderators, but not to graduates guessing IDs.
+        abort_unless(
+            $posting->status === 'open'
+                || $posting->posted_by_user_id === $request->user()->id
+                || $request->user()->hasPermissionTo('job_postings.moderate'),
+            404,
+        );
+
         $posting->load(['company', 'skills']);
 
         $userApplication = null;

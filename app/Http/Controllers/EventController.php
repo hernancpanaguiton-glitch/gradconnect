@@ -88,6 +88,15 @@ class EventController extends Controller
      */
     public function rsvp(Request $request, Event $event): RedirectResponse
     {
+        // index() only lists published events, but the RSVP endpoint was
+        // reachable by ID, so a draft or cancelled event could collect RSVPs.
+        // Managers may still RSVP to their own drafts while previewing.
+        abort_unless(
+            $event->status === 'published' || $this->canManage($request->user()),
+            422,
+            'This event is not open for RSVPs.',
+        );
+
         $request->validate(['status' => ['required', 'in:going,interested,cancelled']]);
 
         $existing = EventRsvp::where('event_id', $event->id)->where('user_id', $request->user()->id)->first();

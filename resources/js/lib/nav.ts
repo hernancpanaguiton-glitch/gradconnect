@@ -88,7 +88,7 @@ export function getNavFor(user: User): NavSection[] {
             {
                 title: 'Alumni Management',
                 items: [
-                    { label: 'Alumni Database', href: '/admin/users', icon: Database },
+                    { label: 'Alumni Database', href: '/talent-search', icon: Database },
                     { label: 'Tracer Survey', href: '/surveys', icon: ListChecks },
                     { label: 'Employability Reports', href: '/reports/employability', icon: BarChart2 },
                     { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
