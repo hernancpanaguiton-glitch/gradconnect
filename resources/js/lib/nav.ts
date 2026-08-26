@@ -166,13 +166,16 @@ export function getNavFor(user: User): NavSection[] {
                 title: 'Career',
                 items: [
                     { label: 'My Profile', href: '/graduate/profile/edit', icon: UserIcon },
+                    { label: 'My Resumes', href: '/graduate/resumes', icon: FileText },
                     { label: 'AI Resume Analysis', href: '/resume-analysis', icon: FileText },
                     { label: 'Jobs & Internships', href: '/jobs', icon: Briefcase },
                     { label: 'My Applications', href: '/applications', icon: FolderKanban },
                     { label: 'Recommendations', href: '/recommendations', icon: Star },
                     { label: 'Skill Gap Analysis', href: '/skill-gap', icon: Target },
                     { label: 'Career Readiness', href: '/career-readiness', icon: Activity },
+                    { label: 'Career Progression', href: '/career-progression', icon: TrendingUp },
                     { label: 'Guidance Resources', href: '/learning-resources', icon: Lightbulb },
+                    { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                     { label: 'Messages', href: '/messages', icon: Bell },
                     { label: 'Student Concerns', href: '/student-cases', icon: LifeBuoy },
                     { label: 'Surveys', href: '/surveys', icon: ClipboardList },
@@ -194,7 +197,11 @@ export function getNavFor(user: User): NavSection[] {
                 { label: 'Job Board', href: '/jobs', icon: Briefcase },
                 { label: 'My Applications', href: '/applications', icon: FolderKanban },
                 { label: 'Recommendations', href: '/recommendations', icon: Star },
+                // Manuscript Figure 29 lists Alumni as an actor for skill gap
+                // analysis, but this was only ever in the student nav.
+                { label: 'Skill Gap Analysis', href: '/skill-gap', icon: Target },
                 { label: 'Career Progression', href: '/career-progression', icon: TrendingUp },
+                { label: 'Reports Hub', href: '/reports', icon: FolderKanban },
                 { label: 'Alumni Community', href: '/community', icon: Users },
                 { label: 'Messages', href: '/messages', icon: Bell },
                 { label: 'Surveys', href: '/surveys', icon: ClipboardList },

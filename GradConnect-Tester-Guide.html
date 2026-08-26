@@ -518,15 +518,17 @@ Skills: Python, SQL, Data Analysis, Communication, Problem Solving.</div>
     <section id="notes">
       <p class="eyebrow">Set expectations</p>
       <h2>Known gaps &mdash; not bugs</h2>
-      <p class="section-intro">This build covers the foundation, RBAC, the AI matching feature, and real (non-demo) dashboards and reports. A few menu items are still intentional design-shell placeholders for future work &mdash; please don't log these as defects:</p>
+      <p class="section-intro">Every sidebar link in every role now resolves to a real, data-backed screen &mdash; there are no design-shell placeholders left, and no demo/sample data hardcoded in the UI. What remains below are environment requirements and deliberate design decisions, not defects:</p>
       <div class="card">
         <ul class="does">
-          <li>Sidebar links that render but have no backend data yet: <span class="pill">Messages</span>, <span class="pill">Settings</span>, <span class="pill">Alumni Events</span> / <span class="pill">Student Events</span>, <span class="pill">Scholarships</span>, <span class="pill">Clearance &amp; Records</span>, Admin &rarr; <span class="pill">Audit Logs</span>.</li>
-          <li><span class="pill">Talent Search</span>, <span class="pill">Skill Gap Analysis</span>, <span class="pill">Career Progression</span>, <span class="pill">My Applications</span>, <span class="pill">Reports Hub</span>, and Admin &rarr; <span class="pill">Job Management</span> are all fully functional now &mdash; none of them are placeholders anymore.</li>
-          <li>All 7 role dashboards show real charts computed from live data (employment, industry, hiring funnel, skill gaps, etc.) &mdash; there is no more demo/sample data anywhere in the app.</li>
-          <li>The Employability Report and Reports Hub are still a basic summary and a permission-scoped directory respectively, not a full cross-report analytics suite (skill trends by program, curriculum evaluation, CSV/PDF export are still planned).</li>
-          <li>Dashboard numbers reflect current data &mdash; AI match counts climb only after résumés are uploaded and scored.</li>
+          <li><strong>A queue worker must be running</strong> for résumé embeddings, AI match scoring, and all notification email. Use <code>composer dev</code> (which runs one alongside the server) or <code>docker compose up</code> (which has a dedicated worker container). Without it these silently stay pending &mdash; Admin &rarr; <span class="pill">Platform Status</span> will tell you if the queue has stalled.</li>
+          <li><strong>Live AI scoring needs API keys.</strong> With <code>GEMINI_API_KEY</code> and <code>GROQ_API_KEY</code> set, matches are embedded and scored for real. Without them the seeded match results still display, so recommendations and skill-gap analysis remain demonstrable.</li>
+          <li><strong>Backups need the PostgreSQL client tools.</strong> Admin &rarr; <span class="pill">Data &amp; Backups</span> shells out to <code>pg_dump</code>; if it isn't on the server's PATH the page says so plainly. Restoring is intentionally command-line only (<code>php artisan backup:restore</code>), since it overwrites the live database.</li>
+          <li>Department Heads see employment and program data <strong>scoped to their own college</strong>, by design &mdash; the filters are locked to their department rather than offered institution-wide.</li>
+          <li>Employers can view any graduate's profile through Talent Search, but can only open the <strong>résumé file</strong> of someone who actually applied to one of their own postings.</li>
+          <li>Admin &rarr; <span class="pill">Platform Status</span> deliberately shows no response-time metric: the app has no request-timing instrumentation, so that number would be invented rather than measured.</li>
           <li>Self-registration assigns the chosen role immediately. Student and Alumni accounts activate right away (email verification still required); every other role (Alumni Officer, Dean/Department Head, Industry Partner, SAO) is created with a role but a <code>pending</code> status until an Admin approves it under User Management. For testing, use the seeded logins above.</li>
+          <li>This is a responsive web application, not a native mobile app &mdash; that boundary is stated in the study's scope.</li>
         </ul>
       </div>
       <p class="muted" style="margin-top:18px;">Found a real issue? Note the <strong>role</strong>, the <strong>page</strong>, and what you <strong>expected vs. saw</strong> &mdash; that's enough to reproduce it quickly.</p>
