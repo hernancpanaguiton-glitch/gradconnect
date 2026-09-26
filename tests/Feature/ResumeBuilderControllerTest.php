@@ -22,6 +22,26 @@ class ResumeBuilderControllerTest extends TestCase
         $this->seed(RolePermissionSeeder::class);
     }
 
+    public function test_index_sends_the_relations_the_page_reads_for_a_brand_new_profile(): void
+    {
+        // A graduate who has never opened their profile has no row yet, so the
+        // builder creates one. ->with() only eager-loads on the "found" branch
+        // of firstOrCreate, so the created model carried none of these keys and
+        // the page's `profile.skills.length` threw — a white screen on the
+        // first click of "Build from My Profile".
+        $alumni = User::factory()->alumni()->create();
+        $this->assertNull($alumni->graduateProfile);
+
+        $this->actingAs($alumni)
+            ->get(route('resume-builder.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Graduate/ResumeBuilder')
+                ->has('profile.skills')
+                ->has('profile.education_records')
+                ->has('profile.employment_records'));
+    }
+
     public function test_index_renders_the_builder_with_profile_data(): void
     {
         $alumni = User::factory()->alumni()->create();

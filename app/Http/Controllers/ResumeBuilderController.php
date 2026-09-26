@@ -21,9 +21,13 @@ class ResumeBuilderController extends Controller
      */
     public function index(Request $request): Response
     {
-        $profile = $request->user()->graduateProfile()->with([
-            'department', 'educationRecords', 'employmentRecords', 'skills',
-        ])->firstOrCreate(['user_id' => $request->user()->id]);
+        $profile = $request->user()->graduateProfile()->firstOrCreate(['user_id' => $request->user()->id]);
+
+        // load() rather than with(): firstOrCreate only eager-loads on the
+        // branch that finds an existing row, so a graduate opening the builder
+        // before their profile exists got a model with none of these relations
+        // and the page threw on profile.skills.length.
+        $profile->load(['department', 'educationRecords', 'employmentRecords', 'skills']);
 
         return Inertia::render('Graduate/ResumeBuilder', [
             'profile' => $profile,

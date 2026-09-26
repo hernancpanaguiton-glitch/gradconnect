@@ -3,13 +3,14 @@ import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
-interface Department { id: number; name: string }
+interface Program { id: number; name: string }
+interface DepartmentGroup { id: number | null; name: string; programs: Program[] }
 interface Skill { id: number; name: string; category: string | null }
 interface ResourceModel {
     id: number; title: string; type: string; provider: string | null; url: string | null;
     description: string | null; department_id: number | null; skills: Array<{ id: number }>;
 }
-interface Props extends PageProps { resource: ResourceModel; departments: Department[]; skills: Skill[] }
+interface Props extends PageProps { resource: ResourceModel; departmentGroups: DepartmentGroup[]; skills: Skill[] }
 
 const TYPES = [
     { value: 'training', label: 'Training' },
@@ -20,7 +21,7 @@ const TYPES = [
     { value: 'link', label: 'Link' },
 ];
 
-export default function LearningResourceEdit({ resource, departments, skills }: Props) {
+export default function LearningResourceEdit({ resource, departmentGroups, skills }: Props) {
     const { data, setData, patch, processing, errors } = useForm<{
         title: string; type: string; provider: string; url: string; description: string;
         department_id: string; skill_ids: number[];
@@ -86,7 +87,13 @@ export default function LearningResourceEdit({ resource, departments, skills }: 
                             <select value={data.department_id} onChange={(e) => setData('department_id', e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                                 <option value="">Everyone</option>
-                                {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                                {departmentGroups.map((group) => (
+                                    <optgroup key={group.id ?? group.name} label={group.name}>
+                                        {group.programs.map((program) => (
+                                            <option key={program.id} value={program.id}>{program.name}</option>
+                                        ))}
+                                    </optgroup>
+                                ))}
                             </select>
                         </div>
                         <div>
