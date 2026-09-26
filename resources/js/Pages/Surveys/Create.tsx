@@ -1,12 +1,20 @@
+import { toLocalDatetime, toUtcInstant } from '@/lib/datetime';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 interface Question {
-    prompt: string; type: string; options: string; is_required: boolean; maps_to: string;
+    uid: string; prompt: string; type: string; options: string; is_required: boolean; maps_to: string;
 }
 interface Props extends PageProps {}
+
+let nextUid = 0;
+
+/** A key that survives reordering, so React keeps each question's own input state. */
+function newUid(): string {
+    return `new-${nextUid++}`;
+}
 
 const QUESTION_TYPES = ['text','textarea','single_choice','multi_choice','rating','boolean','number'];
 const MAPS_TO_OPTIONS = [
@@ -28,7 +36,7 @@ export default function SurveyCreate({}: Props) {
     });
 
     function addQuestion() {
-        setData('questions', [...data.questions, { prompt: '', type: 'text', options: '', is_required: true, maps_to: '' }]);
+        setData('questions', [...data.questions, { uid: newUid(), prompt: '', type: 'text', options: '', is_required: true, maps_to: '' }]);
     }
 
     function removeQuestion(i: number) {
@@ -40,14 +48,27 @@ export default function SurveyCreate({}: Props) {
         setData('questions', qs);
     }
 
-    function handleSubmit(e: FormEvent) {
-        e.preventDefault();
-        post(route('surveys.store'));
-    }
-
     // Per-question failures come back under dotted keys ("questions.0.options"),
     // which useForm's typed errors map doesn't model.
     const fieldErrors = errors as Record<string, string | undefined>;
+
+    // Those keys are positions in the payload that was sent, and adding or
+    // removing a row shifts every position after it. Remembering the order
+    // that was actually submitted keeps each message on its own question —
+    // otherwise a removal hides a real error and a new row inherits one.
+    const [submittedUids, setSubmittedUids] = useState<string[]>(() => data.questions.map((question) => question.uid));
+
+    function handleSubmit(e: FormEvent) {
+        e.preventDefault();
+        setSubmittedUids(data.questions.map((question) => question.uid));
+        post(route('surveys.store'));
+    }
+
+    function questionError(uid: string, field: string): string | undefined {
+        const index = submittedUids.indexOf(uid);
+
+        return index === -1 ? undefined : fieldErrors[`questions.${index}.${field}`];
+    }
 
     return (
         <AuthenticatedLayout>
@@ -102,12 +123,12 @@ export default function SurveyCreate({}: Props) {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Opens At</label>
-                                <input type="datetime-local" value={data.opens_at} onChange={(e) => setData('opens_at', e.target.value)}
+                                <input type="datetime-local" value={toLocalDatetime(data.opens_at)} onChange={(e) => setData('opens_at', toUtcInstant(e.target.value))}
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Closes At</label>
-                                <input type="datetime-local" value={data.closes_at} onChange={(e) => setData('closes_at', e.target.value)}
+                                <input type="datetime-local" value={toLocalDatetime(data.closes_at)} onChange={(e) => setData('closes_at', toUtcInstant(e.target.value))}
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                         </div>
@@ -123,7 +144,7 @@ export default function SurveyCreate({}: Props) {
                             </button>
                         </div>
                         {data.questions.map((q, i) => (
-                            <div key={i} className="rounded-lg border border-gray-200 p-4 space-y-3">
+                            <div key={q.uid} className="rounded-lg border border-gray-200 p-4 space-y-3">
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="text-xs font-semibold text-gray-500">Q{i + 1}</span>
                                     <button type="button" onClick={() => removeQuestion(i)} className="text-xs text-red-500 hover:text-red-700">Remove</button>
@@ -132,8 +153,8 @@ export default function SurveyCreate({}: Props) {
                                     <input type="text" value={q.prompt} onChange={(e) => updateQuestion(i, 'prompt', e.target.value)}
                                         placeholder="Question prompt *"
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                                    {fieldErrors[`questions.${i}.prompt`] && (
-                                        <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.prompt`]}</p>
+                                    {questionError(q.uid, 'prompt') && (
+                                        <p className="mt-1 text-xs text-red-600">{questionError(q.uid, 'prompt')}</p>
                                     )}
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -147,16 +168,16 @@ export default function SurveyCreate({}: Props) {
                                         <span className="text-sm text-gray-700">Required</span>
                                     </label>
                                 </div>
-                                {fieldErrors[`questions.${i}.type`] && (
-                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.type`]}</p>
+                                {questionError(q.uid, 'type') && (
+                                    <p className="text-xs text-red-600">{questionError(q.uid, 'type')}</p>
                                 )}
                                 {(q.type === 'single_choice' || q.type === 'multi_choice') && (
                                     <div>
                                         <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
                                             placeholder="Options, comma-separated"
                                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                                        {fieldErrors[`questions.${i}.options`] && (
-                                            <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.options`]}</p>
+                                        {questionError(q.uid, 'options') && (
+                                            <p className="mt-1 text-xs text-red-600">{questionError(q.uid, 'options')}</p>
                                         )}
                                     </div>
                                 )}

@@ -3,7 +3,7 @@ import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { Layers, Search } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
@@ -12,20 +12,31 @@ interface SkillItem { id: number; name: string; category: string | null; aliases
 interface Paginated<T> { data: T[]; links: Array<{ url: string | null; label: string; active: boolean }> }
 interface Props extends PageProps { skills: Paginated<SkillItem>; filters: { search: string | null } }
 
+/**
+ * One form per row, so a rejected alias reports back beside the input that
+ * caused it rather than into whichever row happens to render last.
+ */
 function AliasForm({ skillId }: { skillId: number }) {
-    const [alias, setAlias] = useState('');
+    const { data, setData, post, processing, errors, reset } = useForm({ alias: '' });
 
     function submit(e: FormEvent) {
         e.preventDefault();
-        if (!alias.trim()) return;
-        router.post(route('skill-taxonomy.aliases.store', skillId), { alias }, { preserveScroll: true, onSuccess: () => setAlias('') });
+        if (!data.alias.trim()) return;
+        post(route('skill-taxonomy.aliases.store', skillId), {
+            preserveScroll: true,
+            // Keep the rejected text so the admin can correct it in place.
+            onSuccess: () => reset('alias'),
+        });
     }
 
     return (
-        <form onSubmit={submit} className="flex gap-1.5">
-            <input value={alias} onChange={(e) => setAlias(e.target.value)} placeholder="Add alias (e.g. JS)"
-                className="w-32 rounded-lg border border-border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary" />
-            <button type="submit" className="rounded-lg bg-muted px-2 py-1 text-xs font-medium hover:bg-muted/70">Add</button>
+        <form onSubmit={submit} className="flex flex-col gap-1">
+            <div className="flex gap-1.5">
+                <input value={data.alias} onChange={(e) => setData('alias', e.target.value)} placeholder="Add alias (e.g. JS)"
+                    className="w-32 rounded-lg border border-border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary" />
+                <button type="submit" disabled={processing} className="rounded-lg bg-muted px-2 py-1 text-xs font-medium hover:bg-muted/70 disabled:opacity-50">Add</button>
+            </div>
+            {errors.alias && <p className="max-w-48 text-xs text-red-500">{errors.alias}</p>}
         </form>
     );
 }

@@ -18,6 +18,8 @@ const statusColors: Record<string, string> = {
     open: 'bg-green-100 text-green-700',
     closed: 'bg-red-100 text-red-700',
 };
+/** A status this page hasn't learned yet still has to render as a badge. */
+const STATUS_FALLBACK = 'bg-gray-100 text-gray-600';
 
 export default function SurveysIndex({ surveys, canManage }: Props) {
     const { flash } = usePage<Props>().props;
@@ -56,7 +58,7 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <h3 className="font-semibold text-gray-900">{survey.title}</h3>
-                                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[survey.status]}`}>
+                                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[survey.status] ?? STATUS_FALLBACK}`}>
                                             {survey.status}
                                         </span>
                                         <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700">

@@ -2,11 +2,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
-import PostingFormFields, { Skill, SkillPivot } from './PostingFormFields';
+import PostingFormFields, { SetPostingData, Skill, SkillPivot } from './PostingFormFields';
 
 interface Props extends PageProps { skills: Skill[] }
 
 export default function PostingCreate({ skills }: Props) {
+    // `experience_level` is deliberately absent: nothing in the app renders it,
+    // so carrying it here only ever submitted an empty string.
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
@@ -16,7 +18,6 @@ export default function PostingCreate({ skills }: Props) {
         location: '',
         is_remote: false,
         salary_range: '',
-        experience_level: '',
         status: 'open',
         application_deadline: '',
         skills: [] as SkillPivot[],
@@ -38,7 +39,7 @@ export default function PostingCreate({ skills }: Props) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                    <PostingFormFields data={data} setData={setData as (key: string, value: unknown) => void} errors={errors} skills={skills} />
+                    <PostingFormFields data={data} setData={setData as unknown as SetPostingData} errors={errors} skills={skills} />
 
                     <div className="flex gap-3">
                         <button type="submit" disabled={processing}

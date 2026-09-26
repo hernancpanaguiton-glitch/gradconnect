@@ -3,7 +3,7 @@ import useDismiss from '@/hooks/useDismiss';
 import { Link } from '@inertiajs/react';
 import axios from 'axios';
 import { Briefcase, ClipboardList, Loader2, Search, UserSquare2, Users, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface SearchHit {
     id: number;
@@ -96,8 +96,15 @@ export default function GlobalSearch() {
     const [open, setOpen] = useState(false);
     const [sheetOpen, setSheetOpen] = useState(false);
 
+    // Dismissing has to clear the query too, or reopening the sheet shows the
+    // previous term and its results before the user has typed anything.
+    const closeSheet = useCallback(() => {
+        setSheetOpen(false);
+        setQuery('');
+    }, []);
+
     const containerRef = useDismiss<HTMLDivElement>(open, () => setOpen(false));
-    const sheetRef = useDismiss<HTMLDivElement>(sheetOpen, () => setSheetOpen(false));
+    const sheetRef = useDismiss<HTMLDivElement>(sheetOpen, closeSheet);
 
     useBodyScrollLock(sheetOpen);
 
@@ -109,20 +116,18 @@ export default function GlobalSearch() {
         }
 
         setLoading(true);
+        const controller = new AbortController();
         const handle = setTimeout(() => {
-            axios.get<SearchResults>(route('search'), { params: { q: query } })
-                .then((r) => setResults(r.data))
-                .catch(() => setResults(EMPTY))
-                .finally(() => setLoading(false));
+            axios.get<SearchResults>(route('search'), { params: { q: query }, signal: controller.signal })
+                .then((r) => { if (!controller.signal.aborted) setResults(r.data); })
+                .catch(() => { if (!controller.signal.aborted) setResults(EMPTY); })
+                .finally(() => { if (!controller.signal.aborted) setLoading(false); });
         }, 250);
 
-        return () => clearTimeout(handle);
+        // Search fans out over several LIKE queries, so response order does not
+        // follow keystroke order — only the latest query may write results.
+        return () => { clearTimeout(handle); controller.abort(); };
     }, [query]);
-
-    function closeSheet() {
-        setSheetOpen(false);
-        setQuery('');
-    }
 
     const showResults = query.trim().length >= 2;
 

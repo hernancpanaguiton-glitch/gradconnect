@@ -2,10 +2,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { Download, Printer } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface College { id: number; name: string }
 interface Program { id: number; name: string; parent_id: number | null }
-interface SurveyRate { title: string; submitted: number; eligible: number; responseRate: number }
+interface SurveyRate { id: number; title: string; submitted: number; eligible: number; responseRate: number }
 interface Filters { college_id: number | null; program_id: number | null; graduation_year: number | null }
 interface EmploymentBreakdown {
     employed?: number; unemployed?: number; self_employed?: number;
@@ -34,6 +35,8 @@ const COLORS: Record<string, string> = {
     employed: 'bg-green-500', unemployed: 'bg-red-400', self_employed: 'bg-blue-400',
     further_study: 'bg-yellow-400', not_seeking: 'bg-gray-300',
 };
+/** Long enough to cover typing a four-digit year without a pause. */
+const YEAR_DEBOUNCE_MS = 400;
 
 export default function EmployabilityReport({
     totalGraduates, employmentBreakdown, willingToRelocate, jobRelevanceRate,
@@ -44,12 +47,32 @@ export default function EmployabilityReport({
     const employmentRate = totalGraduates > 0 ? Math.round((employed / totalGraduates) * 100) : 0;
     const relocateRate = totalGraduates > 0 ? Math.round((willingToRelocate / totalGraduates) * 100) : 0;
     const visiblePrograms = filters.college_id ? programs.filter((p) => p.parent_id === filters.college_id) : programs;
+    const appliedYear = filters.graduation_year !== null ? String(filters.graduation_year) : '';
+    const [yearDraft, setYearDraft] = useState(appliedYear);
 
     function updateFilter(key: keyof Filters, value: string) {
         const next = { ...filters, [key]: value ? Number(value) : null };
         if (key === 'college_id') next.program_id = null;
         router.get(route('reports.employability'), next as unknown as Record<string, string>, { preserveState: true, preserveScroll: true });
     }
+
+    // The server's echo of the applied filter wins on a fresh visit — the back
+    // button, or a college change that reset the rest.
+    useEffect(() => {
+        setYearDraft(appliedYear);
+    }, [appliedYear]);
+
+    // Every keystroke of a year used to be a full report recomputation, four
+    // of them for "2024", with the digits lagging behind the typing because
+    // the input's value came back from the server. Only the pause at the end
+    // is worth a round-trip.
+    useEffect(() => {
+        if (yearDraft === appliedYear) return;
+
+        const timer = setTimeout(() => updateFilter('graduation_year', yearDraft), YEAR_DEBOUNCE_MS);
+
+        return () => clearTimeout(timer);
+    }, [yearDraft, appliedYear]);
 
     function exportUrl(): string {
         const params = new URLSearchParams();
@@ -100,8 +123,8 @@ export default function EmployabilityReport({
                             </select>
                         </>
                     )}
-                    <input type="number" placeholder="Graduation Year" value={filters.graduation_year ?? ''}
-                        onChange={(e) => updateFilter('graduation_year', e.target.value)}
+                    <input type="number" placeholder="Graduation Year" value={yearDraft}
+                        onChange={(e) => setYearDraft(e.target.value)}
                         className="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                 </div>
 
@@ -174,7 +197,7 @@ export default function EmployabilityReport({
                         <h2 className="text-sm font-semibold text-gray-700 mb-4">Tracer &amp; Employability Survey Response Rates</h2>
                         <div className="space-y-3">
                             {surveyResponseRates.map((s) => (
-                                <div key={s.title}>
+                                <div key={s.id}>
                                     <div className="flex items-center justify-between text-sm mb-1">
                                         <span className="text-gray-700">{s.title}</span>
                                         <span className="text-gray-500">{s.submitted}/{s.eligible} ({s.responseRate}%)</span>

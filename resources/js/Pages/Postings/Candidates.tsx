@@ -178,6 +178,12 @@ export default function Candidates({ posting, applications }: Props) {
                                             {app.graduate_profile.department && (
                                                 <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
                                             )}
+                                            {app.resume && app.resume.can_download && (
+                                                <a href={route('candidates.resume', app.resume.id)} target="_blank" rel="noreferrer"
+                                                    className="mt-1 inline-block text-xs font-medium text-indigo-600 hover:text-indigo-800">
+                                                    View résumé: {app.resume.original_filename}
+                                                </a>
+                                            )}
                                         </td>
                                         <td className="px-4 py-3 text-gray-600">{app.graduate_profile.user.email ?? '—'}</td>
                                         <td className="px-4 py-3 text-gray-500 text-xs">{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</td>

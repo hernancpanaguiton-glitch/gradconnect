@@ -24,7 +24,10 @@ interface Props extends PageProps<{
     profileChecklist: ChecklistItem[];
 }> {}
 
-const STATUS_LABELS: Record<RecentApplication['status'], string> = {
+// Keyed loosely on purpose: the application status vocabulary lives in the
+// database, so a status added there must still render as a legible badge
+// rather than as the word "undefined" in a class list.
+const STATUS_LABELS: Record<string, string> = {
     submitted: 'Submitted',
     under_review: 'Under Review',
     shortlisted: 'Shortlisted',
@@ -33,7 +36,7 @@ const STATUS_LABELS: Record<RecentApplication['status'], string> = {
     withdrawn: 'Withdrawn',
 };
 
-const statusStyles: Record<RecentApplication['status'], string> = {
+const statusStyles: Record<string, string> = {
     submitted: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300',
     under_review: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
     shortlisted: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
@@ -41,6 +44,12 @@ const statusStyles: Record<RecentApplication['status'], string> = {
     hired: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
     withdrawn: 'bg-muted text-muted-foreground',
 };
+const STATUS_FALLBACK = 'bg-muted text-muted-foreground';
+
+/** "under_review" -> "Under Review", for a status with no label of its own. */
+function humaniseStatus(status: string): string {
+    return status.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
 
 export default function AlumniDashboard({ stats, applicationActivity, recentApplications, profileChecklist }: Props) {
     const { auth } = usePage<PageProps>().props;
@@ -162,8 +171,8 @@ export default function AlumniDashboard({ stats, applicationActivity, recentAppl
                                             <td className="px-5 py-3 text-muted-foreground">{r.position}</td>
                                             <td className="px-5 py-3 font-semibold text-primary">{r.match !== null ? `${r.match}%` : '—'}</td>
                                             <td className="px-5 py-3">
-                                                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[r.status]}`}>
-                                                    {STATUS_LABELS[r.status]}
+                                                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[r.status] ?? STATUS_FALLBACK}`}>
+                                                    {STATUS_LABELS[r.status] ?? humaniseStatus(r.status)}
                                                 </span>
                                             </td>
                                             <td className="px-5 py-3 text-muted-foreground">{r.date ?? '—'}</td>

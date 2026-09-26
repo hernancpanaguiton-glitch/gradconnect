@@ -21,6 +21,8 @@ const STATUS: Record<string, string> = {
     pending: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
     closed: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300',
 };
+/** A status this page hasn't learned yet still has to render as a badge. */
+const STATUS_FALLBACK = 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300';
 
 function CreateForm({ onDone }: { onDone: () => void }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -124,7 +126,7 @@ export default function Scholarships({ scholarships, totalBudget, totalRecipient
                                     {s.provider && <p className="text-sm text-muted-foreground">{s.provider}</p>}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS[s.status]}`}>{s.status}</span>
+                                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS[s.status] ?? STATUS_FALLBACK}`}>{s.status}</span>
                                     <button onClick={() => destroy(s.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
                                 </div>
                             </div>

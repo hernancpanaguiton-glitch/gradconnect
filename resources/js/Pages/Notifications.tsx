@@ -3,6 +3,7 @@ import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Bell, Briefcase, CheckCheck, CircleCheck, Clock, UserCheck } from 'lucide-react';
+import { MouseEvent } from 'react';
 
 interface Item {
     id: string;
@@ -34,6 +35,23 @@ const ICONS: Record<string, { icon: typeof Briefcase; color: string }> = {
 export default function Notifications({ notifications, unreadCount }: Props) {
     function markRead(id: string) {
         router.patch(route('notifications.read', id), {}, { preserveScroll: true });
+    }
+
+    /**
+     * Opening an unread notification used to leave it unread.
+     *
+     * Inertia's Link starts its visit straight after the click handler, and a
+     * visit interrupts the in-flight request — so the mark-read PATCH was
+     * aborted before it landed. The badge never dropped, which looked random
+     * next to the "Mark read" button, which did work.
+     */
+    function openUnread(event: MouseEvent<Element>, id: string, url: string) {
+        event.preventDefault();
+
+        router.patch(route('notifications.read', id), {}, {
+            preserveScroll: true,
+            onFinish: () => router.visit(url),
+        });
     }
     function markAll() {
         router.patch(route('notifications.read-all'), {}, { preserveScroll: true });
@@ -75,7 +93,11 @@ export default function Notifications({ notifications, unreadCount }: Props) {
                         return (
                             <div key={n.id} className={`flex items-start gap-3 border-b border-border px-5 py-4 last:border-0 ${!n.read ? 'bg-blue-50/40 dark:bg-blue-500/5' : ''}`}>
                                 {n.url ? (
-                                    <Link href={n.url} onClick={() => !n.read && markRead(n.id)} className="flex flex-1 items-start gap-3">{body}</Link>
+                                    <Link
+                                        href={n.url}
+                                        onClick={(event) => { if (!n.read) { openUnread(event, n.id, n.url as string); } }}
+                                        className="flex flex-1 items-start gap-3"
+                                    >{body}</Link>
                                 ) : (
                                     <div className="flex flex-1 items-start gap-3">{body}</div>
                                 )}

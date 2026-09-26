@@ -136,7 +136,7 @@ class ReportService
      * surveys, scoped to respondents in the given departments/graduation year.
      *
      * @param  array<int, int>  $departmentIds
-     * @return array<int, array{title: string, submitted: int, eligible: int, responseRate: int}>
+     * @return array<int, array{id: int, title: string, submitted: int, eligible: int, responseRate: int}>
      */
     private function surveyResponseRates(array $departmentIds, ?int $graduationYear): array
     {
@@ -169,6 +169,9 @@ class ReportService
                     ->count();
 
                 return [
+                    // Nothing stops two surveys sharing a title, so the
+                    // report needs the id to tell the rows apart.
+                    'id' => $survey->id,
                     'title' => $survey->title,
                     'submitted' => $submitted,
                     'eligible' => $eligibleIds->count(),

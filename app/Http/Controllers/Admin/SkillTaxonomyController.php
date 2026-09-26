@@ -7,6 +7,7 @@ use App\Models\Skill;
 use App\Models\SkillAlias;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -41,7 +42,14 @@ class SkillTaxonomyController extends Controller
         $data = $request->validate(['alias' => ['required', 'string', 'max:255']]);
         $slug = Skill::slugFor($data['alias']);
 
-        abort_if(Skill::where('slug', $slug)->exists(), 422, 'That name is already a skill in its own right.');
+        // A bare abort() is not a ValidationException, so Inertia gets a raw
+        // error page instead of a redirect back with an errors bag — the
+        // admin console disappeared behind a full-screen 422 over a typo.
+        if (Skill::where('slug', $slug)->exists()) {
+            throw ValidationException::withMessages([
+                'alias' => 'That name is already a skill in its own right.',
+            ]);
+        }
 
         SkillAlias::updateOrCreate(
             ['alias_slug' => $slug],

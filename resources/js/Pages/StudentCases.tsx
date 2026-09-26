@@ -24,6 +24,8 @@ const STATUS_COLORS: Record<string, string> = {
     resolved: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
     closed: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300',
 };
+/** A status this page hasn't learned yet still has to render as a badge. */
+const STATUS_FALLBACK = 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300';
 
 function FileConcernForm({ onDone }: { onDone: () => void }) {
     const { data, setData, post, processing, errors } = useForm({ category: 'academic', description: '' });
@@ -93,7 +95,7 @@ export default function StudentCases({ cases, canManage }: Props) {
                                         {Object.keys(STATUS_COLORS).map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                                     </select>
                                 ) : (
-                                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status]}`}>{c.status.replace('_', ' ')}</span>
+                                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? STATUS_FALLBACK}`}>{c.status.replace('_', ' ')}</span>
                                 )}
                             </div>
                         </div>

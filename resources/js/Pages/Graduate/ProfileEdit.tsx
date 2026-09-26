@@ -153,11 +153,22 @@ export default function ProfileEdit({
 
     // Education
     const [eduForm, setEduForm] = useState({ institution: '', degree: '', field_of_study: '', start_year: '', end_year: '', honors: '' });
+    // These forms post through the router rather than useForm, so their
+    // rejections never reached useForm's `errors` — a missing Institution
+    // simply made the Add button do nothing at all.
+    const [eduErrors, setEduErrors] = useState<Record<string, string>>({});
+    const [eduSaving, setEduSaving] = useState(false);
     function addEducation(e: FormEvent) {
         e.preventDefault();
+        setEduSaving(true);
         router.post(route('education.store'), eduForm, {
             preserveScroll: true,
-            onSuccess: () => setEduForm({ institution: '', degree: '', field_of_study: '', start_year: '', end_year: '', honors: '' }),
+            onSuccess: () => {
+                setEduErrors({});
+                setEduForm({ institution: '', degree: '', field_of_study: '', start_year: '', end_year: '', honors: '' });
+            },
+            onError: (errors) => setEduErrors(errors as Record<string, string>),
+            onFinish: () => setEduSaving(false),
         });
     }
     function deleteEducation(id: number) {
@@ -167,11 +178,19 @@ export default function ProfileEdit({
 
     // Employment
     const [empForm, setEmpForm] = useState({ company_name: '', job_title: '', employment_type: 'full_time', is_current: false, start_date: '', end_date: '' });
+    const [empErrors, setEmpErrors] = useState<Record<string, string>>({});
+    const [empSaving, setEmpSaving] = useState(false);
     function addEmployment(e: FormEvent) {
         e.preventDefault();
+        setEmpSaving(true);
         router.post(route('employment.store'), empForm, {
             preserveScroll: true,
-            onSuccess: () => setEmpForm({ company_name: '', job_title: '', employment_type: 'full_time', is_current: false, start_date: '', end_date: '' }),
+            onSuccess: () => {
+                setEmpErrors({});
+                setEmpForm({ company_name: '', job_title: '', employment_type: 'full_time', is_current: false, start_date: '', end_date: '' });
+            },
+            onError: (errors) => setEmpErrors(errors as Record<string, string>),
+            onFinish: () => setEmpSaving(false),
         });
     }
     function deleteEmployment(id: number) {
@@ -300,13 +319,13 @@ export default function ProfileEdit({
                                 <Select value={data.gender} onChange={(v) => setData('gender', v)}
                                     options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }, { value: 'other', label: 'Other' }, { value: 'prefer_not_to_say', label: 'Prefer not to say' }]} />
                             </Field>
-                            <Field label="Date of Birth">
+                            <Field label="Date of Birth" error={errors.birthdate}>
                                 <Input value={data.birthdate} onChange={(v) => setData('birthdate', v)} type="date" />
                             </Field>
                             <Field label="Phone" error={errors.phone}>
                                 <Input value={data.phone} onChange={(v) => setData('phone', v)} placeholder="+63 9XX XXX XXXX" />
                             </Field>
-                            <Field label="City">
+                            <Field label="City" error={errors.city}>
                                 <Input value={data.city} onChange={(v) => setData('city', v)} placeholder="Cebu City" />
                             </Field>
                         </div>
@@ -315,18 +334,18 @@ export default function ProfileEdit({
                                 <Input value={data.program} onChange={(v) => setData('program', v)} placeholder="e.g. BS Information Technology" />
                             </Field>
                         )}
-                        <Field label="LinkedIn URL">
+                        <Field label="LinkedIn URL" error={errors.linkedin_url}>
                             <Input value={data.linkedin_url} onChange={(v) => setData('linkedin_url', v)} placeholder="https://linkedin.com/in/..." />
                         </Field>
-                        <Field label="Professional Headline">
+                        <Field label="Professional Headline" error={errors.headline}>
                             <Input value={data.headline} onChange={(v) => setData('headline', v)} placeholder="Software Engineer at ACME Corp" />
                         </Field>
-                        <Field label="Professional Summary">
+                        <Field label="Professional Summary" error={errors.summary}>
                             <textarea value={data.summary} onChange={(e) => setData('summary', e.target.value)} rows={4}
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                 placeholder="Brief description of your background and career goals..." />
                         </Field>
-                        <Field label="Employment Status">
+                        <Field label="Employment Status" error={errors.current_employment_status}>
                             <Select value={data.current_employment_status} onChange={(v) => setData('current_employment_status', v)}
                                 options={[
                                     { value: 'employed', label: 'Employed' },
@@ -364,26 +383,27 @@ export default function ProfileEdit({
                         <form onSubmit={addEducation} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
                             <p className="text-sm font-medium text-gray-700">Add Education Record</p>
                             <div className="form-grid-tight">
-                                <Field label="Institution">
+                                <Field label="Institution" error={eduErrors.institution}>
                                     <Input value={eduForm.institution} onChange={(v) => setEduForm((f) => ({ ...f, institution: v }))} placeholder="University of Cebu" />
                                 </Field>
-                                <Field label="Degree">
+                                <Field label="Degree" error={eduErrors.degree}>
                                     <Input value={eduForm.degree} onChange={(v) => setEduForm((f) => ({ ...f, degree: v }))} placeholder="Bachelor of Science" />
                                 </Field>
-                                <Field label="Field of Study">
+                                <Field label="Field of Study" error={eduErrors.field_of_study}>
                                     <Input value={eduForm.field_of_study} onChange={(v) => setEduForm((f) => ({ ...f, field_of_study: v }))} placeholder="Information Technology" />
                                 </Field>
-                                <Field label="Honors / Awards">
+                                <Field label="Honors / Awards" error={eduErrors.honors}>
                                     <Input value={eduForm.honors} onChange={(v) => setEduForm((f) => ({ ...f, honors: v }))} placeholder="Cum Laude" />
                                 </Field>
-                                <Field label="Start Year">
+                                <Field label="Start Year" error={eduErrors.start_year}>
                                     <Input value={eduForm.start_year} onChange={(v) => setEduForm((f) => ({ ...f, start_year: v }))} type="number" placeholder="2019" />
                                 </Field>
-                                <Field label="End Year">
+                                <Field label="End Year" error={eduErrors.end_year}>
                                     <Input value={eduForm.end_year} onChange={(v) => setEduForm((f) => ({ ...f, end_year: v }))} type="number" placeholder="2023" />
                                 </Field>
                             </div>
-                            <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Add</button>
+                            <button type="submit" disabled={eduSaving}
+                                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">Add</button>
                         </form>
                     </div>
                 )}
@@ -404,13 +424,13 @@ export default function ProfileEdit({
                         <form onSubmit={addEmployment} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
                             <p className="text-sm font-medium text-gray-700">Add Employment Record</p>
                             <div className="form-grid-tight">
-                                <Field label="Company Name">
+                                <Field label="Company Name" error={empErrors.company_name}>
                                     <Input value={empForm.company_name} onChange={(v) => setEmpForm((f) => ({ ...f, company_name: v }))} placeholder="ACME Corporation" />
                                 </Field>
-                                <Field label="Job Title">
+                                <Field label="Job Title" error={empErrors.job_title}>
                                     <Input value={empForm.job_title} onChange={(v) => setEmpForm((f) => ({ ...f, job_title: v }))} placeholder="Software Engineer" />
                                 </Field>
-                                <Field label="Employment Type">
+                                <Field label="Employment Type" error={empErrors.employment_type}>
                                     <Select value={empForm.employment_type} onChange={(v) => setEmpForm((f) => ({ ...f, employment_type: v }))}
                                         options={[
                                             { value: 'full_time', label: 'Full-time' },
@@ -420,10 +440,10 @@ export default function ProfileEdit({
                                             { value: 'freelance', label: 'Freelance' },
                                         ]} />
                                 </Field>
-                                <Field label="Start Date">
+                                <Field label="Start Date" error={empErrors.start_date}>
                                     <Input value={empForm.start_date} onChange={(v) => setEmpForm((f) => ({ ...f, start_date: v }))} type="date" />
                                 </Field>
-                                <Field label="End Date">
+                                <Field label="End Date" error={empErrors.end_date}>
                                     {/* A current role has no end date; leaving this
                                         editable let a contradictory pair be submitted. */}
                                     <Input value={empForm.end_date} onChange={(v) => setEmpForm((f) => ({ ...f, end_date: v }))} type="date"
@@ -436,7 +456,8 @@ export default function ProfileEdit({
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
                                 <span className="text-sm text-gray-700">Currently working here</span>
                             </label>
-                            <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Add</button>
+                            <button type="submit" disabled={empSaving}
+                                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">Add</button>
                         </form>
                     </div>
                 )}

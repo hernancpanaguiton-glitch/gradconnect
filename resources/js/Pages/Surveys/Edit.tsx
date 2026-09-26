@@ -1,7 +1,8 @@
+import { toLocalDatetime, toUtcInstant } from '@/lib/datetime';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 /** A question as the server sends it: options are a list, plus its answer count. */
 interface StoredQuestion {
@@ -37,11 +38,6 @@ const MAPS_TO_OPTIONS = [
     { value: 'industry', label: 'Industry' },
 ];
 
-function toLocalDatetime(iso: string | null): string {
-    if (!iso) return '';
-    return iso.replace('T', 'T').slice(0, 16);
-}
-
 export default function SurveyEdit({ survey }: Props) {
     const { data, setData, patch, processing, errors } = useForm<{
         title: string; description: string; type: string; status: string;
@@ -54,8 +50,8 @@ export default function SurveyEdit({ survey }: Props) {
         status: survey.status,
         target_role: survey.target_role ?? '',
         target_graduation_year: survey.target_graduation_year ? String(survey.target_graduation_year) : '',
-        opens_at: toLocalDatetime(survey.opens_at),
-        closes_at: toLocalDatetime(survey.closes_at),
+        opens_at: survey.opens_at ?? '',
+        closes_at: survey.closes_at ?? '',
         questions: survey.questions.map((q) => ({
             uid: `q-${q.id}`, id: q.id, prompt: q.prompt, type: q.type,
             options: Array.isArray(q.options) ? q.options.join(', ') : (q.options ?? ''),
@@ -80,14 +76,27 @@ export default function SurveyEdit({ survey }: Props) {
         setData('questions', qs);
     }
 
-    function handleSubmit(e: FormEvent) {
-        e.preventDefault();
-        patch(route('surveys.update', survey.id));
-    }
-
     // Per-question failures come back under dotted keys ("questions.0.options"),
     // which useForm's typed errors map doesn't model.
     const fieldErrors = errors as Record<string, string | undefined>;
+
+    // Those keys are positions in the payload that was sent, and adding or
+    // removing a row shifts every position after it. Remembering the order
+    // that was actually submitted keeps each message on its own question —
+    // otherwise a removal hides a real error and a new row inherits one.
+    const [submittedUids, setSubmittedUids] = useState<string[]>(() => data.questions.map((question) => question.uid));
+
+    function handleSubmit(e: FormEvent) {
+        e.preventDefault();
+        setSubmittedUids(data.questions.map((question) => question.uid));
+        patch(route('surveys.update', survey.id));
+    }
+
+    function questionError(uid: string, field: string): string | undefined {
+        const index = submittedUids.indexOf(uid);
+
+        return index === -1 ? undefined : fieldErrors[`questions.${index}.${field}`];
+    }
 
     return (
         <AuthenticatedLayout>
@@ -149,12 +158,12 @@ export default function SurveyEdit({ survey }: Props) {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Opens At</label>
-                                <input type="datetime-local" value={data.opens_at} onChange={(e) => setData('opens_at', e.target.value)}
+                                <input type="datetime-local" value={toLocalDatetime(data.opens_at)} onChange={(e) => setData('opens_at', toUtcInstant(e.target.value))}
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Closes At</label>
-                                <input type="datetime-local" value={data.closes_at} onChange={(e) => setData('closes_at', e.target.value)}
+                                <input type="datetime-local" value={toLocalDatetime(data.closes_at)} onChange={(e) => setData('closes_at', toUtcInstant(e.target.value))}
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             </div>
                         </div>
@@ -184,8 +193,8 @@ export default function SurveyEdit({ survey }: Props) {
                                 <input type="text" value={q.prompt} onChange={(e) => updateQuestion(i, 'prompt', e.target.value)}
                                     placeholder="Question prompt *"
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                                {fieldErrors[`questions.${i}.prompt`] && (
-                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.prompt`]}</p>
+                                {questionError(q.uid, 'prompt') && (
+                                    <p className="text-xs text-red-600">{questionError(q.uid, 'prompt')}</p>
                                 )}
                                 <div className="grid grid-cols-2 gap-3">
                                     {/* Changing the type of an answered question would invalidate
@@ -200,16 +209,16 @@ export default function SurveyEdit({ survey }: Props) {
                                         <span className="text-sm text-gray-700">Required</span>
                                     </label>
                                 </div>
-                                {fieldErrors[`questions.${i}.type`] && (
-                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.type`]}</p>
+                                {questionError(q.uid, 'type') && (
+                                    <p className="text-xs text-red-600">{questionError(q.uid, 'type')}</p>
                                 )}
                                 {(q.type === 'single_choice' || q.type === 'multi_choice') && (
                                     <div>
                                         <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
                                             placeholder="Options, comma-separated"
                                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                                        {fieldErrors[`questions.${i}.options`] && (
-                                            <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.options`]}</p>
+                                        {questionError(q.uid, 'options') && (
+                                            <p className="mt-1 text-xs text-red-600">{questionError(q.uid, 'options')}</p>
                                         )}
                                     </div>
                                 )}

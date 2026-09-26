@@ -6,7 +6,7 @@ export interface Skill { id: number; name: string; category: string | null }
 export interface SkillPivot { id: number; is_required: boolean; weight: number }
 interface SkillSuggestion { id: number | null; name: string; source: string }
 
-interface PostingData {
+export interface PostingData {
     title: string;
     description: string;
     qualifications: string;
@@ -15,12 +15,24 @@ interface PostingData {
     location: string;
     is_remote: boolean;
     salary_range: string;
+    application_deadline: string;
     skills: SkillPivot[];
+}
+
+/**
+ * Inertia's setData in the two shapes this form uses. The updater form is what
+ * the skill toggles need: chips can be clicked faster than React re-renders,
+ * and a key/value call built from the render-scoped `data` would drop whichever
+ * click landed first.
+ */
+export interface SetPostingData {
+    (key: string, value: unknown): void;
+    (updater: (current: PostingData) => PostingData): void;
 }
 
 interface Props {
     data: PostingData;
-    setData: (key: string, value: unknown) => void;
+    setData: SetPostingData;
     errors: Partial<Record<string, string>>;
     skills: Skill[];
 }
@@ -38,16 +50,22 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
     useEffect(() => {
         if (!titleFocused || data.title.trim().length < 2) {
             setTitleSuggestions([]);
+            // The in-flight request is abandoned below, so its .finally never
+            // runs — clear the spinner here or it stays up forever.
+            setTitleLoading(false);
             return;
         }
         setTitleLoading(true);
+        const controller = new AbortController();
         const handle = setTimeout(() => {
-            axios.get(route('postings.assist.titles'), { params: { q: data.title } })
-                .then((r) => setTitleSuggestions(r.data.titles ?? []))
-                .catch(() => setTitleSuggestions([]))
-                .finally(() => setTitleLoading(false));
+            axios.get(route('postings.assist.titles'), { params: { q: data.title }, signal: controller.signal })
+                .then((r) => { if (!controller.signal.aborted) setTitleSuggestions(r.data.titles ?? []); })
+                .catch(() => { if (!controller.signal.aborted) setTitleSuggestions([]); })
+                .finally(() => { if (!controller.signal.aborted) setTitleLoading(false); });
         }, 300);
-        return () => clearTimeout(handle);
+        // These suggestions are LLM-backed, so an earlier query can answer last.
+        // Aborting ties the response to the query that asked for it.
+        return () => { clearTimeout(handle); controller.abort(); };
     }, [data.title, titleFocused]);
 
     // ── AI generation for description / qualifications ────────────────
@@ -100,31 +118,34 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
 
     useEffect(() => {
         const query = skillQuery.trim();
-        if (query.length < 2) { setSkillSuggestions([]); return; }
+        if (query.length < 2) { setSkillSuggestions([]); setSkillLoading(false); return; }
         setSkillLoading(true);
+        const controller = new AbortController();
         const handle = setTimeout(() => {
-            axios.get(route('skills.suggest'), { params: { q: query } })
-                .then((r) => setSkillSuggestions(r.data.suggestions ?? []))
-                .catch(() => setSkillSuggestions([]))
-                .finally(() => setSkillLoading(false));
+            axios.get(route('skills.suggest'), { params: { q: query }, signal: controller.signal })
+                .then((r) => { if (!controller.signal.aborted) setSkillSuggestions(r.data.suggestions ?? []); })
+                .catch(() => { if (!controller.signal.aborted) setSkillSuggestions([]); })
+                .finally(() => { if (!controller.signal.aborted) setSkillLoading(false); });
         }, 300);
-        return () => clearTimeout(handle);
+        return () => { clearTimeout(handle); controller.abort(); };
     }, [skillQuery]);
 
     function toggleSkill(skillId: number) {
-        const exists = data.skills.some((s) => s.id === skillId);
-        setData('skills', exists
-            ? data.skills.filter((s) => s.id !== skillId)
-            : [...data.skills, { id: skillId, is_required: true, weight: 3 }]);
+        setData((current) => ({
+            ...current,
+            skills: current.skills.some((s) => s.id === skillId)
+                ? current.skills.filter((s) => s.id !== skillId)
+                : [...current.skills, { id: skillId, is_required: true, weight: 3 }],
+        }));
     }
 
     function selectSkill(skill: Skill) {
         if (!skillLibrary.some((s) => s.id === skill.id)) {
             setSkillLibrary((prev) => [...prev, skill]);
         }
-        if (!data.skills.some((s) => s.id === skill.id)) {
-            setData('skills', [...data.skills, { id: skill.id, is_required: true, weight: 3 }]);
-        }
+        setData((current) => current.skills.some((s) => s.id === skill.id)
+            ? current
+            : { ...current, skills: [...current.skills, { id: skill.id, is_required: true, weight: 3 }] });
         setSkillQuery('');
         setSkillSuggestions([]);
     }
@@ -148,6 +169,11 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
     }
 
     const selectedSkillIds = data.skills.map((s) => s.id);
+
+    // Validation rejects an individual pivot row ('skills.0.id'), not the array,
+    // so keying off `errors.skills` alone would swallow the message.
+    const skillsError = Object.entries(errors)
+        .find(([key]) => key === 'skills' || key.startsWith('skills.'))?.[1];
 
     return (
         <>
@@ -190,6 +216,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                             <option value="internship">Internship</option>
                             <option value="freelance">Freelance</option>
                         </select>
+                        {errors.employment_type && <p className="mt-1 text-xs text-red-600">{errors.employment_type}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -198,16 +225,25 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                             <option value="open">Open</option>
                             <option value="closed">Closed</option>
                         </select>
+                        {errors.status && <p className="mt-1 text-xs text-red-600">{errors.status}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
                         <input type="text" value={data.location} onChange={(e) => setData('location', e.target.value)}
                             placeholder="Cebu City" disabled={data.is_remote} className={`${inputClass} disabled:bg-gray-50`} />
+                        {errors.location && <p className="mt-1 text-xs text-red-600">{errors.location}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
                         <input type="text" value={data.salary_range} onChange={(e) => setData('salary_range', e.target.value)}
                             placeholder="₱20,000 – ₱30,000/mo" className={inputClass} />
+                        {errors.salary_range && <p className="mt-1 text-xs text-red-600">{errors.salary_range}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="application_deadline">Application Deadline</label>
+                        <input id="application_deadline" type="date" value={data.application_deadline}
+                            onChange={(e) => setData('application_deadline', e.target.value)} className={inputClass} />
+                        {errors.application_deadline && <p className="mt-1 text-xs text-red-600">{errors.application_deadline}</p>}
                     </div>
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -215,6 +251,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
                     <span className="text-sm text-gray-700">Remote position</span>
                 </label>
+                {errors.is_remote && <p className="text-xs text-red-600">{errors.is_remote}</p>}
 
                 {/* Description with AI generate */}
                 <div>
@@ -239,6 +276,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                         </button>
                     </div>
                     <textarea value={data.qualifications} onChange={(e) => setData('qualifications', e.target.value)} rows={3} className={inputClass} />
+                    {errors.qualifications && <p className="mt-1 text-xs text-red-600">{errors.qualifications}</p>}
                 </div>
 
                 {genError && <p className="text-xs text-amber-600">{genError}</p>}
@@ -247,6 +285,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
             {/* Required skills */}
             <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
                 <p className="text-sm font-medium text-gray-700">Required Skills ({data.skills.length} selected)</p>
+                {skillsError && <p className="text-xs text-red-600">{skillsError}</p>}
 
                 <div className="relative">
                     <input

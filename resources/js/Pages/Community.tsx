@@ -9,20 +9,39 @@ interface Comment { id: number; body: string; created_at: string; user: { id: nu
 interface Post { id: number; body: string; created_at: string; user: { id: number; name: string }; comments: Comment[]; comments_count: number }
 interface Props extends PageProps { posts: Post[]; canPost: boolean; canModerate: boolean }
 
+const POST_MAX = 2000;
+const COMMENT_MAX = 1000;
+
 function CommentBox({ postId }: { postId: number }) {
     const [body, setBody] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [sending, setSending] = useState(false);
 
     function submit(e: FormEvent) {
         e.preventDefault();
         if (!body.trim()) return;
-        router.post(route('community.comments.store', postId), { body }, { preserveScroll: true, onSuccess: () => setBody('') });
+
+        setSending(true);
+        router.post(route('community.comments.store', postId), { body }, {
+            preserveScroll: true,
+            onSuccess: () => { setBody(''); setError(null); },
+            // Without this a rejected comment simply vanished into a form that
+            // still held the text, with nothing on screen to explain why.
+            onError: (errors) => setError((errors as Record<string, string>).body ?? 'Your comment could not be posted.'),
+            onFinish: () => setSending(false),
+        });
     }
 
     return (
-        <form onSubmit={submit} className="mt-3 flex gap-2">
-            <input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write a comment…"
-                className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-            <button type="submit" className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium hover:bg-muted/70">Reply</button>
+        <form onSubmit={submit} className="mt-3">
+            <div className="flex gap-2">
+                <input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Write a comment…"
+                    maxLength={COMMENT_MAX}
+                    className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                <button type="submit" disabled={sending}
+                    className="shrink-0 rounded-lg bg-muted px-3 py-1.5 text-xs font-medium hover:bg-muted/70 disabled:opacity-50">Reply</button>
+            </div>
+            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
         </form>
     );
 }
@@ -30,11 +49,19 @@ function CommentBox({ postId }: { postId: number }) {
 export default function Community({ posts, canPost, canModerate }: Props) {
     const { auth } = usePage<PageProps>().props;
     const [newPost, setNewPost] = useState('');
+    const [postError, setPostError] = useState<string | null>(null);
+    const [posting, setPosting] = useState(false);
 
     function submitPost(e: FormEvent) {
         e.preventDefault();
         if (!newPost.trim()) return;
-        router.post(route('community.store'), { body: newPost }, { onSuccess: () => setNewPost('') });
+
+        setPosting(true);
+        router.post(route('community.store'), { body: newPost }, {
+            onSuccess: () => { setNewPost(''); setPostError(null); },
+            onError: (errors) => setPostError((errors as Record<string, string>).body ?? 'Your post could not be published.'),
+            onFinish: () => setPosting(false),
+        });
     }
 
     function deletePost(id: number) {
@@ -60,10 +87,14 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                 {canPost && (
                     <form onSubmit={submitPost} className="rounded-xl border border-border bg-card p-4 shadow-sm">
                         <textarea value={newPost} onChange={(e) => setNewPost(e.target.value)} rows={3}
+                            maxLength={POST_MAX}
                             placeholder="Share an update with the alumni community…"
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                        <div className="mt-2 flex justify-end">
-                            <button type="submit" className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-blue-700">Post</button>
+                        {postError && <p className="mt-1 text-xs text-red-600">{postError}</p>}
+                        <div className="mt-2 flex items-center justify-end gap-3">
+                            <span className="text-xs text-muted-foreground">{newPost.length}/{POST_MAX}</span>
+                            <button type="submit" disabled={posting}
+                                className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-blue-700 disabled:opacity-50">Post</button>
                         </div>
                     </form>
                 )}

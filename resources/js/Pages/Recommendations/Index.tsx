@@ -5,7 +5,7 @@ import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import { ExternalLink, ThumbsDown, ThumbsUp } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface LearningResource { id: number; title: string; type: string; provider: string | null; url: string | null }
 interface Match {
@@ -58,6 +58,13 @@ interface Props extends PageProps {
 export default function RecommendationsIndex({ matches, hasProfile }: Props) {
     const [requesting, setRequesting] = useState(false);
     const [notice, setNotice] = useState<string | null>(null);
+    const reloadTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Navigating away inside the wait would otherwise reload a page that is no
+    // longer mounted, against whatever component replaced this one.
+    useEffect(() => () => {
+        if (reloadTimer.current) clearTimeout(reloadTimer.current);
+    }, []);
 
     function requestRematch() {
         setRequesting(true);
@@ -65,10 +72,19 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
         axios.post(route('api.me.rematch.store'))
             .then(() => {
                 setNotice('Matching started. Your recommendations will update once processing finishes — this page will refresh in a moment.');
-                setTimeout(() => router.reload({ only: ['matches'] }), 4000);
+                // Stay disabled until the refresh actually lands: re-enabling
+                // when the POST resolves invites a second matching run, which
+                // costs real AI spend for the same profile.
+                reloadTimer.current = setTimeout(() => {
+                    reloadTimer.current = null;
+                    router.reload({ only: ['matches'] });
+                    setRequesting(false);
+                }, 4000);
             })
-            .catch(() => setNotice('Could not start matching. Please try again.'))
-            .finally(() => setRequesting(false));
+            .catch(() => {
+                setNotice('Could not start matching. Please try again.');
+                setRequesting(false);
+            });
     }
 
     return (

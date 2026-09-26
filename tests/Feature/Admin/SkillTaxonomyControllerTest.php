@@ -56,14 +56,53 @@ class SkillTaxonomyControllerTest extends TestCase
 
     public function test_alias_cannot_shadow_an_existing_skill(): void
     {
+        // A bare abort(422) is not a ValidationException, so Inertia had no
+        // errors bag to redirect back with and covered the whole console in
+        // the raw Laravel error page instead of flagging the input.
         $admin = User::factory()->admin()->create();
         $javascript = Skill::findOrCreateByName('JavaScript');
         Skill::findOrCreateByName('Python');
 
-        $this->actingAs($admin)->post(route('skill-taxonomy.aliases.store', $javascript), ['alias' => 'Python'])
-            ->assertStatus(422);
+        $response = $this->actingAs($admin)
+            ->from(route('skill-taxonomy.index'))
+            ->post(route('skill-taxonomy.aliases.store', $javascript), ['alias' => 'Python']);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('skill-taxonomy.index'));
+        $response->assertSessionHasErrors('alias');
 
         $this->assertDatabaseCount('skill_aliases', 0);
+    }
+
+    public function test_a_blank_alias_is_rejected_without_touching_the_taxonomy(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $skill = Skill::findOrCreateByName('JavaScript');
+
+        $this->actingAs($admin)
+            ->from(route('skill-taxonomy.index'))
+            ->post(route('skill-taxonomy.aliases.store', $skill), ['alias' => ''])
+            ->assertSessionHasErrors('alias');
+
+        $this->assertDatabaseCount('skill_aliases', 0);
+    }
+
+    public function test_a_valid_alias_still_saves_without_errors(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $skill = Skill::findOrCreateByName('JavaScript');
+
+        $this->actingAs($admin)
+            ->from(route('skill-taxonomy.index'))
+            ->post(route('skill-taxonomy.aliases.store', $skill), ['alias' => 'ECMAScript'])
+            ->assertRedirect(route('skill-taxonomy.index'))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('skill_aliases', [
+            'skill_id' => $skill->id,
+            'alias' => 'ECMAScript',
+            'alias_slug' => Skill::slugFor('ECMAScript'),
+        ]);
     }
 
     public function test_admin_can_remove_an_alias(): void
