@@ -42,9 +42,9 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                         <div className="absolute left-20 top-20 h-72 w-72 rounded-full bg-blue-400 blur-3xl" />
                         <div className="absolute bottom-10 right-20 h-96 w-96 rounded-full bg-indigo-400 blur-3xl" />
                     </div>
-                    <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
+                    <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 md:py-32">
                         <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
-                            <div>
+                            <div className="min-w-0">
                                 <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/20 px-4 py-1.5 text-xs font-semibold text-blue-200">
                                     <Zap size={12} /> AI-Powered Career Platform
                                 </div>
