@@ -88,7 +88,18 @@ export default function SkillCategoryPicker({ skills, selectedIds, onToggle, ope
                     <details
                         key={category}
                         open={isOpen(category, categorySkills)}
-                        onToggle={(event) => setToggled((current) => ({ ...current, [category]: event.currentTarget.open }))}
+                        onToggle={(event) => {
+                            // Read `open` now: React clears currentTarget once the
+                            // handler returns, and a state updater runs later — so
+                            // reaching for it in there throws and unmounts the page.
+                            const open = event.currentTarget.open;
+
+                            // While filtering, every group is forced open; recording
+                            // that would leave them all open after the filter clears.
+                            if (term === '') {
+                                setToggled((current) => ({ ...current, [category]: open }));
+                            }
+                        }}
                         className="rounded-lg border border-gray-200"
                     >
                         <summary className="cursor-pointer select-none px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
