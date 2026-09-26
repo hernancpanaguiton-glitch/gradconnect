@@ -1,3 +1,5 @@
+import Pagination from '@/Components/Pagination';
+import TableCard from '@/Components/TableCard';
 import CandidateProfileModal from '@/Components/CandidateProfileModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -30,7 +32,7 @@ interface Applicant {
     employer_feedback: EmployerFeedback | null;
 }
 interface Posting { id: number; title: string }
-interface Props extends PageProps { posting: Posting; applications: { data: Applicant[]; total: number } }
+interface Props extends PageProps { posting: Posting; applications: { data: Applicant[]; total: number; links: Array<{ url: string | null; label: string; active: boolean }> } }
 
 const statusColors: Record<string, string> = {
     submitted: 'bg-blue-100 text-blue-700',
@@ -152,7 +154,7 @@ export default function Candidates({ posting, applications }: Props) {
                         <p className="text-gray-500 text-sm">{applications.total} applicant(s)</p>
                     </div>
                 </div>
-                <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+                <TableCard wide>
                     <table className="min-w-full text-sm">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
@@ -227,7 +229,9 @@ export default function Candidates({ posting, applications }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
+
+                <Pagination links={applications.links} />
             </div>
 
             {selectedCandidate !== null && (

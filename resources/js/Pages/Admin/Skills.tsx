@@ -38,7 +38,12 @@ export default function Skills({ skills, filters }: Props) {
         router.get(route('skill-taxonomy.index'), { search }, { preserveState: true });
     }
 
-    function removeAlias(aliasId: number) {
+    function removeAlias(aliasId: number, alias: string) {
+        // A 10px x inside a chip, and the deletion is permanent.
+        if (!confirm(`Remove the alias "${alias}"? Resumes using it will stop matching this skill.`)) {
+            return;
+        }
+
         router.delete(route('skill-taxonomy.aliases.destroy', aliasId), { preserveScroll: true });
     }
 
@@ -68,7 +73,7 @@ export default function Skills({ skills, filters }: Props) {
                                             {s.aliases.map((a) => (
                                                 <span key={a.id} className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-foreground">
                                                     {a.alias}
-                                                    <button onClick={() => removeAlias(a.id)} className="text-red-500 hover:text-red-700">×</button>
+                                                    <button onClick={() => removeAlias(a.id, a.alias)} className="text-red-500 hover:text-red-700">×</button>
                                                 </span>
                                             ))}
                                             {s.aliases.length === 0 && <span className="text-xs text-muted-foreground">—</span>}

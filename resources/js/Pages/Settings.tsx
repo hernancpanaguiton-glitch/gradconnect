@@ -5,7 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { PageProps } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { Download, Moon, Settings as SettingsIcon, Sun } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 interface Preference { key: string; label: string; description: string; enabled: boolean }
 interface Props extends PageProps {
@@ -147,10 +147,22 @@ function NotificationsTab({ preferences }: { preferences: Preference[] }) {
     const [prefs, setPrefs] = useState(preferences);
     const [saving, setSaving] = useState(false);
 
+    // Two toggles flipped in one tick both read the same render snapshot, so
+    // the second request sent the first toggle's old value and that is what
+    // was persisted. A ref advances synchronously, so each call sees the
+    // previous one — without putting a request inside a state updater, which
+    // must stay pure.
+    const latest = useRef(prefs);
+
     function update(key: string, enabled: boolean) {
-        const next = prefs.map((p) => (p.key === key ? { ...p, enabled } : p));
+        const next = latest.current.map((preference) =>
+            preference.key === key ? { ...preference, enabled } : preference
+        );
+
+        latest.current = next;
         setPrefs(next);
         setSaving(true);
+
         router.patch(route('settings.notifications.update'),
             { preferences: next.map((p) => ({ key: p.key, enabled: p.enabled })) },
             { preserveScroll: true, preserveState: true, onFinish: () => setSaving(false) },

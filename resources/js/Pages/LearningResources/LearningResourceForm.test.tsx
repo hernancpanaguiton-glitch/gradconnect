@@ -1,5 +1,6 @@
 import LearningResourceCreate from '@/Pages/LearningResources/Create';
 import LearningResourceEdit from '@/Pages/LearningResources/Edit';
+import { sharedProps } from '@/tests/factories';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -49,7 +50,7 @@ describe('Learning resource form', () => {
         // .map on undefined threw during render, so "+ New Resource"
         // white-screened the app on the first click.
         expect(() =>
-            render(<LearningResourceCreate departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />)
+            render(<LearningResourceCreate {...sharedProps()} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />)
         ).not.toThrow();
 
         expect(screen.getByRole('option', { name: 'BS Computer Science' })).toBeInTheDocument();
@@ -58,7 +59,7 @@ describe('Learning resource form', () => {
     it('renders the edit page from the same payload', () => {
         expect(() =>
             render(
-                <LearningResourceEdit resource={RESOURCE} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />
+                <LearningResourceEdit {...sharedProps()} resource={RESOURCE} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />
             )
         ).not.toThrow();
 
@@ -66,7 +67,7 @@ describe('Learning resource form', () => {
     });
 
     it('groups every program under its college', () => {
-        render(<LearningResourceCreate departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
+        render(<LearningResourceCreate {...sharedProps()} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
 
         const groups = Array.from(document.querySelectorAll('optgroup'));
 
@@ -79,13 +80,13 @@ describe('Learning resource form', () => {
     });
 
     it('keeps a program whose college was removed selectable', () => {
-        render(<LearningResourceCreate departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
+        render(<LearningResourceCreate {...sharedProps()} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
 
         expect(screen.getByRole('option', { name: 'BS Orphaned Program' })).toBeInTheDocument();
     });
 
     it('offers "Everyone" so a resource need not be restricted', () => {
-        render(<LearningResourceCreate departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
+        render(<LearningResourceCreate {...sharedProps()} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
 
         const everyone = screen.getByRole('option', { name: 'Everyone' }) as HTMLOptionElement;
 
@@ -96,7 +97,7 @@ describe('Learning resource form', () => {
     it('preselects the program an existing resource is restricted to', () => {
         // A select whose value is not among its options renders blank and
         // silently submits the wrong thing.
-        render(<LearningResourceEdit resource={RESOURCE} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
+        render(<LearningResourceEdit {...sharedProps()} resource={RESOURCE} departmentGroups={DEPARTMENT_GROUPS} skills={SKILLS} />);
 
         const select = screen
             .getByRole('option', { name: 'BS Information Technology' })

@@ -27,9 +27,15 @@ export default function UserEdit({ user, roles, colleges }: Props) {
     }
 
     function toggleRole(name: string) {
-        setData('roles', data.roles.includes(name)
-            ? data.roles.filter((r) => r !== name)
-            : [...data.roles, name]);
+        // Derive from the pending value, not this render's snapshot: two
+        // boxes ticked before the next commit would otherwise both start
+        // from the same list and the second would drop the first.
+        setData((current) => ({
+            ...current,
+            roles: current.roles.includes(name)
+                ? current.roles.filter((role) => role !== name)
+                : [...current.roles, name],
+        }));
     }
 
     return (

@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import TableCard from '@/Components/TableCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -10,7 +11,7 @@ interface Posting {
 interface Company { id: number; name: string; is_verified: boolean }
 interface Props extends PageProps {
     company: Company;
-    postings: { data: Posting[]; total: number };
+    postings: { data: Posting[]; total: number; links: Array<{ url: string | null; label: string; active: boolean }> };
 }
 
 const statusColors: Record<string, string> = {
@@ -87,6 +88,8 @@ export default function PostingsIndex({ company, postings }: Props) {
                         </tbody>
                     </table>
                 </TableCard>
+
+                <Pagination links={postings.links} />
             </div>
         </AuthenticatedLayout>
     );

@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import StatTile from '@/Components/StatTile';
@@ -122,6 +123,8 @@ export default function JobManagement({ postings, filters, stats }: Props) {
                         </tbody>
                     </table>
                 </TableCard>
+
+                <Pagination links={postings.links} />
             </div>
         </AuthenticatedLayout>
     );

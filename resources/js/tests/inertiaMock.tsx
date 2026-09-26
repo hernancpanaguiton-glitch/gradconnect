@@ -114,23 +114,36 @@ export function useForm<T extends Props>(initial: T) {
     const [processing, setProcessing] = useState(false);
     const defaults = useRef(initial);
 
-    const setData = useCallback((keyOrValues: string | Partial<T>, value?: unknown) => {
-        setDataState((current) =>
-            typeof keyOrValues === 'string'
-                ? ({ ...current, [keyOrValues]: value } as T)
-                : ({ ...current, ...keyOrValues } as T)
-        );
-    }, []);
+    // Mirrors the real adapter: the string, object and updater forms all
+    // resolve against a ref that advances synchronously, so two calls in one
+    // tick compose instead of overwriting each other.
+    const dataRef = useRef<T>(initial);
+    dataRef.current = data;
+
+    const setData = useCallback(
+        (keyOrValues: string | Partial<T> | ((current: T) => T), value?: unknown) => {
+            const next =
+                typeof keyOrValues === 'function'
+                    ? (keyOrValues as (current: T) => T)(dataRef.current)
+                    : typeof keyOrValues === 'string'
+                      ? ({ ...dataRef.current, [keyOrValues]: value } as T)
+                      : ({ ...dataRef.current, ...keyOrValues } as T);
+
+            dataRef.current = next;
+            setDataState(next);
+        },
+        []
+    );
 
     const submit = useCallback(
         (method: RecordedVisit['method']) => (url: string, options?: { onSuccess?: () => void; onFinish?: () => void }) => {
             setProcessing(true);
-            record(method, url, data);
+            record(method, url, dataRef.current);
             options?.onSuccess?.();
             options?.onFinish?.();
             setProcessing(false);
         },
-        [data]
+        []
     );
 
     const isDirty = useMemo(() => JSON.stringify(data) !== JSON.stringify(defaults.current), [data]);
