@@ -88,6 +88,40 @@
     }
 }
 
+@layer components {
+    /*
+     * Two-column form layout that collapses on phones. A bare `grid-cols-2`
+     * leaves each field about 140px wide on a 375px screen, which clips date
+     * inputs and placeholders like "+63 9XX XXX XXXX".
+     */
+    .form-grid {
+        @apply grid grid-cols-1 gap-4 sm:grid-cols-2;
+    }
+
+    .form-grid-tight {
+        @apply grid grid-cols-1 gap-3 sm:grid-cols-2;
+    }
+}
+
+@layer utilities {
+    /* Minimum comfortable touch target for small text buttons. */
+    .tap-target {
+        @apply inline-flex min-h-10 min-w-10 items-center justify-center;
+    }
+}
+
+/*
+ * iOS zooms the viewport when a focused input's text is under 16px, and it
+ * never zooms back out — which strands the user on a page scrolled sideways.
+ */
+@media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+    }
+}
+
 /* Hide the app shell when printing, so pages like the Résumé Builder print cleanly. */
 @media print {
     aside,

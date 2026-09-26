@@ -29,6 +29,14 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <!--
+            Blank the AI credentials so a developer's real keys in .env can
+            never be spent (or leak request data) from a test run. Tests that
+            exercise a provider fake the HTTP client instead.
+        -->
+        <env name="GROQ_API_KEY" value=""/>
+        <env name="GEMINI_API_KEY" value=""/>
+        <env name="JINA_API_KEY" value=""/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
