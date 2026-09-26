@@ -55,6 +55,7 @@ export default function CompanyEdit({ company }: Props) {
                         <input type="text" value={data.industry} onChange={(e) => setData('industry', e.target.value)}
                             placeholder="e.g. Information Technology"
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                        {errors.industry && <p className="mt-1 text-xs text-red-600">{errors.industry}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
@@ -68,11 +69,13 @@ export default function CompanyEdit({ company }: Props) {
                         <input type="text" value={data.location} onChange={(e) => setData('location', e.target.value)}
                             placeholder="Cebu City, Philippines"
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                        {errors.location && <p className="mt-1 text-xs text-red-600">{errors.location}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                         <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} rows={4}
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                        {errors.description && <p className="mt-1 text-xs text-red-600">{errors.description}</p>}
                     </div>
                     <button type="submit" disabled={processing}
                         className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">

@@ -29,8 +29,20 @@ function formatYear(y: number | null): string {
 }
 
 function formatMonthYear(value: string | null): string {
-    if (!value) return 'Present';
-    return new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
+    // Not "Present": the caller already handles a current role via is_current,
+    // and a past job left without an end date was printing as though the
+    // graduate still worked there — on a document they send to employers.
+    if (!value) {
+        return '?';
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
 }
 
 export default function ResumeBuilder({ profile }: Props) {
@@ -38,8 +50,12 @@ export default function ResumeBuilder({ profile }: Props) {
     const user = auth.user;
     const [saving, setSaving] = useState(false);
 
+    // Mirrors GraduateProfile::buildProfileText(), which the server uses to
+    // decide whether a résumé can be built. It counts `program`, so a
+    // graduate with only a program saw "your profile is empty" and a disabled
+    // button for something the server would have built happily.
     const hasContent = Boolean(
-        profile.headline || profile.summary || profile.skills.length ||
+        profile.program || profile.headline || profile.summary || profile.skills.length ||
         profile.education_records.length || profile.employment_records.length,
     );
 
