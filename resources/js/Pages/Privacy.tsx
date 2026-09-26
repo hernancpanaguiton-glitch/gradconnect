@@ -1,6 +1,7 @@
+import PublicLayout from '@/Layouts/PublicLayout';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, GraduationCap } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 const SECTIONS: Array<{ title: string; body: React.ReactNode }> = [
     {
@@ -70,34 +71,9 @@ export default function Privacy({ auth }: PageProps) {
     return (
         <>
             <Head title="Privacy Policy — GradConnect" />
-            <div className="min-h-screen bg-white text-foreground">
-                <nav className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur">
-                    <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700">
-                                <GraduationCap size={18} className="text-white" />
-                            </div>
-                            <div>
-                                <span className="block text-lg font-bold leading-tight text-foreground">GradConnect</span>
-                                <span className="block text-xs leading-none text-muted-foreground">UCLM Career Platform</span>
-                            </div>
-                        </Link>
-                        <div className="flex items-center gap-3">
-                            {auth.user ? (
-                                <Link href={route('dashboard')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">
-                                    Go to Dashboard
-                                </Link>
-                            ) : (
-                                <>
-                                    <Link href={route('login')} className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-blue-50">Sign In</Link>
-                                    <Link href={route('register')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">Get Started</Link>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </nav>
+            <PublicLayout user={auth.user}>
 
-                <section className="mx-auto max-w-3xl px-6 py-16">
+                <section className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
                     <Link href="/" className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
                         <ArrowLeft size={14} /> Back to home
                     </Link>
@@ -118,10 +94,7 @@ export default function Privacy({ auth }: PageProps) {
                     </div>
                 </section>
 
-                <footer className="bg-[#0f1f3d] py-8 text-center text-sm text-blue-300">
-                    <p>© {new Date().getFullYear()} University of Cebu Lapu-Lapu and Mandaue. All rights reserved.</p>
-                </footer>
-            </div>
+            </PublicLayout>
         </>
     );
 }

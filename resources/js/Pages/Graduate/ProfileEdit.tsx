@@ -1,3 +1,4 @@
+import ScrollTabs from '@/Components/ScrollTabs';
 import SkillCategoryPicker from '@/Components/SkillCategoryPicker';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { College, PageProps } from '@/types';
@@ -68,12 +69,12 @@ function Field({ label, children, error }: { label: string; children: React.Reac
     );
 }
 
-function Input({ value, onChange, type = 'text', placeholder }: {
-    value: string; onChange: (v: string) => void; type?: string; placeholder?: string
+function Input({ value, onChange, type = 'text', placeholder, disabled = false }: {
+    value: string; onChange: (v: string) => void; type?: string; placeholder?: string; disabled?: boolean
 }) {
     return (
-        <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} disabled={disabled}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400" />
     );
 }
 
@@ -256,31 +257,27 @@ export default function ProfileEdit({
             <Head title="Edit Profile" />
 
             <div className="max-w-3xl space-y-5">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900">My Career Profile</h1>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">My Career Profile</h1>
                     <div className="flex items-center gap-2">
-                        <div className="w-32 h-2 rounded-full bg-gray-200">
+                        <div className="h-2 w-24 rounded-full bg-gray-200 sm:w-32">
                             <div className="h-2 rounded-full bg-indigo-600 transition-all" style={{ width: `${profile.profile_completion}%` }} />
                         </div>
-                        <span className="text-sm text-gray-500">{profile.profile_completion}% complete</span>
+                        <span className="whitespace-nowrap text-sm text-gray-500">{profile.profile_completion}% complete</span>
                     </div>
                 </div>
 
-
-                {/* Tabs */}
-                <div className="flex border-b border-gray-200 gap-1">
-                    {tabs.map((t) => (
-                        <button key={t.key} onClick={() => setTab(t.key)}
-                            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${tab === t.key ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
-                            {t.label}
-                        </button>
-                    ))}
-                </div>
+                {/*
+                    Four labelled tabs need more width than a phone has. As a
+                    plain row they pushed the whole page sideways, which is
+                    what clipped the fields on every other tab.
+                */}
+                <ScrollTabs tabs={tabs} active={tab} onChange={setTab} />
 
                 {/* Basic Info */}
                 {tab === 'basic' && (
                     <form onSubmit={saveProfile} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="form-grid">
                             <Field label="College" error={errors.college_id}>
                                 <Select value={data.college_id} onChange={changeCollege}
                                     options={colleges.map((c) => ({ value: String(c.id), label: c.name }))} />
@@ -366,7 +363,7 @@ export default function ProfileEdit({
                         ))}
                         <form onSubmit={addEducation} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
                             <p className="text-sm font-medium text-gray-700">Add Education Record</p>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="form-grid-tight">
                                 <Field label="Institution">
                                     <Input value={eduForm.institution} onChange={(v) => setEduForm((f) => ({ ...f, institution: v }))} placeholder="University of Cebu" />
                                 </Field>
@@ -406,7 +403,7 @@ export default function ProfileEdit({
                         ))}
                         <form onSubmit={addEmployment} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
                             <p className="text-sm font-medium text-gray-700">Add Employment Record</p>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="form-grid-tight">
                                 <Field label="Company Name">
                                     <Input value={empForm.company_name} onChange={(v) => setEmpForm((f) => ({ ...f, company_name: v }))} placeholder="ACME Corporation" />
                                 </Field>
@@ -427,11 +424,15 @@ export default function ProfileEdit({
                                     <Input value={empForm.start_date} onChange={(v) => setEmpForm((f) => ({ ...f, start_date: v }))} type="date" />
                                 </Field>
                                 <Field label="End Date">
-                                    <Input value={empForm.end_date} onChange={(v) => setEmpForm((f) => ({ ...f, end_date: v }))} type="date" />
+                                    {/* A current role has no end date; leaving this
+                                        editable let a contradictory pair be submitted. */}
+                                    <Input value={empForm.end_date} onChange={(v) => setEmpForm((f) => ({ ...f, end_date: v }))} type="date"
+                                        disabled={empForm.is_current} />
                                 </Field>
                             </div>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked={empForm.is_current} onChange={(e) => setEmpForm((f) => ({ ...f, is_current: e.target.checked }))}
+                            <label className="flex min-h-10 items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={empForm.is_current}
+                                    onChange={(e) => setEmpForm((f) => ({ ...f, is_current: e.target.checked, end_date: e.target.checked ? '' : f.end_date }))}
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
                                 <span className="text-sm text-gray-700">Currently working here</span>
                             </label>

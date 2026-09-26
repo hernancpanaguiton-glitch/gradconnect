@@ -1,9 +1,9 @@
+import PublicLayout from '@/Layouts/PublicLayout';
 import AiMatchShowcase from '@/Components/Landing/AiMatchShowcase';
 import { MatchShowcaseItem, PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import {
-    ArrowRight, Award, BarChart2, Brain, Building2,
-    GraduationCap, Star, Target, TrendingUp, Zap,
+    ArrowRight, Award, BarChart2, Brain, Building2, Star, Target, TrendingUp, Zap,
 } from 'lucide-react';
 
 const STATS = [
@@ -35,40 +35,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
         <>
             <Head title="Welcome to GradConnect" />
 
-            <div className="min-h-screen bg-white text-foreground">
-                {/* Nav */}
-                <nav className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur">
-                    <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-                        <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700">
-                                <GraduationCap size={18} className="text-white" />
-                            </div>
-                            <div>
-                                <span className="block text-lg font-bold leading-tight text-foreground">GradConnect</span>
-                                <span className="block text-xs leading-none text-muted-foreground">UCLM Career Platform</span>
-                            </div>
-                        </div>
-                        <div className="hidden items-center gap-8 md:flex">
-                            {['Features', 'For Employers', 'Contact'].map((l) => (
-                                <span key={l} className="cursor-pointer text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">{l}</span>
-                            ))}
-                            <Link href={route('about')} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">About</Link>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            {auth.user ? (
-                                <Link href={route('dashboard')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">
-                                    Go to Dashboard
-                                </Link>
-                            ) : (
-                                <>
-                                    <Link href={route('login')} className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-blue-50">Sign In</Link>
-                                    <Link href={route('register')} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-blue-700">Get Started</Link>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </nav>
-
+            <PublicLayout user={auth.user}>
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-gradient-to-br from-[#0f1f3d] via-[#1a3a6b] to-[#1a56db] text-white">
                     <div className="absolute inset-0 opacity-10">
@@ -116,8 +83,8 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                 </section>
 
                 {/* Features */}
-                <section className="bg-[#f0f4f9] py-24">
-                    <div className="mx-auto max-w-7xl px-6">
+                <section id="features" className="scroll-mt-20 bg-[#f0f4f9] py-24">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6">
                         <div className="mb-16 text-center">
                             <h2 className="mb-4 text-3xl font-bold text-foreground">Everything You Need to Succeed</h2>
                             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">A complete career development ecosystem built for UCLM graduates, alumni, and industry partners.</p>
@@ -138,7 +105,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
 
                 {/* Testimonials */}
                 <section className="bg-white py-24">
-                    <div className="mx-auto max-w-7xl px-6">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6">
                         <div className="mb-16 text-center">
                             <h2 className="text-3xl font-bold text-foreground">What Our Community Says</h2>
                         </div>
@@ -162,7 +129,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
 
                 {/* CTA */}
                 <section className="bg-gradient-to-r from-[#0f1f3d] to-[#1a56db] py-20 text-white">
-                    <div className="mx-auto max-w-4xl px-6 text-center">
+                    <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
                         <h2 className="mb-4 text-3xl font-bold">Ready to Take the Next Step?</h2>
                         <p className="mb-8 text-lg text-blue-100">Join thousands of UCLM graduates building successful careers with GradConnect.</p>
                         {!auth.user && (
@@ -173,40 +140,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                     </div>
                 </section>
 
-                {/* Footer */}
-                <footer className="bg-[#0f1f3d] py-12 text-white">
-                    <div className="mx-auto max-w-7xl px-6">
-                        <div className="mb-8 grid gap-8 md:grid-cols-4">
-                            <div>
-                                <div className="mb-4 flex items-center gap-2">
-                                    <GraduationCap size={20} className="text-blue-400" />
-                                    <span className="text-lg font-bold">GradConnect</span>
-                                </div>
-                                <p className="text-sm leading-relaxed text-blue-200">University of Cebu Lapu-Lapu and Mandaue official graduate employability platform.</p>
-                            </div>
-                            {[
-                                { title: 'Platform', links: ['Features', 'AI Matching', 'Tracer Study', 'Career Analytics'] },
-                                { title: 'For Students', links: ['Register', 'Upload Resume', 'Browse Jobs', 'Skill Analysis'] },
-                                { title: 'Contact', links: ['careers@uclm.edu.ph', '+63 32 234 5678', 'A.C. Cortes Ave., Mandaue City', 'Mon–Fri 8AM–5PM'] },
-                            ].map((col) => (
-                                <div key={col.title}>
-                                    <p className="mb-4 text-sm font-semibold">{col.title}</p>
-                                    {col.links.map((l) => <p key={l} className="mb-2 cursor-pointer text-sm text-blue-200 transition-colors hover:text-white">{l}</p>)}
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 md:flex-row">
-                            <p className="text-sm text-blue-300">© {new Date().getFullYear()} University of Cebu Lapu-Lapu and Mandaue. All rights reserved.</p>
-                            <div className="flex gap-6">
-                                <Link href={route('privacy')} className="text-sm text-blue-300 transition-colors hover:text-white">Privacy Policy</Link>
-                                {['Terms of Service', 'Accessibility'].map((l) => (
-                                    <span key={l} className="cursor-pointer text-sm text-blue-300 transition-colors hover:text-white">{l}</span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </div>
+            </PublicLayout>
         </>
     );
 }

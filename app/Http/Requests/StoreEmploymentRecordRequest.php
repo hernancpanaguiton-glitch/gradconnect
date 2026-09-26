@@ -29,7 +29,10 @@ class StoreEmploymentRecordRequest extends FormRequest
             'employment_type' => ['required', 'in:full_time,part_time,contract,internship,freelance'],
             'is_current' => ['boolean'],
             'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date'],
+            // A role still held has no end date, and an end date before the
+            // start date would silently skew every tenure figure in the
+            // employability reports.
+            'end_date' => ['exclude_if:is_current,true', 'nullable', 'date', 'after_or_equal:start_date'],
             'monthly_salary_range' => ['nullable', 'string', 'max:100'],
             'location' => ['nullable', 'string', 'max:255'],
             'is_related_to_course' => ['nullable', 'boolean'],
