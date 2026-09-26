@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Activity, FileCheck2, TrendingUp, Users } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import CategoryBarChart from '@/Components/Charts/CategoryBarChart';
 
 interface ProgramRate { dept: string; rate: number }
 
@@ -42,17 +42,7 @@ export default function SaoDashboard({ stats, profileCompletionByProgram }: Page
                             No students with an assigned program yet.
                         </p>
                     ) : (
-                        <div className="h-72">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={profileCompletionByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                                    <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                    <Bar dataKey="rate" name="Avg. completion %" fill="var(--accent)" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <CategoryBarChart data={profileCompletionByProgram} name="Avg. completion %" color="var(--accent)" />
                     )}
                 </div>
 

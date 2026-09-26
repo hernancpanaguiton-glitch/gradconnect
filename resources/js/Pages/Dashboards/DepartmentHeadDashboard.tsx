@@ -5,7 +5,7 @@ import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { GraduationCap, Target, TrendingUp } from 'lucide-react';
 import { ChangeEvent } from 'react';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import CategoryBarChart from '@/Components/Charts/CategoryBarChart';
 
 interface ProgramRate { dept: string; rate: number }
 interface College { id: number; name: string; code: string | null }
@@ -56,17 +56,7 @@ export default function DepartmentHeadDashboard({ stats, placementByProgram, col
                             No programs assigned to your department yet.
                         </p>
                     ) : (
-                        <div className="h-72">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={placementByProgram} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                                    <XAxis dataKey="dept" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--foreground)', fontSize: 12 }} />
-                                    <Bar dataKey="rate" name="Placement %" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <CategoryBarChart data={placementByProgram} name="Placement %" />
                     )}
                 </div>
 

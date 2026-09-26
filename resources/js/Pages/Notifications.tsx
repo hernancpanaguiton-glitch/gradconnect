@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
@@ -86,19 +87,7 @@ export default function Notifications({ notifications, unreadCount }: Props) {
                     })}
                 </div>
 
-                {notifications.links.length > 3 && (
-                    <div className="flex flex-wrap items-center justify-center gap-1">
-                        {notifications.links.map((link, i) => (
-                            link.url ? (
-                                <Link key={i} href={link.url} preserveScroll
-                                    className={`rounded-lg px-3 py-1.5 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'border border-border bg-card text-foreground hover:bg-muted'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} />
-                            ) : (
-                                <span key={i} className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: link.label }} />
-                            )
-                        ))}
-                    </div>
-                )}
+                <Pagination links={notifications.links} className="justify-center" />
             </div>
         </AuthenticatedLayout>
     );

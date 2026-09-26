@@ -1,3 +1,5 @@
+import Pagination from '@/Components/Pagination';
+import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -52,7 +54,7 @@ export default function Skills({ skills, filters }: Props) {
                         className="flex-1 bg-transparent text-sm focus:outline-none" />
                 </form>
 
-                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <TableCard>
                     <table className="w-full text-sm">
                         <thead className="border-b border-border bg-muted/40 text-left text-muted-foreground">
                             <tr><th className="px-6 py-3 font-medium">Skill</th><th className="px-6 py-3 font-medium">Aliases</th><th className="px-6 py-3 font-medium">Add Alias</th></tr>
@@ -80,17 +82,9 @@ export default function Skills({ skills, filters }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
 
-                {skills.links.length > 3 && (
-                    <div className="flex flex-wrap gap-1">
-                        {skills.links.map((link, i) => (
-                            <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true })}
-                                className={`rounded-lg px-3 py-1.5 text-xs font-medium ${link.active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/70'} disabled:opacity-40`}
-                                dangerouslySetInnerHTML={{ __html: link.label }} />
-                        ))}
-                    </div>
-                )}
+                <Pagination links={skills.links} />
             </div>
         </AuthenticatedLayout>
     );

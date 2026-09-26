@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
@@ -98,19 +99,7 @@ export default function JobsIndex({ postings, filters }: Props) {
                 </div>
 
                 {/* Pagination */}
-                {postings.links.length > 3 && (
-                    <div className="flex justify-center gap-1">
-                        {postings.links.map((link, i) => (
-                            link.url ? (
-                                <Link key={i} href={link.url}
-                                    className={`rounded px-3 py-1.5 text-sm ${link.active ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} />
-                            ) : (
-                                <span key={i} className="rounded px-3 py-1.5 text-sm text-gray-300 ring-1 ring-gray-200" dangerouslySetInnerHTML={{ __html: link.label }} />
-                            )
-                        ))}
-                    </div>
-                )}
+                <Pagination links={postings.links} className="justify-center" />
             </div>
         </AuthenticatedLayout>
     );

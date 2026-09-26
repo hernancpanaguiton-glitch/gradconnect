@@ -1,3 +1,4 @@
+import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -58,7 +59,7 @@ export default function Backups({ backups, isPostgres, pgDumpAvailable }: Props)
                     </div>
                 )}
 
-                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <TableCard>
                     <table className="w-full text-sm">
                         <thead className="border-b border-border bg-muted/40 text-left text-muted-foreground">
                             <tr><th className="px-6 py-3 font-medium">File</th><th className="px-6 py-3 font-medium">Size</th><th className="px-6 py-3 font-medium">Created</th><th className="px-6 py-3 font-medium"></th></tr>
@@ -81,7 +82,7 @@ export default function Backups({ backups, isPostgres, pgDumpAvailable }: Props)
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
 
                 <p className="text-xs text-muted-foreground">
                     Restoring a backup overwrites the live database and is available only via the server CLI

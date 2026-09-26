@@ -1,5 +1,8 @@
 import GlobalSearch from '@/Components/GlobalSearch';
 import ThemeToggle from '@/Components/ThemeToggle';
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useDismiss from '@/hooks/useDismiss';
+import { useIsDesktop } from '@/hooks/useMediaQuery';
 import { getNavFor, NavSection, ROLE_LABELS } from '@/lib/nav';
 import { PageProps } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
@@ -9,11 +12,12 @@ import {
     GraduationCap,
     LogOut,
     Menu,
+    PanelLeftClose,
     Settings,
     User as UserIcon,
     X,
 } from 'lucide-react';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
 function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
     const initials = name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
@@ -40,6 +44,21 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
     const [notifOpen, setNotifOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
 
+    const isDesktop = useIsDesktop();
+    const notifRef = useDismiss<HTMLDivElement>(notifOpen, () => setNotifOpen(false));
+    const profileRef = useDismiss<HTMLDivElement>(profileOpen, () => setProfileOpen(false));
+    const sidebarRef = useDismiss<HTMLElement>(sidebarOpen, () => setSidebarOpen(false), { outside: false });
+
+    // The drawer only exists below `lg`; leaving it "open" while the sidebar
+    // becomes permanent would trap the page under a stale overlay.
+    useEffect(() => {
+        if (isDesktop) {
+            setSidebarOpen(false);
+        }
+    }, [isDesktop]);
+
+    useBodyScrollLock(sidebarOpen && !isDesktop);
+
     function isActive(href: string) {
         if (href === '#') return false;
         return href === '/dashboard' ? currentPath === '/dashboard' : currentPath.startsWith(href);
@@ -58,6 +77,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
 
             {/* Sidebar */}
             <aside
+                ref={sidebarRef}
                 className={`fixed inset-y-0 left-0 z-30 flex flex-col bg-sidebar text-white transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${collapsed ? 'w-16' : 'w-64'}`}
             >
                 {/* Logo + collapse */}
@@ -76,11 +96,16 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                     <button
                         onClick={() => setCollapsed((c) => !c)}
                         className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/60 transition-colors hover:bg-white/10 lg:flex"
-                        title={collapsed ? 'Expand' : 'Collapse'}
+                        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                     >
-                        {collapsed ? <Menu size={16} /> : <X size={16} />}
+                        {collapsed ? <Menu size={16} /> : <PanelLeftClose size={16} />}
                     </button>
-                    <button className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 lg:hidden" onClick={() => setSidebarOpen(false)}>
+                    <button
+                        className="ml-auto flex h-9 w-9 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                        aria-label="Close menu"
+                    >
                         <X size={16} />
                     </button>
                 </div>
@@ -153,7 +178,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                         <ThemeToggle />
 
                         {/* Notifications */}
-                        <div className="relative">
+                        <div ref={notifRef} className="relative">
                             <button
                                 onClick={() => { setNotifOpen((o) => !o); setProfileOpen(false); }}
                                 className="relative flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted"
@@ -167,7 +192,10 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                                 )}
                             </button>
                             {notifOpen && (
-                                <div className="absolute right-0 top-12 z-50 w-80 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
+                                // Anchored to the bell on a tablet and up, but the bell sits
+                                // near the right edge, so on a phone a fixed-width panel would
+                                // hang off the screen. Below `sm` it spans the viewport instead.
+                                <div className="fixed inset-x-2 top-[4.25rem] z-50 max-h-[calc(100dvh-5rem)] overflow-hidden rounded-xl border border-border bg-card shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-80">
                                     <div className="flex items-center justify-between border-b border-border p-4">
                                         <span className="text-sm font-semibold text-foreground">Notifications</span>
                                         {unread > 0 && (
@@ -204,7 +232,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                         </div>
 
                         {/* Profile menu */}
-                        <div className="relative">
+                        <div ref={profileRef} className="relative">
                             <button
                                 onClick={() => { setProfileOpen((o) => !o); setNotifOpen(false); }}
                                 className="flex items-center gap-2 rounded-xl py-1 pl-1 pr-2 transition-colors hover:bg-muted"
@@ -218,10 +246,10 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                             </button>
                             {profileOpen && (
                                 <div className="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-xl border border-border bg-card py-2 shadow-xl">
-                                    <Link href={route('profile.edit')} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted">
+                                    <Link href={route('profile.edit')} onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted">
                                         <UserIcon size={15} /> My Profile
                                     </Link>
-                                    <Link href="/settings" className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted">
+                                    <Link href="/settings" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted">
                                         <Settings size={15} /> Settings
                                     </Link>
                                     <div className="my-1 border-t border-border" />

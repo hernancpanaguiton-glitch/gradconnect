@@ -1,8 +1,9 @@
+import Pagination from '@/Components/Pagination';
 import CandidateProfileModal from '@/Components/CandidateProfileModal';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { FileText, MapPin, Search, Users } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
@@ -116,19 +117,7 @@ export default function TalentSearch({ candidates, colleges, filters }: Props) {
                     )}
                 </div>
 
-                {candidates.links.length > 3 && (
-                    <div className="flex flex-wrap items-center justify-center gap-1">
-                        {candidates.links.map((link, i) => (
-                            link.url ? (
-                                <Link key={i} href={link.url} preserveScroll
-                                    className={`rounded-lg px-3 py-1.5 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'border border-border bg-card text-foreground hover:bg-muted'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} />
-                            ) : (
-                                <span key={i} className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: link.label }} />
-                            )
-                        ))}
-                    </div>
-                )}
+                <Pagination links={candidates.links} className="justify-center" />
             </div>
 
             {selected !== null && <CandidateProfileModal profileId={selected} onClose={() => setSelected(null)} />}

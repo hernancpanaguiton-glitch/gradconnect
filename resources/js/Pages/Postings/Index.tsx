@@ -1,3 +1,4 @@
+import TableCard from '@/Components/TableCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -43,7 +44,7 @@ export default function PostingsIndex({ company, postings }: Props) {
                 </div>
 
 
-                <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+                <TableCard wide>
                     <table className="min-w-full text-sm">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
@@ -85,7 +86,7 @@ export default function PostingsIndex({ company, postings }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
             </div>
         </AuthenticatedLayout>
     );

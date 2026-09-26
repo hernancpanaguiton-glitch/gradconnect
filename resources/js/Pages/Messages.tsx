@@ -2,8 +2,8 @@ import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Bell, Send } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { ArrowLeft, Bell, Send } from 'lucide-react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 interface ConversationItem {
     id: number; other: { id: number; name: string } | null;
@@ -25,6 +25,16 @@ function initials(name: string): string {
 export default function Messages({ conversations, messageableUsers, active }: Props) {
     const [body, setBody] = useState('');
     const [startingWith, setStartingWith] = useState('');
+    const threadRef = useRef<HTMLDivElement>(null);
+
+    // Open on the newest message rather than the top of the history.
+    useEffect(() => {
+        const thread = threadRef.current;
+
+        if (thread) {
+            thread.scrollTop = thread.scrollHeight;
+        }
+    }, [active?.id, active?.messages.length]);
 
     function sendMessage(e: FormEvent) {
         e.preventDefault();
@@ -44,7 +54,12 @@ export default function Messages({ conversations, messageableUsers, active }: Pr
                 <PageHeader icon={Bell} title="Messages" subtitle="Conversations with employers, offices, and mentors." />
 
                 <div className="grid overflow-hidden rounded-xl border border-border bg-card shadow-sm lg:grid-cols-3">
-                    <div className="border-border lg:col-span-1 lg:border-r">
+                    {/*
+                        Below `lg` the list and the thread cannot sit side by side, so
+                        only one shows at a time: opening a conversation swaps the list
+                        out for the thread, which carries a back link.
+                    */}
+                    <div className={`border-border lg:col-span-1 lg:block lg:border-r ${active ? 'hidden' : 'block'}`}>
                         {messageableUsers.length > 0 && (
                             <div className="flex gap-2 border-b border-border p-3">
                                 <select value={startingWith} onChange={(e) => setStartingWith(e.target.value)}
@@ -76,16 +91,28 @@ export default function Messages({ conversations, messageableUsers, active }: Pr
                         )}
                     </div>
 
-                    <div className="flex min-h-[26rem] flex-col lg:col-span-2">
+                    {/*
+                        A bounded height so the thread scrolls inside itself instead of
+                        stretching the page, which on a phone pushed the composer below
+                        the fold.
+                    */}
+                    <div className={`h-[calc(100dvh-16rem)] min-h-[22rem] flex-col lg:col-span-2 lg:flex lg:h-[34rem] ${active ? 'flex' : 'hidden lg:flex'}`}>
                         {active ? (
                             <>
-                                <div className="border-b border-border px-5 py-3">
-                                    <p className="font-semibold text-foreground">{active.other?.name ?? 'Unknown'}</p>
+                                <div className="flex items-center gap-2 border-b border-border px-4 py-3 sm:px-5">
+                                    <Link
+                                        href={route('messages')}
+                                        className="tap-target -ml-2 rounded-lg text-muted-foreground hover:bg-muted lg:hidden"
+                                        aria-label="Back to conversations"
+                                    >
+                                        <ArrowLeft size={18} />
+                                    </Link>
+                                    <p className="min-w-0 truncate font-semibold text-foreground">{active.other?.name ?? 'Unknown'}</p>
                                 </div>
-                                <div className="flex-1 space-y-3 overflow-y-auto p-5">
+                                <div ref={threadRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4 sm:p-5">
                                     {active.messages.map((m) => (
                                         <div key={m.id} className={`flex ${m.mine ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${m.mine ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}`}>
+                                            <div className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2 text-sm [overflow-wrap:anywhere] sm:max-w-[75%] ${m.mine ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}`}>
                                                 {m.body}
                                             </div>
                                         </div>
@@ -94,14 +121,14 @@ export default function Messages({ conversations, messageableUsers, active }: Pr
                                 </div>
                                 <form onSubmit={sendMessage} className="flex items-center gap-2 border-t border-border p-3">
                                     <input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Type a message…"
-                                        className="flex-1 rounded-lg border border-border bg-muted px-3 py-2 text-sm focus:border-primary focus:bg-card focus:outline-none" />
-                                    <button type="submit" className="flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-blue-700">
-                                        <Send size={15} /> Send
+                                        className="min-w-0 flex-1 rounded-lg border border-border bg-muted px-3 py-2 text-sm focus:border-primary focus:bg-card focus:outline-none" />
+                                    <button type="submit" aria-label="Send message" className="flex shrink-0 items-center gap-1 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-blue-700 sm:px-4">
+                                        <Send size={15} /> <span className="hidden sm:inline">Send</span>
                                     </button>
                                 </form>
                             </>
                         ) : (
-                            <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+                            <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-muted-foreground">
                                 Select a conversation, or start a new one.
                             </div>
                         )}

@@ -32,7 +32,7 @@ export default function CategoryBarChart({
     name,
     color = 'var(--primary)',
 }: {
-    data: Array<Record<string, string | number>>;
+    data: ReadonlyArray<object>;
     categoryKey?: string;
     valueKey?: string;
     name: string;

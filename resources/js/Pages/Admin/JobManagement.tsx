@@ -1,3 +1,4 @@
+import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import StatTile from '@/Components/StatTile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -79,7 +80,7 @@ export default function JobManagement({ postings, filters, stats }: Props) {
                     />
                 </form>
 
-                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <TableCard wide>
                     <table className="w-full text-sm">
                         <thead className="border-b border-border bg-muted/40 text-left text-muted-foreground">
                             <tr>
@@ -120,7 +121,7 @@ export default function JobManagement({ postings, filters, stats }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
             </div>
         </AuthenticatedLayout>
     );
