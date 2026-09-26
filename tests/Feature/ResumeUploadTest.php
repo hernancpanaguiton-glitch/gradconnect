@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Jobs\GenerateResumeEmbedding;
+use App\Models\Resume;
 use App\Models\User;
 use App\Services\FileTextExtractor;
 use Database\Seeders\RolePermissionSeeder;
@@ -92,6 +93,59 @@ class ResumeUploadTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('resumes', ['original_filename' => 'cv.docx']);
+    }
+
+    public function test_docx_keeps_its_extension_so_its_text_can_be_extracted(): void
+    {
+        Storage::fake('local');
+        Queue::fake();
+        $user = User::factory()->alumni()->create();
+
+        $docxPath = $this->makeDocx('Frontend engineer, React, TypeScript');
+        $upload = new UploadedFile($docxPath, 'cv.docx', null, null, true);
+
+        $this->actingAs($user)->post(route('resumes.store'), ['file' => $upload])
+            ->assertSessionHasNoErrors();
+
+        $resume = Resume::firstOrFail();
+
+        // The stored name decides which parser runs; a .zip here meant the
+        // resume imported as empty and was silently marked failed.
+        $this->assertStringEndsWith('.docx', $resume->path);
+        $this->assertSame(
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            $resume->mime_type
+        );
+    }
+
+    public function test_a_zip_renamed_as_docx_is_rejected(): void
+    {
+        Storage::fake('local');
+        $user = User::factory()->alumni()->create();
+
+        $zipPath = tempnam(sys_get_temp_dir(), 'zip').'.zip';
+        $zip = new ZipArchive;
+        $zip->open($zipPath, ZipArchive::CREATE);
+        $zip->addFromString('notes.txt', 'not a word document');
+        $zip->close();
+
+        $this->actingAs($user)->post(route('resumes.store'), [
+            'file' => new UploadedFile($zipPath, 'cv.docx', null, null, true),
+        ])->assertSessionHasErrors('file');
+
+        $this->assertDatabaseCount('resumes', 0);
+    }
+
+    public function test_an_image_renamed_as_pdf_is_rejected(): void
+    {
+        Storage::fake('local');
+        $user = User::factory()->alumni()->create();
+
+        $this->actingAs($user)->post(route('resumes.store'), [
+            'file' => UploadedFile::fake()->image('headshot.jpg')->mimeType('application/pdf'),
+        ])->assertSessionHasErrors('file');
+
+        $this->assertDatabaseCount('resumes', 0);
     }
 
     public function test_unsupported_file_type_is_rejected(): void

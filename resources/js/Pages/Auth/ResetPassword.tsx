@@ -11,11 +11,13 @@ export default function ResetPassword({
     email,
 }: {
     token: string;
-    email: string;
+    // The reset link no longer carries the address, so this is normally blank
+    // and the form asks for it.
+    email?: string | null;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
-        email: email,
+        email: email ?? '',
         password: '',
         password_confirmation: '',
     });

@@ -30,7 +30,7 @@ class AnnouncementPublished extends Notification implements ShouldQueue
             ->subject("Announcement: {$this->announcement->title}")
             ->greeting('Hello!')
             ->line($this->announcement->title)
-            ->line(Str::limit($this->announcement->body, 500))
+            ->line('Open GradConnect to read the full announcement.')
             ->action('View announcements', url('/notifications'));
     }
 

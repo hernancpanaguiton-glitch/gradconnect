@@ -34,6 +34,21 @@ class ResumeControllerTest extends TestCase
             ->assertInertia(fn ($page) => $page->component('Graduate/Resumes'));
     }
 
+    /**
+     * A minimal real PDF. Upload validation inspects the file's bytes, so a
+     * zero-filled UploadedFile::fake() is correctly rejected.
+     */
+    private function pdf(string $name): UploadedFile
+    {
+        $path = tempnam(sys_get_temp_dir(), 'pdf');
+        file_put_contents($path, "%PDF-1.4
+1 0 obj<</Type/Catalog>>endobj
+trailer<</Root 1 0 R>>
+%%EOF");
+
+        return new UploadedFile($path, $name, 'application/pdf', null, true);
+    }
+
     public function test_uploading_a_resume_dispatches_the_embedding_job(): void
     {
         Storage::fake('local');
@@ -43,7 +58,7 @@ class ResumeControllerTest extends TestCase
 
         $this->actingAs($alumni)
             ->post('/graduate/resumes', [
-                'file' => UploadedFile::fake()->create('resume.pdf', 100, 'application/pdf'),
+                'file' => $this->pdf('resume.pdf'),
             ])
             ->assertRedirect();
 
@@ -67,10 +82,10 @@ class ResumeControllerTest extends TestCase
         $alumni = User::factory()->alumni()->create();
 
         $this->actingAs($alumni)->post('/graduate/resumes', [
-            'file' => UploadedFile::fake()->create('first.pdf', 100, 'application/pdf'),
+            'file' => $this->pdf('first.pdf'),
         ]);
         $this->actingAs($alumni)->post('/graduate/resumes', [
-            'file' => UploadedFile::fake()->create('second.pdf', 100, 'application/pdf'),
+            'file' => $this->pdf('second.pdf'),
         ]);
 
         $this->assertDatabaseHas('resumes', ['original_filename' => 'first.pdf', 'is_primary' => true]);
@@ -85,6 +100,7 @@ class ResumeControllerTest extends TestCase
 
         $this->actingAs($alumni)
             ->post('/graduate/resumes', [
+                // Empty bytes: not a real Word document.
                 'file' => UploadedFile::fake()->create('resume.docx', 100, 'application/msword'),
             ])
             ->assertSessionHasErrors('file');

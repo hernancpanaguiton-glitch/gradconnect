@@ -24,14 +24,15 @@ class ApplicationReceived extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $applicant = $this->application->graduateProfile->user->name;
         $title = $this->application->jobPosting->title;
 
+        // The applicant's name stays out of email and lives in the in-app
+        // notification instead, behind the sign-in.
         return (new MailMessage)
             ->theme('gradconnect')
             ->subject("New application: {$title}")
             ->greeting('Hello!')
-            ->line("{$applicant} has applied to your posting for {$title}.")
+            ->line("A candidate has applied to your posting for {$title}.")
             ->action('Review candidates', url("/postings/{$this->application->job_posting_id}/candidates"))
             ->line('Thank you for using GradConnect.');
     }

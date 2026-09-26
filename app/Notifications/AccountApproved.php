@@ -24,7 +24,7 @@ class AccountApproved extends Notification implements ShouldQueue
         return (new MailMessage)
             ->theme('gradconnect')
             ->subject('Your GradConnect account has been approved')
-            ->greeting("Welcome, {$notifiable->first_name}!")
+            ->greeting('Welcome to GradConnect!')
             ->line('An administrator has approved your account. You can now sign in to GradConnect.')
             ->action('Sign in', url('/login'))
             ->line('We’re glad to have you on board.');

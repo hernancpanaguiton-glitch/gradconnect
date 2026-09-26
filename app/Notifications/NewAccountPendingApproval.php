@@ -3,11 +3,11 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Support\Roles;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Str;
 
 class NewAccountPendingApproval extends Notification implements ShouldQueue
 {
@@ -29,7 +29,8 @@ class NewAccountPendingApproval extends Notification implements ShouldQueue
             ->theme('gradconnect')
             ->subject('New account awaiting approval')
             ->greeting('Hello!')
-            ->line("{$this->pendingUser->name} registered as {$this->roleLabel()} and is awaiting approval.")
+            // No name or email here — an admin sees who it is on the Users page.
+            ->line("A new {$this->roleLabel()} account is awaiting approval.")
             ->action('Review pending accounts', url('/admin/users'))
             ->line('Approve or reject the account from the Users page.');
     }
@@ -49,6 +50,6 @@ class NewAccountPendingApproval extends Notification implements ShouldQueue
 
     private function roleLabel(): string
     {
-        return Str::headline($this->pendingUser->getRoleNames()->first() ?? 'user');
+        return Roles::label($this->pendingUser->getRoleNames()->first() ?? '') ?: 'user';
     }
 }

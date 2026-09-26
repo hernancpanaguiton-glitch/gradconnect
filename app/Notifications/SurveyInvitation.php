@@ -32,10 +32,8 @@ class SurveyInvitation extends Notification implements ShouldQueue
                 ? "This is a reminder to complete the \"{$this->survey->title}\" survey."
                 : "You're invited to complete the \"{$this->survey->title}\" survey.");
 
-        if ($this->survey->description) {
-            $mail->line($this->survey->description);
-        }
-
+        // The description is free text written by staff, so it is read in the
+        // app rather than copied into an email.
         return $mail->action('Respond now', url("/surveys/{$this->survey->id}/respond"));
     }
 
