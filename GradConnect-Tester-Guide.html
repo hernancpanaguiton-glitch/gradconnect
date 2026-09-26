@@ -1,705 +1,644 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GradConnect — Tester's Guide</title>
+<title>GradConnect — Testing Guide</title>
+<style>
+    :root {
+        --ink: #14213d;
+        --body: #2b3446;
+        --muted: #5c6880;
+        --line: #dde3ec;
+        --accent: #1a56db;
+        --accent-soft: #eef3fd;
+        --ok: #0f7b4f;
+        --ok-soft: #eaf6f0;
+        --warn: #9a5b00;
+        --warn-soft: #fdf4e3;
+        --page: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        margin: 0;
+        background: var(--page);
+        color: var(--body);
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+        font-size: 19px;
+        line-height: 1.7;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px 100px; }
+
+    /* ── Top bar ─────────────────────────────────────────────── */
+    .topbar {
+        position: sticky; top: 0; z-index: 50;
+        background: rgba(255,255,255,.97);
+        border-bottom: 2px solid var(--line);
+        backdrop-filter: blur(6px);
+    }
+    .topbar-inner {
+        max-width: 860px; margin: 0 auto; padding: 12px 20px;
+        display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .topbar strong { color: var(--ink); font-size: 18px; }
+    .progress-label { font-size: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; flex: 1 1 160px; min-width: 120px; }
+    .bar > i { display: block; height: 100%; width: 0%; background: var(--accent); transition: width .25s; }
+    .reset {
+        border: 1px solid var(--line); background: #fff; color: var(--muted);
+        border-radius: 8px; padding: 6px 12px; font-size: 15px; cursor: pointer; font-family: inherit;
+    }
+    .reset:hover { color: var(--ink); border-color: var(--muted); }
+
+    /* ── Header ──────────────────────────────────────────────── */
+    header.hero { padding: 56px 0 20px; }
+    h1 { font-size: 46px; line-height: 1.15; margin: 0 0 14px; color: var(--ink); letter-spacing: -.02em; }
+    .lede { font-size: 21px; color: var(--muted); margin: 0 0 8px; }
+
+    /* ── Sections ────────────────────────────────────────────── */
+    h2 {
+        font-size: 33px; line-height: 1.25; color: var(--ink); letter-spacing: -.01em;
+        margin: 64px 0 6px; padding-top: 22px; border-top: 3px solid var(--line);
+        scroll-margin-top: 90px;
+    }
+    h2 .num {
+        display: inline-block; min-width: 46px; height: 46px; line-height: 46px; text-align: center;
+        background: var(--accent); color: #fff; border-radius: 12px;
+        font-size: 24px; margin-right: 14px; vertical-align: 3px; padding: 0 8px;
+    }
+    h3 { font-size: 23px; color: var(--ink); margin: 40px 0 10px; }
+    .role-note { font-size: 17px; color: var(--muted); margin: 0 0 22px; }
+
+    p { margin: 0 0 18px; }
+    a { color: var(--accent); }
+
+    /* ── Steps ───────────────────────────────────────────────── */
+    ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 0 0 26px; }
+    ol.steps > li {
+        counter-increment: step; position: relative;
+        padding: 0 0 22px 60px; margin: 0;
+    }
+    ol.steps > li::before {
+        content: counter(step);
+        position: absolute; left: 0; top: -2px;
+        width: 42px; height: 42px; border-radius: 50%;
+        background: var(--accent-soft); color: var(--accent);
+        font-size: 20px; font-weight: 700; text-align: center; line-height: 42px;
+    }
+    ol.steps > li > .do { font-size: 20px; color: var(--ink); font-weight: 600; }
+
+    /* ── Check items ─────────────────────────────────────────── */
+    .check {
+        display: flex; gap: 14px; align-items: flex-start;
+        border: 2px solid var(--line); border-radius: 12px;
+        padding: 16px 18px; margin: 0 0 12px; background: #fff;
+    }
+    .check:hover { border-color: #c3cede; }
+    .check.done { background: var(--ok-soft); border-color: #bfe3d1; }
+    .check input {
+        width: 26px; height: 26px; margin: 3px 0 0; flex: 0 0 auto; cursor: pointer; accent-color: var(--ok);
+    }
+    .check .txt { flex: 1; min-width: 0; }
+    .check .txt b { color: var(--ink); font-size: 19px; display: block; font-weight: 600; }
+    .check .see {
+        display: block; margin-top: 6px; color: var(--ok); font-size: 17px;
+    }
+    .check .see::before { content: "Should happen: "; font-weight: 700; }
+    .check.done .txt b { text-decoration: line-through; text-decoration-color: #9fcdb7; }
+
+    /* ── Callouts ────────────────────────────────────────────── */
+    .box { border-radius: 12px; padding: 18px 22px; margin: 0 0 26px; font-size: 18px; }
+    .box p:last-child { margin-bottom: 0; }
+    .box b { color: inherit; }
+    .tip { background: var(--accent-soft); border-left: 6px solid var(--accent); color: #17335f; }
+    .warn { background: var(--warn-soft); border-left: 6px solid #d99b20; color: var(--warn); }
+
+    /* ── Tables ──────────────────────────────────────────────── */
+    .tablewrap { overflow-x: auto; margin: 0 0 26px; border: 2px solid var(--line); border-radius: 12px; }
+    table { border-collapse: collapse; width: 100%; font-size: 17px; min-width: 460px; }
+    th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    th { background: #f6f8fc; color: var(--ink); font-size: 16px; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    code {
+        background: #f2f5fa; border: 1px solid var(--line); border-radius: 6px;
+        padding: 2px 7px; font-size: .92em; font-family: "Cascadia Mono", Consolas, monospace;
+        overflow-wrap: anywhere;
+    }
+    pre {
+        background: #14213d; color: #e8eef7; padding: 18px 20px; border-radius: 12px;
+        overflow-x: auto; font-size: 17px; line-height: 1.6; margin: 0 0 22px;
+        font-family: "Cascadia Mono", Consolas, monospace;
+    }
+    pre code { background: none; border: 0; padding: 0; color: inherit; font-size: inherit; }
+
+    /* ── Contents ────────────────────────────────────────────── */
+    nav.toc { background: #f6f8fc; border: 2px solid var(--line); border-radius: 14px; padding: 22px 26px; margin: 0 0 20px; }
+    nav.toc p { font-size: 17px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 12px; }
+    nav.toc ol { margin: 0; padding-left: 26px; font-size: 19px; }
+    nav.toc li { margin-bottom: 7px; }
+    nav.toc a { text-decoration: none; font-weight: 600; }
+    nav.toc a:hover { text-decoration: underline; }
+
+    footer { margin-top: 70px; padding-top: 26px; border-top: 3px solid var(--line); color: var(--muted); font-size: 17px; }
+
+    @media (max-width: 640px) {
+        body { font-size: 18px; }
+        .wrap { padding: 0 16px 70px; }
+        h1 { font-size: 34px; }
+        h2 { font-size: 26px; }
+        h2 .num { min-width: 38px; height: 38px; line-height: 38px; font-size: 20px; margin-right: 10px; }
+        h3 { font-size: 21px; }
+        ol.steps > li { padding-left: 52px; }
+        ol.steps > li::before { width: 36px; height: 36px; line-height: 36px; font-size: 18px; }
+    }
+
+    @media print {
+        .topbar, .reset { display: none; }
+        body { font-size: 12pt; }
+        h2 { page-break-after: avoid; }
+        .check, ol.steps > li { page-break-inside: avoid; }
+        a { color: inherit; text-decoration: none; }
+    }
+</style>
 </head>
 <body>
-<style>
-  :root {
-    --ground: #f6f7fb;
-    --card: #ffffff;
-    --ink: #0f172a;
-    --muted: #64748b;
-    --faint: #94a3b8;
-    --border: #e2e8f0;
-    --indigo: #4f46e5;
-    --indigo-tint: #eef2ff;
-    --indigo-ink: #3730a3;
-    --green: #15803d;
-    --green-tint: #f0fdf4;
-    --amber: #b45309;
-    --amber-tint: #fffbeb;
-    --red: #dc2626;
-    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
-  }
 
-  * { box-sizing: border-box; }
-
-  body { margin: 0; }
-
-  .page {
-    font-family: var(--sans);
-    color: var(--ink);
-    background: var(--ground);
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .wrap {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 0 24px 96px;
-  }
-
-  /* ---- Masthead ---- */
-  .masthead {
-    background: linear-gradient(160deg, #1e1b4b 0%, #0f172a 70%);
-    color: #fff;
-    padding: 56px 0 48px;
-  }
-  .masthead .wrap { padding-bottom: 0; }
-  .brand {
-    display: flex; align-items: center; gap: 10px;
-    color: #c7d2fe; font-weight: 600; letter-spacing: .02em;
-  }
-  .brand svg { width: 26px; height: 26px; }
-  .masthead h1 {
-    font-size: clamp(1.9rem, 4vw, 2.7rem);
-    line-height: 1.1; margin: 18px 0 12px; font-weight: 800;
-    letter-spacing: -.02em; text-wrap: balance; max-width: 18ch;
-  }
-  .masthead p {
-    color: #cbd5e1; font-size: 1.08rem; margin: 0; max-width: 60ch;
-  }
-  .eyebrow {
-    text-transform: uppercase; letter-spacing: .14em; font-size: .72rem;
-    font-weight: 700; color: var(--indigo);
-  }
-  .masthead .eyebrow { color: #818cf8; }
-
-  /* ---- Sections ---- */
-  section { margin-top: 52px; scroll-margin-top: 20px; }
-  h2 {
-    font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em;
-    margin: 0 0 6px; text-wrap: balance;
-  }
-  .section-intro { color: var(--muted); margin: 0 0 22px; max-width: 64ch; }
-  h3 { font-size: 1.08rem; font-weight: 700; margin: 26px 0 10px; }
-
-  p { margin: 0 0 14px; }
-  a { color: var(--indigo); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 3px; }
-
-  /* ---- Cards ---- */
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 22px 24px;
-    box-shadow: 0 1px 2px rgba(15,23,42,.04);
-  }
-  .card + .card { margin-top: 16px; }
-
-  /* ---- Contents ---- */
-  .toc {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px; margin-top: -28px;
-  }
-  .toc a {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 14px; color: var(--ink); font-weight: 600;
-    font-size: .92rem;
-  }
-  .toc a:hover { border-color: var(--indigo); text-decoration: none; }
-  .toc .num {
-    font-family: var(--mono); font-size: .72rem; color: var(--indigo);
-    background: var(--indigo-tint); border-radius: 6px; padding: 3px 7px;
-  }
-
-  /* ---- Credentials table ---- */
-  .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th {
-    font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
-    color: var(--muted); font-weight: 700; background: #fbfcfe;
-  }
-  tbody tr:last-child td { border-bottom: none; }
-  td code, .cred { font-family: var(--mono); font-size: .86rem; }
-  .cred { color: var(--indigo-ink); }
-
-  /* ---- Role chips ---- */
-  .role-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
-  .chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
-    font-family: var(--mono); letter-spacing: .01em;
-  }
-  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .c-admin { background: #fef2f2; color: #b91c1c; }
-  .c-affairs { background: #faf5ff; color: #7e22ce; }
-  .c-dept { background: #eff6ff; color: #1d4ed8; }
-  .c-partner { background: #ecfdf5; color: #047857; }
-  .c-alumni { background: #fffbeb; color: #b45309; }
-  .c-student { background: #f0f9ff; color: #0369a1; }
-  .c-sao { background: #f0fdfa; color: #0f766e; }
-
-  .does { margin: 8px 0 0; padding: 0; list-style: none; }
-  .does li { padding: 6px 0 6px 26px; position: relative; }
-  .does li::before {
-    content: ""; position: absolute; left: 4px; top: 13px; width: 8px; height: 8px;
-    border: 2px solid var(--indigo); border-radius: 50%;
-  }
-
-  /* ---- Callouts ---- */
-  .note, .warn, .tip {
-    border-radius: 12px; padding: 14px 18px; margin: 18px 0;
-    border-left: 4px solid; font-size: .95rem;
-  }
-  .note { background: var(--indigo-tint); border-color: var(--indigo); }
-  .warn { background: var(--amber-tint); border-color: var(--amber); }
-  .tip { background: var(--green-tint); border-color: var(--green); }
-  /* Only the leading strong is the callout's heading — inline bold inside the
-     body must stay inline, or sentences break across lines. */
-  .note > strong:first-child, .warn > strong:first-child, .tip > strong:first-child {
-    display: block; margin-bottom: 2px;
-  }
-  .warn > strong:first-child { color: var(--amber); }
-  .tip > strong:first-child { color: var(--green); }
-  .note > strong:first-child { color: var(--indigo-ink); }
-
-  /* ---- Code / resume blocks ---- */
-  .block {
-    position: relative; background: #0f172a; color: #e2e8f0;
-    border-radius: 12px; padding: 18px 20px; margin: 14px 0;
-    font-family: var(--mono); font-size: .85rem; line-height: 1.6;
-    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
-  }
-  .block.light {
-    background: #f8fafc; color: #334155; border: 1px solid var(--border); white-space: pre-wrap;
-  }
-  .copy {
-    position: absolute; top: 10px; right: 10px;
-    font-family: var(--sans); font-size: .72rem; font-weight: 600;
-    background: rgba(255,255,255,.12); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2);
-    border-radius: 7px; padding: 5px 10px; cursor: pointer;
-  }
-  .block.light .copy { background: var(--indigo-tint); color: var(--indigo-ink); border-color: transparent; }
-  .copy:hover { background: var(--indigo); color: #fff; border-color: var(--indigo); }
-  .copy:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
-
-  .pill { font-family: var(--mono); font-size: .82rem; background: var(--indigo-tint); color: var(--indigo-ink); padding: 2px 7px; border-radius: 6px; }
-  .req { color: var(--red); font-weight: 700; }
-  .muted { color: var(--muted); }
-  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
-  .foot { margin-top: 60px; color: var(--faint); font-size: .85rem; text-align: center; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html { scroll-behavior: smooth; }
-  }
-</style>
-
-<div class="page">
-  <header class="masthead">
-    <div class="wrap">
-      <div class="brand">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/></svg>
-        GradConnect
-      </div>
-      <h1>Tester's Guide &amp; Walkthrough</h1>
-      <p>Everything your team needs to log in, explore each role, and try the AI résumé&ndash;to&ndash;job matching. Built for the University of Cebu &mdash; Lapu-Lapu &amp; Mandaue graduate employability platform.</p>
+<div class="topbar">
+    <div class="topbar-inner">
+        <strong>GradConnect Testing Guide</strong>
+        <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+        <span class="progress-label" id="progressLabel">0 of 0 done</span>
+        <button class="reset" id="resetBtn" type="button">Clear ticks</button>
     </div>
-  </header>
+</div>
 
-  <div class="wrap">
-    <section style="margin-top:32px;">
-      <nav class="toc" aria-label="Contents">
-        <a href="#start"><span class="num">01</span> Run with Docker</a>
-        <a href="#logins"><span class="num">02</span> Login accounts</a>
-        <a href="#shared"><span class="num">03</span> Shared by every role</a>
-        <a href="#alumni"><span class="num">04</span> Alumni</a>
-        <a href="#student"><span class="num">05</span> Student</a>
-        <a href="#partner"><span class="num">06</span> Industry Partner</a>
-        <a href="#affairs"><span class="num">07</span> Alumni Affairs</a>
-        <a href="#dept"><span class="num">08</span> Department Head</a>
-        <a href="#sao"><span class="num">09</span> Student Affairs Office</a>
-        <a href="#admin"><span class="num">10</span> Admin</a>
-        <a href="#resumes"><span class="num">11</span> Sample résumés</a>
-        <a href="#notes"><span class="num">12</span> Known gaps</a>
-      </nav>
-    </section>
+<div class="wrap">
 
-    <!-- 01 -->
-    <section id="start">
-      <p class="eyebrow">Getting set up</p>
-      <h2>Run with Docker</h2>
-      <p class="section-intro">GradConnect ships as a self-contained Docker stack, so you don't need to install PHP, Node, or PostgreSQL &mdash; only <strong>Docker Desktop</strong>. The whole app (web server, database, and background worker) starts with a single command.</p>
+<header class="hero">
+    <h1>GradConnect Testing Guide</h1>
+    <p class="lede">A step-by-step walkthrough of every part of the system.</p>
+    <p class="lede">Work through it in order and tick each box as you go.</p>
+    <p class="lede" id="saveNote">Your ticks are saved in this browser, so you can stop and come back.</p>
+</header>
 
-      <div class="card">
-        <h3 style="margin-top:0;">1 &middot; Install Docker Desktop</h3>
-        <p>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> for your operating system, launch it, and wait until the whale icon is steady (the engine is running). On Windows, keep the <strong>WSL 2</strong> option enabled if prompted, and let it finish its first-time setup before continuing.</p>
-      </div>
+<div class="box tip">
+    <p><b>How to use this guide.</b> Each check tells you what to <b>do</b>, then what <b>should happen</b>. If what you see matches, tick the box. If it does not, write it down — section 12 shows you exactly what to note.</p>
+    <p>You do not need to know how to code. You only need a web browser.</p>
+</div>
 
-      <div class="card">
-        <h3 style="margin-top:0;">2 &middot; Get the project &amp; start it</h3>
-        <p>Open a terminal (PowerShell on Windows) and run these four commands:</p>
-        <div class="block"><button class="copy">Copy</button>git clone https://github.com/hernancpanaguiton-glitch/gradconnect.git
-cd gradconnect
-cp .env.docker.example .env.docker
-docker compose up --build</div>
-        <p class="muted">The first build takes a few minutes &mdash; it downloads the images and compiles the front-end. It's ready when the log shows <code>Server running on [http://0.0.0.0:8000]</code>.</p>
-      </div>
+<nav class="toc">
+    <p>Contents</p>
+    <ol>
+        <li><a href="#start">Start the app</a></li>
+        <li><a href="#signin">Sign in</a></li>
+        <li><a href="#register">Create a new account</a></li>
+        <li><a href="#graduate">Graduate Student</a></li>
+        <li><a href="#alumni">Alumni</a></li>
+        <li><a href="#partner">Industry Partner</a></li>
+        <li><a href="#affairs">Alumni Affairs Office</a></li>
+        <li><a href="#depthead">Department Head</a></li>
+        <li><a href="#sao">Student Affairs Office</a></li>
+        <li><a href="#admin">Administrator</a></li>
+        <li><a href="#phone">Test on a phone</a></li>
+        <li><a href="#report">Report a problem</a></li>
+        <li><a href="#gaps">Known gaps (not bugs)</a></li>
+    </ol>
+</nav>
 
-      <div class="card">
-        <h3 style="margin-top:0;">3 &middot; Open the app</h3>
-        <p>Visit <span class="pill">http://localhost:8000</span> in your browser and sign in with one of the accounts in the next section.</p>
-      </div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="start"><span class="num">1</span>Start the app</h2>
+<p class="role-note">Do this once. It takes about five minutes the first time.</p>
 
-      <div class="note">
-        <strong>Registering your own account</strong>
-        The sign-up form now asks for a role. <strong>Graduate Student</strong> and <strong>Alumni</strong> accounts are activated right away but must confirm a <em>verification email</em> &mdash; open the mail inbox at <span class="pill">http://localhost:8025</span> to find it and click the link. <strong>Alumni Affairs Office</strong>, <strong>Department Head</strong>, <strong>Industry Partner</strong>, <strong>Student Affairs Office</strong>, and <strong>Admin</strong> accounts are held for <em>admin approval</em>: sign in as the Admin below and set the account to <em>active</em> on the Users page before it can log in. Admins are notified in-app and by email when a new account needs approval.
-      </div>
+<ol class="steps">
+    <li>
+        <span class="do">Install Docker Desktop.</span>
+        <p>Download it from <code>docker.com</code>, install, and open it. Wait until it says <b>Engine running</b>.</p>
+    </li>
+    <li>
+        <span class="do">Open a terminal in the project folder.</span>
+        <p>In Windows File Explorer, open the <code>gradconnect</code> folder, type <code>cmd</code> in the address bar, and press Enter.</p>
+    </li>
+    <li>
+        <span class="do">Start the system.</span>
+        <p>Type this and press Enter. The first run downloads a lot, so give it a few minutes.</p>
+        <pre><code>docker compose up --build</code></pre>
+    </li>
+    <li>
+        <span class="do">Open the app.</span>
+        <p>Go to <a href="http://localhost:8000">http://localhost:8000</a> in your browser.</p>
+    </li>
+</ol>
 
-      <div class="tip">
-        <strong>First launch sets everything up for you</strong>
-        Database migrations run and demo data is seeded automatically on the first boot &mdash; accounts, job postings with applications at every stage, résumés with their AI match results, tracer and readiness survey responses, events with RSVPs, scholarships, clearance records, student concerns, community threads, announcements, and the learning-resource catalogue. Every screen has something real on it; you should not meet an empty page anywhere. The background <strong>queue worker runs as its own container</strong>, so résumé uploads and the <em>Refresh</em> buttons process live &mdash; no extra commands needed.
-      </div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>http://localhost:8000</code></b><span class="see">The GradConnect home page loads, with a blue banner and a "Get Started" button.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>http://localhost:8025</code> in a second tab</b><span class="see">An empty mail inbox called Mailpit. Every email the system sends will appear here — nothing is sent to real people.</span></span></div>
 
-      <div class="note">
-        <strong>Enabling live AI matching (optional)</strong>
-        The <code>alumni@</code> account already shows pre-generated AI recommendations you can view immediately. To score <em>new</em> résumé uploads or the <em>Refresh recommendations / Refresh matches</em> buttons, paste the shared Gemini &amp; Groq keys into <span class="pill">.env.docker</span> (<code>GEMINI_API_KEY</code>, <code>GROQ_API_KEY</code>), then restart: <code>docker compose down</code> then <code>docker compose up</code>. Without keys, uploads still save but stay unscored.
-      </div>
+<div class="box tip">
+    <p><b>Leave both tabs open</b> for the whole testing session. Keep the terminal window open too — closing it stops the app.</p>
+    <p>To stop the app later, click the terminal and press <code>Ctrl</code> + <code>C</code>. To start again, run <code>docker compose up</code>.</p>
+</div>
 
-      <h3>Handy commands</h3>
-      <div class="block light"><button class="copy">Copy</button>docker compose up -d          # run in the background
-docker compose logs -f app    # watch the app logs
-docker compose down           # stop the app (keeps your data)
-docker compose down -v        # stop and wipe data for a clean restart</div>
+<h3>The home page</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Watch the blue "AI Job Match Found" card for about 15 seconds</b><span class="see">It changes on its own, showing a different course each time — Computer Studies, Nursing, Criminology and so on.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click one of the course names above the card (for example "Nursing")</b><span class="see">The card switches to that course and stops rotating on its own.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Pause"</b><span class="see">The card stops changing. The button now says "Play".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Scroll to the bottom and click "Privacy Policy"</b><span class="see">A privacy page opens. The back arrow returns you to the home page.</span></span></div>
 
-      <div class="warn">
-        <strong>Stuck on a seeding / "duplicate key" error?</strong>
-        That means a previous run left half-seeded data. Reset with <code>docker compose down -v</code> (the <code>-v</code> wipes the database), then <code>docker compose up --build</code> for a clean start.
-      </div>
-    </section>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="signin"><span class="num">2</span>Sign in</h2>
+<p class="role-note">Seven ready-made accounts are already in the system. The password for every one of them is <code>password</code>.</p>
 
-    <!-- 02 -->
-    <section id="logins">
-      <p class="eyebrow">Sign in</p>
-      <h2>Login accounts</h2>
-      <p class="section-intro">Every demo account uses the password <span class="pill">password</span>. Pick the role you want to test. (Self-registering gets your chosen role right away, but non-graduate roles stay <code>pending</code> until an Admin approves them &mdash; these seeded logins are already active, so use them instead for faster testing.)</p>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
-            <tbody>
-              <tr><td><span class="chip c-alumni">Alumni</span></td><td class="cred">alumni@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-student">Student</span></td><td class="cred">student@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-partner">Industry Partner</span></td><td class="cred">partner@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-affairs">Alumni Affairs</span></td><td class="cred">alumni.affairs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-dept">Department Head</span></td><td class="cred">depthead.ccs@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-sao">Student Affairs</span></td><td class="cred">sao@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-              <tr><td><span class="chip c-admin">Admin</span></td><td class="cred">admin@gradconnect.edu.ph</td><td><code>password</code></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="warn">
-        <strong>Hitting a 419 / "Page Expired" on login?</strong>
-        Open the site in a fresh private/incognito window (or clear cookies for the site) and use the exact address above. That resets the session token.
-      </div>
-    </section>
+<div class="tablewrap">
+<table>
+    <thead><tr><th>Role</th><th>Email</th></tr></thead>
+    <tbody>
+        <tr><td><b>Graduate Student</b></td><td><code>student@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Alumni</b></td><td><code>alumni@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Industry Partner</b></td><td><code>partner@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Alumni Affairs Office</b></td><td><code>alumni.affairs@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Department Head</b></td><td><code>depthead.ccs@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Student Affairs Office</b></td><td><code>sao@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Administrator</b></td><td><code>admin@gradconnect.edu.ph</code></td></tr>
+    </tbody>
+</table>
+</div>
 
-    <!-- 03 Shared -->
-    <section id="shared">
-      <p class="eyebrow">Common ground</p>
-      <h2>What every role gets</h2>
-      <p class="section-intro">These six features are on every account regardless of role &mdash; what they <em>show</em> changes with your permissions. The role sections that follow list only what is specific to that role, so check here first if you're wondering where something lives.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Sign In" and log in as the Graduate Student</b><span class="see">A dashboard opens with your name at the top right and a menu down the left side.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try a wrong password on purpose</b><span class="see">A clear red message appears. You are not let in.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click your name at the top right, then "Sign Out"</b><span class="see">You return to the home page.</span></span></div>
 
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Feature</th><th>Where</th><th>What it does</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Sidebar, top</td><td>A different dashboard is built for each of the seven roles, with its own KPIs and charts. Every number is computed from the database &mdash; nothing is hardcoded.</td></tr>
-              <tr><td><strong>Global search</strong></td><td>Topbar search box</td><td>Searches across users, graduates, and surveys &mdash; but only the categories your role may see. An Admin gets user accounts; a partner or office gets graduates; a survey manager gets all surveys while a respondent gets only the open ones addressed to them.</td></tr>
-              <tr><td><strong>Notifications</strong></td><td>Bell icon &rarr; <span class="pill">/notifications</span></td><td>In-app inbox plus email. Covers account approval, application received, application status changed, survey invitations and reminders, and published announcements. Mark one read, or all at once.</td></tr>
-              <tr><td><strong>Personal settings</strong></td><td>Sidebar &rarr; <span class="pill">Settings</span></td><td>Four tabs: <em>Account</em> (name, email), <em>Password</em>, <em>Notifications</em> (four toggles &mdash; applications, matching, surveys &amp; announcements, community), <em>Theme</em> (light / dark / follow system, applied immediately).</td></tr>
-              <tr><td><strong>Account &amp; privacy</strong></td><td>Profile menu &rarr; <span class="pill">/profile</span></td><td>The Breeze account page, including permanent account deletion. Settings &rarr; Privacy links here rather than duplicating it.</td></tr>
-              <tr><td><strong>Download my data</strong></td><td><span class="pill">/account/export</span></td><td>Self-service JSON export of everything the platform holds about you &mdash; the Data Privacy Act (RA 10173) requirement.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<div class="box tip">
+    <p><b>Tip:</b> you will switch between these accounts a lot. Signing out and back in is the simplest way. You can also use a private/incognito window to stay logged in as two people at once.</p>
+</div>
 
-      <div class="note">
-        <strong>Messaging &mdash; who may talk to whom</strong>
-        Graduates can always start a thread with a staff office (Alumni Affairs, SAO, Department Head, Admin). A graduate and an <em>employer</em> can only message each other if that graduate actually applied to one of the employer's postings &mdash; it is not an open DM system. Staff and partners reply inside existing threads.
-      </div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="register"><span class="num">3</span>Create a new account</h2>
+<p class="role-note">Anyone can sign up. Students and alumni get in straight away; every staff account has to be approved by an administrator first.</p>
 
-      <div class="tip">
-        <strong>A good five-minute smoke test</strong>
-        Sign in as each of the seven accounts in turn and click <em>every</em> sidebar item. Each one should render real, populated content &mdash; no blank tables, no spinners that never resolve, no 403. That walk is the fastest way to spot a regression.
-      </div>
-    </section>
+<ol class="steps">
+    <li><span class="do">From the home page, click "Get Started".</span></li>
+    <li><span class="do">Fill in the form and pick a role from the dropdown.</span></li>
+    <li><span class="do">Tick the privacy consent box, then click Register.</span></li>
+</ol>
 
-    <!-- 04 Alumni -->
-    <section id="alumni">
-      <div class="role-head"><span class="chip c-alumni">Alumni</span><span class="muted cred">alumni@gradconnect.edu.ph</span></div>
-      <h2>Alumni</h2>
-      <p class="section-intro">A graduate managing their career profile, résumés, job applications, and AI recommendations. This is the best account to see the AI matching in action &mdash; it ships with a résumé already uploaded and scored.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open the "I am registering as" dropdown</b><span class="see">Exactly seven choices: Graduate Student, Alumni, Industry Partner, Student Affairs Office, Alumni Affairs Office, Department Head, Admin.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Choose "Department Head"</b><span class="see">A College dropdown appears, listing all ten UCLM colleges.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Choose "Graduate Student" again</b><span class="see">The College dropdown disappears. The notice says you will get a confirmation email.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Register as a Graduate Student with any made-up email</b><span class="see">You are signed in immediately and land on a dashboard.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Switch to the Mailpit tab (<code>localhost:8025</code>) and refresh</b><span class="see">A verification email has arrived. Open it and click the link inside.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out. Register again, this time as "Admin"</b><span class="see">You are NOT signed in. A message says the account is waiting for administrator approval.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try to sign in with that new Admin account</b><span class="see">You are refused. This is correct — nobody can approve themselves into an admin account.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Check Mailpit again</b><span class="see">An email to the administrator says an account is awaiting approval. It names the <em>role</em> but NOT the person — personal details are deliberately kept out of email.</span></span></div>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Application activity over time, your most recent applications, and a profile-completeness checklist that links to whatever is still missing.</td></tr>
-              <tr><td><strong>My Profile</strong></td><td>Four tabs &mdash; Basic Info, Education, Employment, Skills. Add, edit, and delete as many education and employment entries as you like. Skills use an AI autocomplete that validates real skills and rejects invented ones. Full field list below.</td></tr>
-              <tr><td><strong>My Résumés</strong></td><td>Upload PDF / DOCX / TXT (max 10&nbsp;MB), mark one as <em>primary</em>, delete any, and <strong>Build from profile</strong> &mdash; the Résumé Builder renders a formatted résumé from your profile data, saves it as a real résumé file, and sends it through the same AI pipeline as an upload. Print / Save-as-PDF from the browser.</td></tr>
-              <tr><td><strong>AI Résumé Analysis</strong></td><td>An AI review of your primary résumé: a 0&ndash;100 score, its strengths, concrete suggestions, and the keywords it did and didn't find. Separately, a set of deterministic <em>consistency checks</em> compares the résumé against your profile and flags mismatches &mdash; for example, when your name or your listed skills don't actually appear in the file. Those checks run with or without AI keys.</td></tr>
-              <tr><td><strong>Job Board</strong></td><td>Browse and filter open postings, open a posting's full detail, and apply. Draft and closed postings are not reachable, even by URL.</td></tr>
-              <tr><td><strong>My Applications</strong></td><td>Every application with its current status &mdash; submitted, under review, shortlisted, hired, or rejected &mdash; and a withdraw action.</td></tr>
-              <tr><td><strong>Recommendations</strong></td><td>Jobs ranked by AI fit score, each with a written explanation, green "matched" / amber "gap" skill chips, curated learning resources for the gaps, and a 👍/👎 feedback control that feeds the Admin's accuracy dashboard. <strong>Refresh recommendations</strong> re-runs the matcher.</td></tr>
-              <tr><td><strong>Skill Gap Analysis</strong></td><td>The skills you're missing most often across all your matches, frequency-ranked, each paired with training, seminars, or certifications from the resource catalogue.</td></tr>
-              <tr><td><strong>Career Progression</strong></td><td>Your employment history as a timeline, built from the Employment tab of your profile.</td></tr>
-              <tr><td><strong>Reports Hub</strong></td><td>Your two personal reports &mdash; Skill Gap Analysis and My Applications.</td></tr>
-              <tr><td><strong>Alumni Community</strong></td><td>Post to the alumni feed, comment on others' posts, delete your own. Alumni Affairs moderates.</td></tr>
-              <tr><td><strong>Messages</strong></td><td>Start a thread with any staff office, or with an employer you've applied to.</td></tr>
-              <tr><td><strong>Surveys</strong></td><td>Answer open tracer and employability surveys addressed to your role and graduation year. Tracer answers write back into your profile &mdash; answering "employment status" updates your profile and can create an employment record.</td></tr>
-              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<div class="box warn">
+    <p><b>Remember this new account.</b> You will approve it yourself in section 10, when you test the Administrator role.</p>
+</div>
 
-      <h3>What to enter &mdash; Profile tabs</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Tab / Field</th><th>Example value</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Basic Info</strong> &middot; Program</td><td>BS Information Technology</td></tr>
-              <tr><td>Headline</td><td>Backend Developer</td></tr>
-              <tr><td>Summary</td><td>Laravel developer with 4 years building REST APIs.</td></tr>
-              <tr><td>Employment status</td><td>Employed / Unemployed / Self-employed / Further study</td></tr>
-              <tr><td>City &middot; Phone &middot; LinkedIn</td><td>Cebu City &middot; 0917&hellip; &middot; linkedin.com/in/&hellip;</td></tr>
-              <tr><td>Willing to relocate</td><td>checkbox</td></tr>
-              <tr><td><strong>Education</strong></td><td>Institution, Degree, Field of study, Start/End <em>year</em> (e.g. 2018&ndash;2022), Honors</td></tr>
-              <tr><td><strong>Employment</strong></td><td>Company, Job title, Type (Full-time&hellip;), Start/End <em>date</em>, or tick "Currently working here"</td></tr>
-              <tr><td><strong>Skills</strong></td><td>Pick from the library, or type your own — an AI autocomplete suggests and validates real skills (e.g. PHP, Laravel, React, Kubernetes). Made-up entries are rejected.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="graduate"><span class="num">4</span>Graduate Student</h2>
+<p class="role-note">Sign in as <code>student@gradconnect.edu.ph</code>. This is the biggest role, so take your time.</p>
 
-      <h3>Try the AI matching</h3>
-      <ul class="does">
-        <li>Open <strong>Recommendations</strong> &mdash; <code>alumni@</code> already shows 6 ranked jobs (Backend Developer and Software Engineer score highest for its backend résumé).</li>
-        <li>Each card shows a <strong>fit bar</strong>, the model's <strong>explanation</strong>, and green "matched" / amber "gap" skill chips.</li>
-        <li>Upload your own résumé under <strong>My Résumés</strong> (see the samples below), then press <strong>Refresh recommendations</strong> to generate a fresh ranking.</li>
-      </ul>
-      <div class="warn"><strong>Résumés can be PDF, DOCX, or TXT</strong>(max 10&nbsp;MB). Other formats are rejected. New uploads only get scored while the host's queue worker is running.</div>
-    </section>
+<h3>4.1 — Fill in your profile</h3>
+<ol class="steps">
+    <li><span class="do">In the left menu, click "My Profile".</span></li>
+    <li><span class="do">Work through the four tabs across the top, one at a time.</span></li>
+</ol>
 
-    <!-- 05 Student -->
-    <section id="student">
-      <div class="role-head"><span class="chip c-student">Student</span><span class="muted cred">student@gradconnect.edu.ph</span></div>
-      <h2>Graduating Student</h2>
-      <p class="section-intro">A soon-to-graduate student building a career profile and browsing internships &amp; entry-level roles. Students share the graduate features above, plus four of their own that alumni don't get.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the College dropdown on the Basic Info tab</b><span class="see">All ten UCLM colleges are listed — Computer Studies, Criminology, Nursing, Business and Accountancy, Customs Administration, Hospitality Management, Education, Marine Engineering, Marine Transportation, Engineering.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Pick "College of Nursing"</b><span class="see">The Program dropdown next to it now offers only Nursing programs.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Change the College to "College of Engineering"</b><span class="see">The Program resets — it will not keep a program from the wrong college.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Set College back to Computer Studies, fill in Phone, City and a Headline, then click Save</b><span class="see">A green "saved" message. The "% complete" figure at the top goes up.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Type <code>not-a-website</code> into LinkedIn URL and save</b><span class="see">A red message under that exact box tells you the link is not valid. Nothing is saved silently.</span></span></div>
 
-      <h3>Same as Alumni</h3>
-      <p>My Profile (set an <em>expected</em> graduation year), My Résumés and the Résumé Builder, AI Résumé Analysis, My Applications, Recommendations, Skill Gap Analysis, Career Progression, Reports Hub, Messages, Surveys, and Settings all behave exactly as described in the Alumni section. <strong>Jobs &amp; Internships</strong> is the same job board.</p>
+<h3>4.2 — Education and employment</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>On the Education tab, click Add with every box left empty</b><span class="see">Red messages appear under Institution and Degree telling you they are required.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Now fill in Institution and Degree, then click Add</b><span class="see">The record appears in the list above and the form clears.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>On the Employment tab, tick "Currently working here"</b><span class="see">The End Date box greys out — you cannot set an end date for a job you still hold.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Untick it, set an End Date EARLIER than the Start Date, then click Add</b><span class="see">A red message says the end date must come after the start date.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Fix the dates and click Add</b><span class="see">The job appears in the list.</span></span></div>
 
-      <h3>Student-only menu items</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Career Readiness</strong></td><td>Take the readiness assessment &mdash; a rating-scale questionnaire scored into a 0&ndash;100&nbsp;% band, so you can see how prepared you are before graduating. SAO sees the aggregate of everyone's scores; you see only your own.</td></tr>
-              <tr><td><strong>Guidance Resources</strong></td><td>The curated catalogue of trainings, seminars, certifications, and courses, filtered to your program. Alumni Affairs maintains it; the same resources appear against your skill gaps.</td></tr>
-              <tr><td><strong>Student Concerns</strong></td><td>File a concern with the Student Affairs Office and follow its status as SAO works through it. This is deliberately student-only &mdash; alumni concerns route through Alumni Affairs instead.</td></tr>
-              <tr><td class="muted">No Alumni Community</td><td class="muted">The community feed is an alumni feature; students don't see it in the sidebar and can't post to it.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<h3>4.3 — Skills</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open the Skills tab</b><span class="see">Skills are grouped in collapsible sections by subject — Computing &amp; IT, Nursing &amp; Healthcare, Soft Skills and so on. Your own course's group is already open.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click several group headings to open and close them</b><span class="see">They open and close smoothly. The page never goes blank.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Type "nurs" into the filter box</b><span class="see">Only matching skills remain, and their group is opened for you.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Clear the filter box</b><span class="see">The groups return to how you had them.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click a few skills to select them, then click Save Skills</b><span class="see">They stay selected after the page saves.</span></span></div>
 
-      <div class="tip"><strong>Good order to test in</strong>Fill the profile &rarr; add a few skills &rarr; upload one of the sample résumés below (or press <em>Build from profile</em>) &rarr; open Recommendations. With the queue worker running, matches appear within a few seconds of the upload finishing.</div>
-    </section>
+<h3>4.4 — Résumé</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Go to "My Resumes" and upload a PDF or Word (.docx) file</b><span class="see">It appears in the list. The first one you upload is marked Primary.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try uploading a picture (.jpg or .png)</b><span class="see">It is refused with a clear message.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Build from My Profile"</b><span class="see">A formatted résumé is built from what you typed in section 4.1. Check the dates read correctly — a job you have left must NOT say "Present".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "AI Resume Analysis"</b><span class="see">Either feedback on your résumé, or a clear message telling you to upload one first.</span></span></div>
 
-    <!-- 06 Partner -->
-    <section id="partner">
-      <div class="role-head"><span class="chip c-partner">Industry Partner</span><span class="muted cred">partner@gradconnect.edu.ph</span></div>
-      <h2>Industry Partner</h2>
-      <p class="section-intro">An employer posting vacancies, reviewing applicants, and seeing graduates AI-ranked against each posting.</p>
+<h3>4.5 — Jobs and applications</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Jobs &amp; Internships" and click any job</b><span class="see">The full advert opens. Check the salary reads sensibly, like <code>₱40,000–₱65,000 / month</code> — never something like "₱40–000".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click Apply</b><span class="see">A confirmation appears and the button changes so you cannot apply twice.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Applications"</b><span class="see">Your application is listed with a status of Submitted.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Withdraw the application</b><span class="see">The status changes to Withdrawn.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Use the search and filter boxes on the jobs page</b><span class="see">The list narrows. If there are many jobs, page links appear at the bottom and work.</span></span></div>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Your hiring funnel &mdash; applications by stage, active postings, and recent applicant activity.</td></tr>
-              <tr><td><strong>My Company</strong></td><td>Create and edit the company profile that appears on every one of your postings.</td></tr>
-              <tr><td><strong>Job Postings</strong></td><td>Create, edit, close, and delete your own postings. The form has <strong>three AI writing assists</strong>: suggest job titles, draft a description, and draft qualifications. Attach skills and tick which are <em>required</em>. Full field list below.</td></tr>
-              <tr><td><strong>&hellip; &rarr; Candidates</strong></td><td>Open any posting to see who applied. Move an applicant through <em>under review &rarr; shortlisted &rarr; hired</em> or <em>rejected</em> &mdash; each change notifies them by email and in-app. Open their résumé file and profile. Once someone is hired or rejected you can submit <strong>employer feedback</strong>: competency ratings that flow into the Department Head's Program Outcomes report and the Admin's AI calibration check.</td></tr>
-              <tr><td><strong>&hellip; &rarr; Matches</strong></td><td>Graduates ranked against that posting by AI fit score, with explanations and matched/missing skills &mdash; the employer-side mirror of the graduate's Recommendations. <strong>Refresh matches</strong> re-runs it.</td></tr>
-              <tr><td><strong>Talent Search</strong></td><td>Search the whole graduate directory by college, program, skill, or résumé status, and open any graduate's profile. <em>Résumé files</em> are the exception: you can only open the résumé of someone who actually applied to one of your postings.</td></tr>
-              <tr><td><strong>Messages</strong></td><td>Reply to graduates who have applied to your postings.</td></tr>
-              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<h3>4.6 — The rest of the menu</h3>
+<p>Open each of these and confirm the page loads with no blank screen and no error box.</p>
 
-      <h3>What to enter &mdash; new Job Posting</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Field</th><th>Example value</th></tr></thead>
-            <tbody>
-              <tr><td>Title <span class="req">*</span></td><td>Backend Developer</td></tr>
-              <tr><td>Description <span class="req">*</span></td><td>Build and maintain REST APIs with Laravel&hellip;</td></tr>
-              <tr><td>Responsibilities / Qualifications</td><td>free text</td></tr>
-              <tr><td>Employment type</td><td>Full-time / Part-time / Contract / Internship</td></tr>
-              <tr><td>Location &middot; Remote</td><td>Cebu City &middot; remote toggle</td></tr>
-              <tr><td>Salary range</td><td><code>45000-70000</code> (shown as ₱45,000&ndash;70,000 / month)</td></tr>
-              <tr><td>Experience level &middot; Min education</td><td>Mid &middot; Bachelor</td></tr>
-              <tr><td>Status</td><td>Open (so it shows on the Job Board)</td></tr>
-              <tr><td>Application deadline</td><td>optional date &mdash; the last day to apply</td></tr>
-              <tr><td>Skills</td><td>add skills and tick which are <em>required</em></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <p class="muted">After saving, open a posting's <strong>Matches</strong> and press <strong>Refresh matches</strong> to rank applicants by AI fit (queue worker required).</p>
-    </section>
+<div class="check"><input type="checkbox"><span class="txt"><b>Recommendations</b><span class="see">Suggested jobs with a match score, or a message explaining none are ready yet.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Skill Gap Analysis</b><span class="see">Skills you have against skills employers want.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Career Readiness</b><span class="see">A readiness score, or an invitation to complete a survey. Any percentage shown must be between 0 and 100.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Career Progression</b><span class="see">Your employment history over time.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Guidance Resources</b><span class="see">Training and seminar suggestions.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Surveys — open one and answer it</b><span class="see">Your answers save. Leaving a required question blank shows a message under that question.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — file a concern</b><span class="see">It appears in your list of concerns.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Messages — start a conversation with a staff office</b><span class="see">The conversation opens and your message sends.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Notifications (the bell, top right)</b><span class="see">The panel opens on screen, fully visible. Clicking a notification opens it AND clears its unread dot.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Settings — turn a notification preference off, then reload the page</b><span class="see">It is still off. Your choice was saved.</span></span></div>
 
-    <!-- 07 Affairs -->
-    <section id="affairs">
-      <div class="role-head"><span class="chip c-affairs">Alumni Affairs</span><span class="muted cred">alumni.affairs@gradconnect.edu.ph</span></div>
-      <h2>Alumni Affairs Office</h2>
-      <p class="section-intro">The busiest staff role &mdash; it runs the tracer studies, owns the employability reporting, curates what graduates are recommended to learn, and organises alumni engagement.</p>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="alumni"><span class="num">5</span>Alumni</h2>
+<p class="role-note">Sign in as <code>alumni@gradconnect.edu.ph</code>. Very similar to a Graduate Student, with a community instead of student services.</p>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Alumni engagement signals &mdash; survey response rates, event attendance, community activity, and employment trends.</td></tr>
-              <tr><td><strong>Alumni Database</strong></td><td>The full graduate directory, searchable and filterable by college, program, skill, and résumé status, with read-only access to any graduate's profile and résumés.</td></tr>
-              <tr><td><strong>Tracer Survey</strong></td><td>Build surveys with seven question types, open and close them, edit, delete, and read results. <strong>Target</strong> a survey at a role and/or graduation year &mdash; only matching graduates ever see it. Publishing sends invitations; <strong>Send Reminder</strong> chases only the people who haven't responded. Map a question to a profile field (<em>maps to</em>) and the answer writes straight back into employment tracking.</td></tr>
-              <tr><td><strong>Employability Reports</strong></td><td>The full report suite, filterable by college, program, and graduation year: employment rate, status breakdown, job-relevance rate, salary-range distribution, average time from graduation to first job, and survey response rates. <strong>Export CSV</strong> or Print / Save as PDF. Every export is logged.</td></tr>
-              <tr><td><strong>Reports Hub</strong></td><td>One page listing every report this account may run &mdash; employability, surveys, and the graduate directory.</td></tr>
-              <tr><td><strong>Announcements</strong></td><td>Write announcements targeted at a specific role or everyone. Publishing notifies the audience in-app and by email; editing a published announcement doesn't re-notify.</td></tr>
-              <tr><td><strong>Learning Resources</strong></td><td>Curate the catalogue behind Skill Bridge Mitigation &mdash; trainings, seminars, certifications, and courses, each mapped to the skills it teaches and optionally to a department. These are what appear against graduates' skill gaps.</td></tr>
-              <tr><td><strong>Skill Taxonomy</strong></td><td>Keep the skill vocabulary canonical: register aliases so "JS" resolves to "JavaScript" instead of creating a duplicate skill. Applies everywhere skills are attached &mdash; profiles, postings, and résumé parsing.</td></tr>
-              <tr><td><strong>Alumni Events</strong></td><td>Create and manage career fairs, workshops, and gatherings with a capacity limit, publish them, and watch RSVPs come in. Draft events accept no RSVPs (you can still RSVP to your own draft while previewing it).</td></tr>
-              <tr><td><strong>Alumni Community</strong></td><td>Read the alumni feed and moderate it &mdash; you can delete any post or comment, not just your own.</td></tr>
-              <tr><td><strong>Messages</strong></td><td>Threads with graduates who have contacted the office.</td></tr>
-              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Compare the left menu with the student's</b><span class="see">You now have "Alumni Community". You no longer have "Student Concerns".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Alumni Community" and post an update</b><span class="see">Your post appears at the top of the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Reply to a post</b><span class="see">Your comment appears underneath it.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try posting a very long update (paste a page of text several times over)</b><span class="see">Either the box stops you typing past the limit, or a clear red message explains the problem. It must never just do nothing.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Run through Profile, Resumes, Job Board and Applications</b><span class="see">They behave exactly as they did in section 4.</span></span></div>
 
-      <h3>What to enter &mdash; new Survey</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Field</th><th>Example value</th></tr></thead>
-            <tbody>
-              <tr><td>Title <span class="req">*</span></td><td>Graduate Employability Survey 2026</td></tr>
-              <tr><td>Type</td><td>Employability / Tracer / Readiness / Custom</td></tr>
-              <tr><td>Status</td><td>Open (so respondents can answer)</td></tr>
-              <tr><td>Target role</td><td>Alumni, Student, or everyone &mdash; non-matching graduates never see the survey, even by URL</td></tr>
-              <tr><td>Target graduation year</td><td>e.g. <code>2024</code>, or leave blank for all years</td></tr>
-              <tr><td>Question prompt</td><td>What is your current employment status?</td></tr>
-              <tr><td>Question type</td><td>text, textarea, single choice, multi choice, rating, boolean, number</td></tr>
-              <tr><td>Options</td><td>for choice types: Employed, Unemployed, Self-employed&hellip;</td></tr>
-              <tr><td>Required</td><td>toggle per question</td></tr>
-              <tr><td>Maps to</td><td>optional &mdash; write the answer back to the respondent's employment status or employment record</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <p class="muted">Two surveys are already seeded and <strong>open</strong>, so the Alumni/Student accounts can answer them right away.</p>
-    </section>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="partner"><span class="num">6</span>Industry Partner</h2>
+<p class="role-note">Sign in as <code>partner@gradconnect.edu.ph</code>. This is the employer's view.</p>
 
-    <!-- 08 Dept Head -->
-    <section id="dept">
-      <div class="role-head"><span class="chip c-dept">Department Head</span><span class="muted cred">depthead.ccs@gradconnect.edu.ph</span></div>
-      <h2>Department Head</h2>
-      <p class="section-intro">A dean reviewing how their own college's graduates fare in the job market. This is a read-only analytics role &mdash; and everything it sees is locked to its own college, by design.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Company", change the Location, and click Save</b><span class="see">A confirmation appears and the new value sticks after a reload.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Paste a very long Location (a few hundred characters) and save</b><span class="see">A red message appears under that box. The Save button must never just flicker and do nothing.</span></span></div>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Graduates in the department, employment rate, and how many work in a job related to their course. If no college is assigned yet, a selector here lets the dean assign their own &mdash; do that first, or every figure will legitimately read zero.</td></tr>
-              <tr><td><strong>Employment Statistics</strong></td><td>The employability report, filtered to this college's programs: employment rate, status breakdown, job-relevance, salary bands, and time-to-employment. <strong>Export CSV</strong> and Print / Save as PDF.</td></tr>
-              <tr><td><strong>Program Outcomes</strong></td><td>The curriculum-evaluation report &mdash; which skills this college's graduates are systematically missing (aggregated from AI match results) alongside the competency ratings employers actually gave them. This is the accreditation-support and curriculum-improvement view. CSV export included.</td></tr>
-              <tr><td><strong>Reports Hub</strong></td><td>The two reports above, in one place.</td></tr>
-              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<h3>6.1 — Post a job</h3>
+<ol class="steps">
+    <li><span class="do">Click "Job Postings", then "New Posting".</span></li>
+    <li><span class="do">Fill in Title, Description, Location and Salary, and pick some skills.</span></li>
+    <li><span class="do">Set the status to Open and save.</span></li>
+</ol>
 
-      <div class="tip">
-        <strong>Worth verifying deliberately</strong>
-        Scoping is enforced on the server, not just in the filter dropdowns. Try editing the URL to request another college's data (e.g. add <code>?college_id=</code> with a different ID to the Employment Statistics page) &mdash; it should stay on your own college's numbers rather than honouring it.
-      </div>
-    </section>
+<div class="check"><input type="checkbox"><span class="txt"><b>Type slowly in the Job Title box</b><span class="see">Suggestions appear. They always match what is currently in the box, never an older half-typed word.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click several skill chips quickly, one after another</b><span class="see">Every one you click stays selected. None un-select themselves.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Put a very long salary range in (over 100 characters) and save</b><span class="see">A red message appears under the Salary box.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Fix it and save properly</b><span class="see">The posting appears in your list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in as the student in another window and apply to that job</b><span class="see">Back as the partner, the applicant shows under "Candidates" for that posting.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Candidates for the posting</b><span class="see">Each applicant shows a link to their résumé. Their birthday, phone number and home address are NOT shown.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Move an applicant to Shortlisted</b><span class="see">The status updates, and the applicant gets an email in Mailpit. The email must NOT contain their own name.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Matches" for the posting and click "Refresh matches"</b><span class="see">The button stays disabled for a few seconds, then the list refreshes. Clicking twice quickly must not start two runs.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the match score bars</b><span class="see">Every bar sits between empty and full. A weak match must never show a completely full bar.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Talent Search" and filter by college</b><span class="see">Graduates from that college are listed, including those on a specific program within it.</span></span></div>
 
-    <!-- 09 Student Affairs Office -->
-    <section id="sao">
-      <div class="role-head"><span class="chip c-sao">Student Affairs</span><span class="muted cred">sao@gradconnect.edu.ph</span></div>
-      <h2>Student Affairs Office</h2>
-      <p class="section-intro">Student welfare and non-academic development &mdash; records, readiness, scholarships, events, graduation clearance, and student concerns.</p>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="affairs"><span class="num">7</span>Alumni Affairs Office</h2>
+<p class="role-note">Sign in as <code>alumni.affairs@gradconnect.edu.ph</code>. This office runs tracer surveys and alumni engagement.</p>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Student headcount, scholarship recipients, clearance progress, open concerns, and event statistics.</td></tr>
-              <tr><td><strong>Student Records</strong></td><td>Search the student and graduate directory, open any profile read-only, and open their résumés.</td></tr>
-              <tr><td><strong>Career Readiness</strong></td><td>The aggregate distribution of student readiness scores &mdash; how many sit in each band &mdash; so the office can see who needs support before graduation. Students take the assessment; you read the totals.</td></tr>
-              <tr><td><strong>Scholarships</strong></td><td>Create and edit scholarship programs with their budgets, then add and remove recipients. This is an institutional oversight tool, not a public application portal &mdash; students don't apply through it.</td></tr>
-              <tr><td><strong>Student Events</strong></td><td>Create and manage campus events, workshops, and career fairs with capacity limits, and track RSVPs. Shares one events board with Alumni Affairs.</td></tr>
-              <tr><td><strong>Clearance &amp; Records</strong></td><td>Graduation clearance across six offices &mdash; library, accounting, registrar, department, student affairs, and alumni office. Tick each office off for any graduate and watch institution-wide progress. Graduates see their own checklist read-only.</td></tr>
-              <tr><td><strong>Student Concerns</strong></td><td>The case queue &mdash; read concerns students have filed, and move each one through its status as you work it.</td></tr>
-              <tr><td><strong>Student Analytics</strong></td><td>The employability report with its filters and CSV export.</td></tr>
-              <tr><td><strong>Reports Hub</strong></td><td>Every report this account may run, in one place.</td></tr>
-              <tr><td><strong>Settings</strong></td><td>Account, password, notification preferences, theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<h3>7.1 — Tracer surveys</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Tracer Survey"</b><span class="see">Each survey card shows a real number of questions — never the word "undefined".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Create a new survey with three questions, including one multiple-choice</b><span class="see">For the choice question you type the options separated by commas. It saves without complaint.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Set an "Opens at" date and time, save, then reopen the survey for editing</b><span class="see">The date and time shown are the SAME ones you typed — not shifted by several hours.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Leave one question's text blank and save</b><span class="see">A red message appears under that exact question.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Now delete a DIFFERENT question and save again</b><span class="see">The red message stays on the right question. It must not jump to another one or vanish.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Publish the survey, answer it as the student, then come back and open Results</b><span class="see">Your answer is counted in the chart.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Results for a survey nobody has answered</b><span class="see">It says "No answers yet." — not a blank empty box.</span></span></div>
 
-      <div class="note"><strong>Registering as SAO</strong> New Student Affairs accounts (like Alumni Affairs Office, Department Head, Industry Partner, and Admin) are held for <em>admin approval</em> before they can sign in. Use the seeded <code>sao@</code> login above to explore right away.</div>
-    </section>
+<div class="box warn">
+    <p><b>Important check.</b> Edit a survey that already has answers and change some wording, then save. Open Results again — <b>the answers must still be there</b>. Losing them would be a serious bug.</p>
+</div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit an answered survey, then check Results</b><span class="see">All previous answers are still counted.</span></span></div>
 
-    <!-- 10 Admin -->
-    <section id="admin">
-      <div class="role-head"><span class="chip c-admin">Admin</span><span class="muted cred">admin@gradconnect.edu.ph</span></div>
-      <h2>Administrator</h2>
-      <p class="section-intro">Holds every permission in the system. Beyond accounts and roles, this is where the platform's own health, history, and configuration live &mdash; and where you can see whether the AI is actually any good.</p>
+<h3>7.2 — The rest of the menu</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Database</b><span class="see">A searchable list of graduates.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Employability Reports</b><span class="see">Charts and figures. Type a graduation year in the filter — the report updates once you stop typing, not on every keystroke.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Reports Hub</b><span class="see">Links to each available report.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Announcements — publish one aimed at Graduate Students</b><span class="see">It appears in the list. Students receive it; check Mailpit for the email.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Learning Resources — add one and restrict it to a program</b><span class="see">The program dropdown groups programs under their college. The resource saves.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Skill Taxonomy — add an alias such as "JS" to JavaScript</b><span class="see">The alias is added to that skill.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Now try adding an alias that is already a skill's real name, such as "React"</b><span class="see">A neat red message appears next to the box. You must NOT get a full-page error screen.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Remove an alias by clicking its ×</b><span class="see">You are asked to confirm first.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Events, Alumni Community, Messages, Settings</b><span class="see">Each page opens and works.</span></span></div>
 
-      <h3>Every menu item</h3>
-      <div class="card" style="padding:6px 8px;">
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Menu item</th><th>What you can do there</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dashboard</strong></td><td>Platform-wide totals &mdash; users, postings, applications, and activity trends.</td></tr>
-              <tr><td><strong>User Management</strong></td><td>Search every account; change a user's <em>status</em> (active / suspended / pending) and assigned <em>roles</em>; delete accounts. This is also where self-registered staff accounts get approved.</td></tr>
-              <tr><td><strong>Roles &amp; Permissions</strong></td><td>Create custom roles and toggle each permission on a matrix. The seven core roles are protected from deletion.</td></tr>
-              <tr><td><strong>Job Management</strong></td><td>Moderation across <em>every</em> partner's postings, not just your own &mdash; change status or remove a posting outright.</td></tr>
-              <tr><td><strong>Tracer Surveys</strong></td><td>The same survey builder, results, and reminders Alumni Affairs uses.</td></tr>
-              <tr><td><strong>Announcements</strong></td><td>Write and publish role-targeted announcements.</td></tr>
-              <tr><td><strong>Reports</strong> / <strong>Reports Hub</strong></td><td>The employability report suite with filters and CSV export, plus a hub listing every report available to this account.</td></tr>
-              <tr><td><strong>Audit Logs</strong></td><td>The security trail: logins, failed logins, and logouts, plus every account status change, role change, deletion, and permission sync &mdash; searchable and filterable by action.</td></tr>
-              <tr><td><strong>Platform Status</strong></td><td>Live operational health: queue depth and whether the queue has <em>stalled</em>, failed jobs, résumé-embedding and AI-scoring success rates, and an <strong>AI accuracy dashboard</strong> &mdash; the 👍/👎 helpful-rate broken down by AI provider, plus a calibration check comparing AI fit scores against the ratings employers gave people they actually hired. The <em>minimum fit score</em> setting here really does filter weak matches out of what graduates see.</td></tr>
-              <tr><td><strong>Data &amp; Backups</strong></td><td>Create a database backup on demand, list existing ones, and download any of them. Restore is command-line only, on purpose &mdash; it overwrites the live database.</td></tr>
-              <tr><td><strong>System Settings</strong></td><td>Three settings that genuinely change behaviour: turn self-registration on or off, set the support email, and set a site-wide maintenance banner that then appears for every signed-in user.</td></tr>
-              <tr><td><strong>Skill Taxonomy</strong></td><td>The canonical skill list and its aliases, shared with Alumni Affairs.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="depthead"><span class="num">8</span>Department Head</h2>
+<p class="role-note">Sign in as <code>depthead.ccs@gradconnect.edu.ph</code>. This account belongs to the College of Computer Studies.</p>
 
-      <div class="tip">
-        <strong>Three tests worth doing as Admin</strong>
-        <strong>1.</strong> Create a role, give it one permission, assign it to a user &mdash; their sidebar and reachable pages change to match. <strong>2.</strong> Suspend a user; they're blocked at login and can't even change their own password. <strong>3.</strong> Set a maintenance banner in System Settings, then load any other account &mdash; the banner is there.
-      </div>
-    </section>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the dashboard</b><span class="see">Graduate numbers and an employment rate, plus a bar chart of placement by program. The program names on the chart are readable, not overlapping.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Employment Statistics"</b><span class="see">Figures for Computer Studies only — this account cannot see other colleges.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Program Outcomes"</b><span class="see">Results broken down by program within the college.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Download or export a report if the button is offered</b><span class="see">A file downloads and contains only this college's data.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Reports Hub" and "Settings"</b><span class="see">Both pages load.</span></span></div>
 
-    <hr />
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="sao"><span class="num">9</span>Student Affairs Office</h2>
+<p class="role-note">Sign in as <code>sao@gradconnect.edu.ph</code>. This office looks after student welfare.</p>
 
-    <!-- 11 Sample resumes -->
-    <section id="resumes">
-      <p class="eyebrow">Feed the matcher</p>
-      <h2>Sample résumés to upload</h2>
-      <p class="section-intro">The app accepts <strong>PDF, DOCX, or TXT</strong> (max 10&nbsp;MB). Copy any résumé below into Google Docs or Word, then <em>Export / Save as PDF or DOCX</em> (or paste into a plain <span class="pill">.txt</span> file) and upload it under an Alumni or Student account's <strong>My Résumés</strong>. Each one is written to match different seeded jobs, so the AI rankings come out clearly different.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Records</b><span class="see">A searchable list of students.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Career Readiness</b><span class="see">Readiness figures across students.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Scholarships — add a scholarship</b><span class="see">It saves and appears in the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Events — add an event</b><span class="see">It saves and appears in the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Clearance &amp; Records — pick a student and tick off a clearance item</b><span class="see">The change is saved.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — open the concern the student filed in section 4.6 and reply</b><span class="see">Your reply is recorded against that concern.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Analytics and Reports Hub</b><span class="see">Both pages load with charts and figures.</span></span></div>
 
-      <h3>① Backend developer &rarr; matches "Backend Developer" / "Software Engineer"</h3>
-      <div class="block"><button class="copy">Copy</button>Maria Reyes — Backend Software Developer
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="admin"><span class="num">10</span>Administrator</h2>
+<p class="role-note">Sign in as <code>admin@gradconnect.edu.ph</code>. This account can see and change everything.</p>
 
-Backend developer with 4 years building web applications and RESTful APIs
-using PHP and the Laravel framework. Strong in MySQL and PostgreSQL database
-design and query optimization, Git version control, and Docker-based
-deployments. Built and maintained REST APIs serving web and mobile clients.
+<h3>10.1 — Approve the account you made earlier</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "User Management" and find the Admin account you registered in section 3</b><span class="see">It is listed with a status of Pending.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit it and set the status to Active</b><span class="see">It saves. An approval email arrives in Mailpit.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out and sign in with that account</b><span class="see">You now get in. Sign out again and return to the main admin account.</span></span></div>
 
-Bachelor of Science in Information Technology, University of Cebu.
+<h3>10.2 — Colleges and programs</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Colleges &amp; Programs"</b><span class="see">All ten UCLM colleges, each with its degree programs underneath.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Add a new college — type the code in lower case, like <code>ctest</code></b><span class="see">It is saved in capitals (CTEST). Extra spaces in the name are tidied up.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Add a program under your new college</b><span class="see">It appears nested under it.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Rename the college, then reload the page</b><span class="see">The new name is still there.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try to delete "College of Computer Studies"</b><span class="see">You are refused, with a message explaining it still has graduates and programs attached.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Delete your test college and its program (delete the program first)</b><span class="see">You are asked to confirm, then both are removed.</span></span></div>
 
-Skills: PHP, Laravel, MySQL, PostgreSQL, REST API, Git, Docker, JavaScript.</div>
+<h3>10.3 — Safety rules</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit your OWN admin account and try to set the status to Suspended</b><span class="see">You are refused. You cannot lock yourself out.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try to remove the Admin role from yourself</b><span class="see">You are refused.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit any user and tick two roles quickly, one after the other</b><span class="see">Both stay ticked. Neither un-ticks itself.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Roles &amp; Permissions"</b><span class="see">The core roles cannot be deleted, and the Admin role's permissions cannot be edited away.</span></span></div>
 
-      <h3>② Frontend developer &rarr; matches "Frontend Developer" / "Full Stack Developer"</h3>
-      <div class="block"><button class="copy">Copy</button>Noah Cruz — Frontend Developer
+<h3>10.4 — The rest of the menu</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Job Management</b><span class="see">Every posting on the platform. If there are more than 20, page links appear at the bottom and work.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Audit Logs</b><span class="see">A record of what has been done — including the college you added and deleted just now.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Platform Status</b><span class="see">System health figures.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>System Settings — clear the "minimum fit score" box completely and save</b><span class="see">A red message asks for a number. It must NOT quietly save as 0.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Data &amp; Backups</b><span class="see">The page loads and lists any backups.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Tracer Surveys, Announcements, Reports, Reports Hub, Skill Taxonomy</b><span class="see">Each page opens.</span></span></div>
 
-Frontend developer specializing in building responsive, accessible user
-interfaces with React and TypeScript. Experienced with modern CSS and
-Tailwind CSS, component-driven design, and integrating REST APIs. Comfortable
-collaborating in Git-based teams.
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="phone"><span class="num">11</span>Test on a phone</h2>
+<p class="role-note">Many students will use this on a phone, so this section matters. You can use a real phone on the same wi-fi, or your computer browser's phone preview.</p>
 
-Bachelor of Science in Computer Science, University of Cebu.
+<ol class="steps">
+    <li><span class="do">In Chrome or Edge, press <code>F12</code>.</span></li>
+    <li><span class="do">Click the small phone/tablet icon near the top left of the panel that opens.</span></li>
+    <li><span class="do">Choose a phone size such as iPhone SE or Pixel, then reload the page.</span></li>
+</ol>
 
-Skills: JavaScript, TypeScript, React, Tailwind CSS, HTML, CSS, REST API, Git.</div>
+<div class="box tip">
+    <p><b>The one thing to watch for:</b> you should never have to scroll <em>sideways</em> to read a page. Scrolling up and down is normal; scrolling left and right is a bug.</p>
+</div>
 
-      <h3>③ Data analyst &rarr; matches "Data Analyst"</h3>
-      <div class="block"><button class="copy">Copy</button>Liza Gomez — Data Analyst
+<div class="check"><input type="checkbox"><span class="txt"><b>Home page — tap the ☰ menu button</b><span class="see">A menu opens with Features, For Employers, Contact, About, and Sign In / Get Started.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Home page — look at the AI Job Match card</b><span class="see">It is visible and readable on the phone, and the course chips scroll sideways within their own row.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in, then tap the ☰ button at the top left</b><span class="see">The menu slides in. Tapping outside it, or pressing Escape, closes it. The page behind must not scroll while it is open.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Tap the magnifying glass in the top bar</b><span class="see">A search box opens across the screen. Closing it clears what you typed.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Tap the bell icon</b><span class="see">The notifications panel is fully on screen — not cut off at the edge.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Profile" and swipe across the four tabs</b><span class="see">The tab strip scrolls sideways by itself. The page underneath does not.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Check the form boxes on the profile page</b><span class="see">They are stacked one per line and full width. No text is cut off.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Messages, then open a conversation</b><span class="see">The conversation fills the screen and has a back arrow to return to the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>As an admin, open User Management</b><span class="see">The table scrolls sideways inside its own box, so you can still reach the Edit and Delete buttons.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Visit five or six more pages at phone size</b><span class="see">None of them scroll sideways.</span></span></div>
 
-Data analyst with experience turning raw datasets into dashboards and
-reports. Strong SQL and Python skills, comfortable with data cleaning,
-analysis, and visualization to support decision-making.
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="report"><span class="num">12</span>Report a problem</h2>
+<p class="role-note">A good report can be acted on straight away. A vague one cannot.</p>
 
-Bachelor of Science in Information Technology, University of Cebu.
+<p>For anything that does not match this guide, write down these five things:</p>
 
-Skills: Python, SQL, Data Analysis, Communication, Problem Solving.</div>
+<div class="tablewrap">
+<table>
+    <thead><tr><th>Write down</th><th>Example</th></tr></thead>
+    <tbody>
+        <tr><td><b>1. Who you were</b></td><td>Signed in as <code>partner@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>2. Where you were</b></td><td>Job Postings → New Posting</td></tr>
+        <tr><td><b>3. What you did</b></td><td>Typed a 200-character salary and clicked Publish</td></tr>
+        <tr><td><b>4. What you expected</b></td><td>A red message under the Salary box</td></tr>
+        <tr><td><b>5. What happened instead</b></td><td>Nothing at all — the button flickered and the form stayed</td></tr>
+    </tbody>
+</table>
+</div>
 
-      <div class="tip"><strong>What to expect</strong>After uploading and (host-side) the queue processing it, open <strong>Recommendations</strong>: the matching role should sit at the top with a high fit score and a written explanation, while unrelated roles score low.</div>
-    </section>
+<div class="box warn">
+    <p><b>Always add a screenshot.</b> On Windows press <code>Windows</code> + <code>Shift</code> + <code>S</code>. Include the whole browser window, with the web address visible.</p>
+</div>
 
-    <!-- 12 Notes -->
-    <section id="notes">
-      <p class="eyebrow">Set expectations</p>
-      <h2>Known gaps &mdash; not bugs</h2>
-      <p class="section-intro">Every sidebar link in every role now resolves to a real, data-backed screen &mdash; there are no design-shell placeholders left, and no demo/sample data hardcoded in the UI. What remains below are environment requirements and deliberate design decisions, not defects:</p>
-      <div class="card">
-        <ul class="does">
-          <li><strong>A queue worker must be running</strong> for résumé embeddings, AI match scoring, and all notification email. Use <code>composer dev</code> (which runs one alongside the server) or <code>docker compose up</code> (which has a dedicated worker container). Without it these silently stay pending &mdash; Admin &rarr; <span class="pill">Platform Status</span> will tell you if the queue has stalled.</li>
-          <li><strong>Live AI scoring needs API keys.</strong> With <code>GEMINI_API_KEY</code> and <code>GROQ_API_KEY</code> set, matches are embedded and scored for real. Without them the seeded match results still display, so recommendations and skill-gap analysis remain demonstrable.</li>
-          <li><strong>Backups need the PostgreSQL client tools.</strong> Admin &rarr; <span class="pill">Data &amp; Backups</span> shells out to <code>pg_dump</code>; if it isn't on the server's PATH the page says so plainly. Restoring is intentionally command-line only (<code>php artisan backup:restore</code>), since it overwrites the live database.</li>
-          <li>Department Heads see employment and program data <strong>scoped to their own college</strong>, by design &mdash; the filters are locked to their department rather than offered institution-wide.</li>
-          <li>Employers can view any graduate's profile through Talent Search, but can only open the <strong>résumé file</strong> of someone who actually applied to one of their own postings.</li>
-          <li>Admin &rarr; <span class="pill">Platform Status</span> deliberately shows no response-time metric: the app has no request-timing instrumentation, so that number would be invented rather than measured.</li>
-          <li>Self-registration assigns the chosen role immediately. Graduate Student and Alumni accounts activate right away (email verification still required); every other role (Industry Partner, Student Affairs Office, Alumni Affairs Office, Department Head, Admin) is created with a role but a <code>pending</code> status until an Admin approves it under User Management. For testing, use the seeded logins above.</li>
-          <li>This is a responsive web application, not a native mobile app &mdash; that boundary is stated in the study's scope.</li>
-        </ul>
-      </div>
-      <p class="muted" style="margin-top:18px;">Found a real issue? Note the <strong>role</strong>, the <strong>page</strong>, and what you <strong>expected vs. saw</strong> &mdash; that's enough to reproduce it quickly.</p>
-    </section>
+<h3>If the screen goes completely white</h3>
+<p>This matters most of all, so capture it properly:</p>
+<ol class="steps">
+    <li><span class="do">Press <code>F12</code> to open the developer panel.</span></li>
+    <li><span class="do">Click the "Console" tab.</span></li>
+    <li><span class="do">Screenshot any red text you see there.</span></li>
+    <li><span class="do">Note the exact web address and what you clicked immediately before.</span></li>
+</ol>
 
-    <p class="foot">GradConnect &mdash; Graduate Employability &amp; Career Development Platform &middot; University of Cebu, Lapu-Lapu &amp; Mandaue</p>
-  </div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="gaps"><span class="num">13</span>Known gaps (not bugs)</h2>
+<p class="role-note">These are expected. Please do not report them.</p>
+
+<div class="tablewrap">
+<table>
+    <thead><tr><th>What you will see</th><th>Why</th></tr></thead>
+    <tbody>
+        <tr><td>AI features return nothing, or a "not configured" note</td><td>The AI service needs a paid key. Without one, the system deliberately falls back instead of failing.</td></tr>
+        <tr><td>No real emails arrive</td><td>By design. Everything goes to Mailpit at <code>localhost:8025</code>.</td></tr>
+        <tr><td>Emails never mention anybody's name</td><td>Deliberate. Personal details stay inside the app, behind the sign-in.</td></tr>
+        <tr><td>Some pages look plain in dark mode</td><td>Dark mode is not finished on every page yet.</td></tr>
+        <tr><td>Home page figures like "4,820+ Graduates Placed"</td><td>Sample marketing text, not live data.</td></tr>
+        <tr><td>Match scores are missing on brand-new postings</td><td>Matching runs in the background. Wait a moment and reload.</td></tr>
+    </tbody>
+</table>
+</div>
+
+<footer>
+    <p><b>GradConnect</b> — University of Cebu Lapu-Lapu and Mandaue.<br>
+    Testing guide last updated 27 September 2026.</p>
+</footer>
+
 </div>
 
 <script>
-  document.querySelectorAll('.copy').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var block = btn.parentElement;
-      var text = block.cloneNode(true);
-      text.querySelector('.copy').remove();
-      navigator.clipboard.writeText(text.textContent.trim()).then(function () {
-        var original = btn.textContent;
-        btn.textContent = 'Copied';
-        setTimeout(function () { btn.textContent = original; }, 1400);
-      });
+(function () {
+    'use strict';
+
+    var STORE = 'gradconnect-test-progress-v2';
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input[type=checkbox]'));
+    var fill = document.getElementById('barFill');
+    var label = document.getElementById('progressLabel');
+    var resetBtn = document.getElementById('resetBtn');
+
+    // Give each box a stable id from its position, so ticks survive a reload.
+    boxes.forEach(function (box, index) { box.dataset.key = 'c' + index; });
+
+    function load() {
+        try {
+            return JSON.parse(localStorage.getItem(STORE) || '{}') || {};
+        } catch (e) {
+            // Private windows and blocked site data both throw here; the guide
+            // still works, it just will not remember ticks.
+            return {};
+        }
+    }
+
+    function save(state) {
+        try {
+            localStorage.setItem(STORE, JSON.stringify(state));
+        } catch (e) { /* not fatal */ }
+    }
+
+    function paint() {
+        var done = 0;
+
+        boxes.forEach(function (box) {
+            box.closest('.check').classList.toggle('done', box.checked);
+            if (box.checked) { done++; }
+        });
+
+        var pct = boxes.length ? Math.round((done / boxes.length) * 100) : 0;
+        fill.style.width = pct + '%';
+        label.textContent = done + ' of ' + boxes.length + ' done';
+    }
+
+    // Some browsers block storage for files opened directly from disk. Say so
+    // rather than let the reader discover it by losing an hour of ticking.
+    function storageWorks() {
+        try {
+            localStorage.setItem(STORE + '-probe', '1');
+            localStorage.removeItem(STORE + '-probe');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    if (!storageWorks()) {
+        var note = document.getElementById('saveNote');
+        note.textContent = 'This browser will not remember your ticks when you close the page — print the guide, or keep the tab open while you work.';
+        note.style.color = '#9a5b00';
+    }
+
+    var state = load();
+
+    boxes.forEach(function (box) {
+        box.checked = state[box.dataset.key] === true;
+
+        box.addEventListener('change', function () {
+            var current = load();
+            current[box.dataset.key] = box.checked;
+            save(current);
+            paint();
+        });
     });
-  });
+
+    resetBtn.addEventListener('click', function () {
+        if (!confirm('Clear every tick and start again?')) { return; }
+
+        boxes.forEach(function (box) { box.checked = false; });
+        save({});
+        paint();
+    });
+
+    paint();
+}());
 </script>
 
 </body>
 </html>
-
