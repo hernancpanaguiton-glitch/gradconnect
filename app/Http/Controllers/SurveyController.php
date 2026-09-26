@@ -30,7 +30,7 @@ class SurveyController extends Controller
             $query->open()->visibleTo($user);
         }
 
-        $surveys = $query->withCount('responses')->get();
+        $surveys = $query->withCount(['responses', 'questions'])->get();
 
         // Append the user's own response status for respondents. One keyed
         // query for the whole list rather than one per survey.

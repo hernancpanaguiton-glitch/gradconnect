@@ -30,15 +30,28 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
                 </div>
 
                 <div className="space-y-4">
-                    {results.sort((a, b) => a.order - b.order).map((q) => (
+                    {/*
+                        Copy before sorting: sort() mutates, and this array is
+                        the Inertia page props object React reuses across
+                        partial reloads.
+                    */}
+                    {[...results].sort((a, b) => a.order - b.order).map((q) => {
+                        // PHP serialises an empty countBy() as [], which is
+                        // truthy in JS — so a choice question with no answers
+                        // took the chart branch, rendered nothing, and the
+                        // "No answers yet." message below was unreachable for
+                        // exactly the questions most likely to be empty.
+                        const tally = Object.entries(q.distribution ?? {});
+
+                        return (
                         <div key={q.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
                             <p className="font-medium text-gray-800 mb-3">
                                 {q.order}. {q.prompt}
                                 <span className="ml-2 text-xs text-gray-400">({q.total_answers} answer(s))</span>
                             </p>
-                            {q.distribution ? (
+                            {tally.length > 0 ? (
                                 <div className="space-y-2">
-                                    {Object.entries(q.distribution).map(([option, count]) => {
+                                    {tally.map(([option, count]) => {
                                         const pct = q.total_answers > 0 ? Math.round((count / q.total_answers) * 100) : 0;
                                         return (
                                             <div key={option}>
@@ -64,7 +77,8 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
                                 </div>
                             )}
                         </div>
-                    ))}
+                        );
+                    })}
                     {results.length === 0 && (
                         <p className="text-center py-12 text-gray-400">No results yet.</p>
                     )}

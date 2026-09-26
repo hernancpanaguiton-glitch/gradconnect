@@ -19,7 +19,7 @@ export default function SystemSettings({ settings }: Props) {
         registration_enabled: settings.registration_enabled,
         support_email: settings.support_email,
         maintenance_banner_message: settings.maintenance_banner_message,
-        matching_min_fit_score: settings.matching_min_fit_score,
+        matching_min_fit_score: String(settings.matching_min_fit_score),
     });
 
     function submit(e: FormEvent) {
@@ -69,8 +69,14 @@ export default function SystemSettings({ settings }: Props) {
                             rate on the Platform Status page — this is the actual "AI tuning" lever available with an
                             API-based LLM (there's no local model here to retrain).
                         </p>
+                        {/*
+                            Keep the raw text: Number('') is 0, so selecting the
+                            field and pressing Backspace to retype snapped a 0
+                            into the box — and submitting at that moment un-hides
+                            every low-quality recommendation for every graduate.
+                        */}
                         <input type="number" min={0} max={100} value={data.matching_min_fit_score}
-                            onChange={(e) => setData('matching_min_fit_score', Number(e.target.value))}
+                            onChange={(e) => setData('matching_min_fit_score', e.target.value)}
                             className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
                         {errors.matching_min_fit_score && <p className="mt-1 text-xs text-red-500">{errors.matching_min_fit_score}</p>}
                     </div>

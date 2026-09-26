@@ -3,16 +3,28 @@ import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 
 /** Render a "30000-50000" / "80000+" range as a peso, comma-grouped monthly figure. */
-function formatSalary(range: string): string {
-    const nums = range.match(/\d+/g);
-    if (!nums || nums.length === 0) {
+/**
+ * Tidy a free-text salary range for display.
+ *
+ * salary_range is whatever the employer typed, and the posting form's own
+ * placeholder is "₱20,000 – ₱30,000/mo". Matching bare digit runs split that
+ * on its thousands separators into 20/000/30/000, so the page advertised
+ * "₱20–000 / month" for a ₱20,000–₱30,000 job. Keep the separators in the
+ * match, then re-group them.
+ */
+export function formatSalary(range: string): string {
+    const numbers = range.match(/\d[\d,]*/g);
+
+    if (!numbers || numbers.length === 0) {
         return range;
     }
-    const parts = nums.map((n) => Number(n).toLocaleString());
+
+    const parts = numbers.map((value) => Number(value.replace(/,/g, '')).toLocaleString('en-US'));
     const plus = range.includes('+') ? '+' : '';
+
     return parts.length === 1
         ? `₱${parts[0]}${plus} / month`
-        : `₱${parts[0]}–${parts[1]} / month`;
+        : `₱${parts[0]}–₱${parts[1]} / month`;
 }
 
 function MetaField({ label, value, valueClass = '' }: { label: string; value: string; valueClass?: string }) {

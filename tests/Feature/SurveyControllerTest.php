@@ -21,6 +21,21 @@ class SurveyControllerTest extends TestCase
 
     // ─── Listing ─────────────────────────────────────────────────────────────
 
+    public function test_index_sends_the_question_count_the_list_displays(): void
+    {
+        // The page renders "{questions_count} question(s)" on every card, but
+        // the query only counted responses — so every survey in the list read
+        // "undefined question(s)".
+        $officer = User::factory()->alumniAffairs()->create();
+        $survey = Survey::factory()->create(['created_by_user_id' => $officer->id]);
+        SurveyQuestion::factory()->count(3)->create(['survey_id' => $survey->id]);
+
+        $this->actingAs($officer)
+            ->get(route('surveys.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->where('surveys.0.questions_count', 3));
+    }
+
     public function test_alumni_affairs_can_list_all_surveys(): void
     {
         $staff = User::factory()->alumniAffairs()->create();
