@@ -56,10 +56,10 @@ export default function CandidateShow({ profile }: Props) {
 
                 {/* Header */}
                 <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h1 className="text-2xl font-bold text-gray-900">{profile.user.name}</h1>
+                    <h1 className="break-words text-xl font-bold text-gray-900 sm:text-2xl">{profile.user.name}</h1>
                     {profile.headline && <p className="mt-1 text-gray-600">{profile.headline}</p>}
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
-                        {profile.user.email && <span>{profile.user.email}</span>}
+                        {profile.user.email && <span className="break-all">{profile.user.email}</span>}
                         {profile.department && <span>· {profile.department.name}</span>}
                         {profile.program && <span>· {profile.program}</span>}
                         {profile.city && <span>· {profile.city}</span>}

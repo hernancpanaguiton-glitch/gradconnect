@@ -1,3 +1,5 @@
+import Pagination from '@/Components/Pagination';
+import TableCard from '@/Components/TableCard';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -40,20 +42,20 @@ export default function AuditLogs({ logs, actions, filters }: Props) {
             <div className="space-y-6">
                 <PageHeader icon={Activity} title="Audit Logs" subtitle="A record of security-relevant actions across the platform." />
 
-                <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 shadow-sm">
+                <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
                     <form onSubmit={(e) => { e.preventDefault(); applyFilters({ search }); }} className="flex flex-1 items-center gap-2 rounded-lg border border-border bg-muted px-3 py-2">
                         <Search size={16} className="text-muted-foreground" />
                         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by actor, action, or description…"
                             className="flex-1 bg-transparent text-sm focus:outline-none" />
                     </form>
                     <select value={filters.action ?? ''} onChange={(e) => applyFilters({ action: e.target.value })}
-                        className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+                        className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm sm:w-auto">
                         <option value="">All actions</option>
                         {actions.map((a) => <option key={a} value={a}>{a}</option>)}
                     </select>
                 </div>
 
-                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <TableCard wide>
                     <table className="w-full text-sm">
                         <thead className="border-b border-border bg-muted/40 text-left text-muted-foreground">
                             <tr><th className="px-6 py-3 font-medium">Time</th><th className="px-6 py-3 font-medium">Actor</th><th className="px-6 py-3 font-medium">Action</th><th className="px-6 py-3 font-medium">Description</th><th className="px-6 py-3 font-medium">IP</th></tr>
@@ -73,17 +75,9 @@ export default function AuditLogs({ logs, actions, filters }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
 
-                {logs.links.length > 3 && (
-                    <div className="flex flex-wrap gap-1">
-                        {logs.links.map((link, i) => (
-                            <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true })}
-                                className={`rounded-lg px-3 py-1.5 text-xs font-medium ${link.active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/70'} disabled:opacity-40`}
-                                dangerouslySetInnerHTML={{ __html: link.label }} />
-                        ))}
-                    </div>
-                )}
+                <Pagination links={logs.links} />
             </div>
         </AuthenticatedLayout>
     );

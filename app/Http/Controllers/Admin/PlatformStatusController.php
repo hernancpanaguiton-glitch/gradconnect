@@ -112,18 +112,26 @@ class PlatformStatusController extends Controller
 
         // Calibration check: for candidates who were actually hired, does a
         // higher AI fit_score line up with a higher employer rating?
-        $hiredPairs = JobApplication::where('status', 'hired')
+        $hiredApplications = JobApplication::where('status', 'hired')
             ->whereHas('employerFeedback')
             ->with('employerFeedback')
-            ->get()
-            ->map(function (JobApplication $application) {
-                $match = JobMatchResult::where('job_posting_id', $application->job_posting_id)
-                    ->where('graduate_profile_id', $application->graduate_profile_id)
-                    ->first();
+            ->get();
 
-                return $match?->fit_score !== null
-                    ? ['fit_score' => $match->fit_score, 'employer_rating' => $application->employerFeedback->overall_rating]
-                    : null;
+        // One query for every pair instead of one per hire: this page is the
+        // admin's health check and grows with the platform.
+        $scores = JobMatchResult::whereIn('job_posting_id', $hiredApplications->pluck('job_posting_id')->unique())
+            ->whereIn('graduate_profile_id', $hiredApplications->pluck('graduate_profile_id')->unique())
+            ->whereNotNull('fit_score')
+            ->get(['job_posting_id', 'graduate_profile_id', 'fit_score'])
+            ->keyBy(fn (JobMatchResult $match): string => "{$match->job_posting_id}:{$match->graduate_profile_id}");
+
+        $hiredPairs = $hiredApplications
+            ->map(function (JobApplication $application) use ($scores): ?array {
+                $match = $scores->get("{$application->job_posting_id}:{$application->graduate_profile_id}");
+
+                return $match === null
+                    ? null
+                    : ['fit_score' => $match->fit_score, 'employer_rating' => $application->employerFeedback->overall_rating];
             })
             ->filter()
             ->values();

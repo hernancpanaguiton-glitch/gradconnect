@@ -1,3 +1,5 @@
+import TableCard from '@/Components/TableCard';
+import Pagination from '@/Components/Pagination';
 import { roleLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -61,13 +63,13 @@ export default function Users({ users, filters }: Props) {
                         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
                         <p className="mt-1 text-gray-500">{users.total} users total</p>
                     </div>
-                    <form onSubmit={handleSearch} className="flex gap-2">
+                    <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search by name, email, ID…"
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-64"
+                            className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:w-64 sm:flex-none"
                         />
                         <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
                             Search
@@ -76,7 +78,7 @@ export default function Users({ users, filters }: Props) {
                 </div>
 
 
-                <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+                <TableCard wide>
                     <table className="min-w-full text-sm">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
@@ -134,28 +136,15 @@ export default function Users({ users, filters }: Props) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </TableCard>
 
                 {/* Pagination */}
                 {users.last_page > 1 && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm text-gray-500">
                             Showing {users.from}–{users.to} of {users.total}
                         </p>
-                        <div className="flex gap-1">
-                            {users.links.map((link, i) => (
-                                link.url ? (
-                                    <Link
-                                        key={i}
-                                        href={link.url}
-                                        className={`rounded px-3 py-1.5 text-sm ${link.active ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50'}`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                ) : (
-                                    <span key={i} className="rounded px-3 py-1.5 text-sm text-gray-300 ring-1 ring-gray-200" dangerouslySetInnerHTML={{ __html: link.label }} />
-                                )
-                            ))}
-                        </div>
+                        <Pagination links={users.links} />
                     </div>
                 )}
             </div>

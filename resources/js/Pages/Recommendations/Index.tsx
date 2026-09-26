@@ -106,7 +106,7 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
                 <div className="space-y-3">
                     {matches.map((match) => (
                         <div key={match.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                            <div className="flex items-start justify-between gap-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                                 <div className="min-w-0 flex-1">
                                     <Link href={route('jobs.show', match.job_posting.id)} className="font-semibold text-gray-900 hover:text-indigo-600">
                                         {match.job_posting.title}
@@ -119,7 +119,7 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
                                         {match.job_posting.is_remote ? 'Remote' : (match.job_posting.location ?? 'On-site')}
                                     </p>
                                 </div>
-                                <div className="w-40 shrink-0">
+                                <div className="w-full sm:w-40 sm:shrink-0">
                                     <FitScoreBar fitScore={match.fit_score} similarity={match.similarity} recommendation={match.recommendation} />
                                 </div>
                             </div>

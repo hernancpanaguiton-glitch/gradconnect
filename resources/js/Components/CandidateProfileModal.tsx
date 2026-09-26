@@ -65,7 +65,7 @@ export default function CandidateProfileModal({ profileId, onClose }: { profileI
                     {profile && (
                         <>
                             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
-                                {profile.user.email && <span>{profile.user.email}</span>}
+                                {profile.user.email && <span className="break-all">{profile.user.email}</span>}
                                 {profile.department && <span>· {profile.department.name}</span>}
                                 {profile.program && <span>· {profile.program}</span>}
                                 {profile.city && <span>· {profile.city}</span>}
