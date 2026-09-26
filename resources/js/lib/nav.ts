@@ -40,16 +40,12 @@ export interface NavSection {
     items: NavItem[];
 }
 
-/** Human-readable role label shown in the sidebar. */
-export const ROLE_LABELS: Record<string, string> = {
-    admin: 'Admin',
-    alumni_affairs: 'Alumni Affairs',
-    department_head: 'Department Head',
-    industry_partner: 'Industry Partner',
-    alumni: 'Alumni',
-    student: 'Graduate Student',
-    sao: 'Student Affairs Office',
-};
+/**
+ * Human-readable role label shown in the sidebar. Re-exported from the
+ * shared role vocabulary so the sidebar, registration form and audience
+ * pickers cannot drift apart.
+ */
+export { ROLE_LABELS, roleLabel } from '@/lib/roles';
 
 const dashboard: NavItem = { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard };
 
