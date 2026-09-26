@@ -141,7 +141,9 @@ export default function AiMatchShowcase({ items }: { items: MatchShowcaseItem[] 
 
             <div className="mt-3 flex items-center justify-between gap-3">
                 <p className="text-[11px] text-blue-300/80">Illustrative example, not a live posting.</p>
-                {items.length > 1 && (
+                {/* Nothing auto-advances under reduced motion, so a pause
+                    control there would do nothing when pressed. */}
+                {items.length > 1 && !prefersReducedMotion && (
                     <button
                         type="button"
                         onClick={() => setPaused((current) => !current)}

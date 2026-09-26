@@ -61,5 +61,9 @@ jobs:
 
       - run: npm ci
 
+      # Catches a React crash — the kind that white-screens a page — before
+      # a person has to find it by clicking.
+      - run: npm test
+
       # `npm run build` runs tsc before vite, so this typechecks too.
       - run: npm run build

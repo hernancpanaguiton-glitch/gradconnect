@@ -86,7 +86,11 @@ export default function SkillCategoryPicker({ skills, selectedIds, onToggle, ope
 
                 return (
                     <details
-                        key={category}
+                        // `open` is a DOM property the browser also writes to, so
+                        // React can believe a group is open while the user has
+                        // collapsed it. Remounting when the filter goes on or off
+                        // makes the markup authoritative again at that moment.
+                        key={`${category}:${term === '' ? 'browse' : 'filter'}`}
                         open={isOpen(category, categorySkills)}
                         onToggle={(event) => {
                             // Read `open` now: React clears currentTarget once the
