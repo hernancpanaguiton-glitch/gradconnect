@@ -37,7 +37,7 @@ function CreateForm({ onDone }: { onDone: () => void }) {
             <input type="text" placeholder="Program name *" value={data.name} onChange={(e) => setData('name', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
             {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="form-grid-tight">
                 <input type="text" placeholder="Provider" value={data.provider} onChange={(e) => setData('provider', e.target.value)}
                     className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
                 <input type="number" placeholder="Budget (₱)" value={data.budget_amount} onChange={(e) => setData('budget_amount', e.target.value)}

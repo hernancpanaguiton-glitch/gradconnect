@@ -80,7 +80,7 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                                     <button onClick={() => deletePost(post.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
                                 )}
                             </div>
-                            <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">{post.body}</p>
+                            <p className="mt-2 whitespace-pre-wrap break-words text-sm text-foreground [overflow-wrap:anywhere]">{post.body}</p>
 
                             <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
                                 <MessageCircle size={13} /> {post.comments_count} comment(s)
@@ -92,7 +92,7 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                                         <div key={c.id} className="flex items-start justify-between gap-2 rounded-lg bg-muted/50 px-3 py-2">
                                             <div>
                                                 <p className="text-xs font-semibold text-foreground">{c.user.name}</p>
-                                                <p className="text-sm text-foreground">{c.body}</p>
+                                                <p className="break-words text-sm text-foreground [overflow-wrap:anywhere]">{c.body}</p>
                                             </div>
                                             {canModify(c.user.id) && (
                                                 <button onClick={() => deleteComment(c.id)} className="shrink-0 text-xs text-red-500 hover:text-red-700">×</button>

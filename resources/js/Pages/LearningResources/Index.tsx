@@ -30,7 +30,7 @@ export default function LearningResourcesIndex({ resources, canManage }: Props) 
         <AuthenticatedLayout>
             <Head title="Learning Resources" />
             <div className="space-y-5">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900">Learning &amp; Guidance Resources</h1>
                         <p className="mt-1 text-gray-500">

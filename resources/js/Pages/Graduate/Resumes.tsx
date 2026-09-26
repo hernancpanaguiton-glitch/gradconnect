@@ -46,7 +46,7 @@ export default function Resumes({ resumes }: Props) {
             <Head title="My Resumes" />
 
             <div className="max-w-2xl space-y-5">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
                     <Link href={route('resume-builder.index')} className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100">
                         Build from My Profile

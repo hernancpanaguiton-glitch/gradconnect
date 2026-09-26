@@ -36,7 +36,7 @@ function CreateEventForm({ onDone }: { onDone: () => void }) {
             {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
             <textarea placeholder="Description" value={data.description} onChange={(e) => setData('description', e.target.value)} rows={2}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="form-grid-tight">
                 <select value={data.type} onChange={(e) => setData('type', e.target.value)}
                     className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary">
                     {Object.entries(TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}

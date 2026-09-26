@@ -43,7 +43,7 @@ export default function UpdateProfileInformation({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="form-grid">
                     <div>
                         <InputLabel htmlFor="first_name" value="First Name" />
 
