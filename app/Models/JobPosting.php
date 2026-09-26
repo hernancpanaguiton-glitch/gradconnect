@@ -20,6 +20,14 @@ class JobPosting extends Model
         'status', 'application_deadline', 'embedding_status', 'embedded_at',
     ];
 
+    /**
+     * The pgvector column is a multi-kilobyte float array that no client
+     * reads; keep it out of every serialized posting payload.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = ['embedding'];
+
     protected function casts(): array
     {
         return [

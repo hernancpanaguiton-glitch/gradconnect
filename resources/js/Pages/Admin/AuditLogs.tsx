@@ -22,6 +22,8 @@ const LEVEL: Record<string, string> = {
     'role.deleted': 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
     'role.permissions_updated': 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
     'user.updated': 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+    'department.deleted': 'bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300',
+    'department.updated': 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
 };
 const DEFAULT_LEVEL = 'bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300';
 

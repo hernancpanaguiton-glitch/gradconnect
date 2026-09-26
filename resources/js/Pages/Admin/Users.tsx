@@ -1,3 +1,4 @@
+import { roleLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -102,7 +103,7 @@ export default function Users({ users, filters }: Props) {
                                         <div className="flex flex-wrap gap-1">
                                             {user.roles.map((r) => (
                                                 <span key={r.id} className="rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-700">
-                                                    {r.name.replace(/_/g, ' ')}
+                                                    {roleLabel(r.name)}
                                                 </span>
                                             ))}
                                             {user.roles.length === 0 && <span className="text-gray-400 text-xs">none</span>}

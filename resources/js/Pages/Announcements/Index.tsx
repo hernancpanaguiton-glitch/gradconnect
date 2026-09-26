@@ -1,3 +1,4 @@
+import { roleAudienceLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
@@ -13,12 +14,6 @@ interface Announcement {
     created_by: { name: string };
 }
 interface Props extends PageProps { announcements: Announcement[] }
-
-const AUDIENCE_LABELS: Record<string, string> = {
-    alumni: 'Alumni', student: 'Graduate Students', industry_partner: 'Industry Partners',
-    alumni_affairs: 'Alumni Affairs Office', department_head: 'Department Heads',
-    sao: 'Student Affairs Office', admin: 'Admins',
-};
 
 export default function AnnouncementsIndex({ announcements }: Props) {
     function destroy(id: number) {
@@ -52,7 +47,7 @@ export default function AnnouncementsIndex({ announcements }: Props) {
                                             {a.status}
                                         </span>
                                         <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-                                            {a.audience ? AUDIENCE_LABELS[a.audience] ?? a.audience : 'Everyone'}
+                                            {a.audience ? roleAudienceLabel(a.audience) : 'Everyone'}
                                         </span>
                                     </div>
                                     <p className="mt-2 line-clamp-2 text-sm text-gray-600">{a.body}</p>

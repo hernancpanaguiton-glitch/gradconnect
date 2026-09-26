@@ -1,3 +1,4 @@
+import SkillCategoryPicker from '@/Components/SkillCategoryPicker';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -146,11 +147,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
         }
     }
 
-    const skillsByCategory = skillLibrary.reduce<Record<string, Skill[]>>((acc, s) => {
-        const cat = s.category ?? 'Other';
-        acc[cat] = [...(acc[cat] ?? []), s];
-        return acc;
-    }, {});
+    const selectedSkillIds = data.skills.map((s) => s.id);
 
     return (
         <>
@@ -285,22 +282,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                     )}
                 </div>
 
-                {Object.entries(skillsByCategory).map(([cat, catSkills]) => (
-                    <div key={cat}>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">{cat}</p>
-                        <div className="flex flex-wrap gap-2">
-                            {catSkills.map((skill) => {
-                                const selected = data.skills.some((s) => s.id === skill.id);
-                                return (
-                                    <button key={skill.id} type="button" onClick={() => toggleSkill(skill.id)}
-                                        className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${selected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-                                        {skill.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                ))}
+                <SkillCategoryPicker skills={skillLibrary} selectedIds={selectedSkillIds} onToggle={toggleSkill} />
             </div>
         </>
     );

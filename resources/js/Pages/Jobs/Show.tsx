@@ -35,6 +35,9 @@ interface JobPosting {
 interface Application { id: number; status: string }
 interface Props extends PageProps { posting: JobPosting; userApplication: Application | null }
 
+/** Mirrors JobApplication::WITHDRAWABLE_STATUSES — the backend rejects the rest. */
+const WITHDRAWABLE = ['submitted', 'under_review', 'shortlisted'];
+
 export default function JobShow({ posting, userApplication }: Props) {
     const { auth, flash } = usePage<Props>().props;
     const user = auth.user;
@@ -92,7 +95,7 @@ export default function JobShow({ posting, userApplication }: Props) {
                                         <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 capitalize">
                                             Applied · {userApplication.status.replace(/_/g, ' ')}
                                         </span>
-                                        {userApplication.status === 'submitted' && (
+                                        {WITHDRAWABLE.includes(userApplication.status) && (
                                             <button onClick={withdraw} className="block mt-1 text-xs text-red-500 hover:text-red-700">
                                                 Withdraw
                                             </button>

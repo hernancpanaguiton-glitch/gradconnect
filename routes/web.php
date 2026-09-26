@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\JobModerationController;
 use App\Http\Controllers\Admin\PlatformStatusController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\StudentCaseController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\TalentSearchController;
+use App\Support\UclmCatalog;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -59,6 +61,9 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        // One illustrative match per college, so the hero speaks to every
+        // program rather than only to computer studies.
+        'matchShowcase' => UclmCatalog::showcase(),
     ]);
 });
 
@@ -285,6 +290,13 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
         Route::patch('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+
+        // Colleges & programs — the institution's own structure, which every
+        // department-scoped screen reads from.
+        Route::get('/colleges', [DepartmentController::class, 'index'])->name('colleges.index');
+        Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
+        Route::patch('/departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
+        Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
         Route::get('/roles', [RolePermissionController::class, 'index'])->name('roles.index');
         Route::post('/roles', [RolePermissionController::class, 'store'])->name('roles.store');

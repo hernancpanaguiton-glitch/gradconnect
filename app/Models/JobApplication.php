@@ -11,6 +11,16 @@ class JobApplication extends Model
 {
     use HasFactory;
 
+    /**
+     * Statuses an applicant may still withdraw from. Once an employer has
+     * decided (hired/rejected) — or the application is already withdrawn —
+     * there is nothing left to withdraw. Mirrored by WITHDRAWABLE in
+     * resources/js/Pages/Applications.tsx.
+     *
+     * @var array<int, string>
+     */
+    public const WITHDRAWABLE_STATUSES = ['submitted', 'under_review', 'shortlisted'];
+
     protected $fillable = [
         'job_posting_id', 'graduate_profile_id', 'resume_id',
         'cover_letter', 'status', 'applied_at',

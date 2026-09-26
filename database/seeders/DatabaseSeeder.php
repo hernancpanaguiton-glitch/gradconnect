@@ -22,13 +22,17 @@ class DatabaseSeeder extends Seeder
         // Roles & permissions first
         $this->call(RolePermissionSeeder::class);
 
-        // Departments
-        $itDept = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
-        $csDept = Department::create(['name' => 'BS Computer Science', 'code' => 'BSCS', 'type' => 'program', 'parent_id' => $itDept->id]);
-        $itProgram = Department::create(['name' => 'BS Information Technology', 'code' => 'BSIT', 'type' => 'program', 'parent_id' => $itDept->id]);
-        $bizDept = Department::create(['name' => 'College of Business', 'code' => 'COB', 'type' => 'college']);
+        // Colleges, programs and the whole skill catalogue
+        // (database/data/uclm_catalog.php is the single source for both).
+        $this->call([CollegeSeeder::class, SkillCatalogSeeder::class]);
 
-        // Canonical skills
+        $itDept = Department::where('code', 'CCS')->firstOrFail();
+        $csDept = Department::where('code', 'BSCS')->firstOrFail();
+        $itProgram = Department::where('code', 'BSIT')->firstOrFail();
+        $bizDept = Department::where('code', 'CBA')->firstOrFail();
+
+        // The IT subset the demo job postings and graduates draw from — the
+        // catalogue seeder already created them, so this only looks them up.
         $skillNames = [
             'PHP', 'Laravel', 'JavaScript', 'TypeScript', 'React', 'Vue.js',
             'Node.js', 'Python', 'MySQL', 'PostgreSQL', 'Git', 'Docker',
@@ -205,6 +209,10 @@ class DatabaseSeeder extends Seeder
             $profile = GraduateProfile::factory()->employed()->create([
                 'user_id' => $user->id,
                 'department_id' => $itProgram->id,
+                // The free-text program is what résumé matching reads, so keep
+                // it in step with the linked program rather than the factory's
+                // random course.
+                'program' => $itProgram->name,
             ]);
 
             EducationRecord::factory()->create(['graduate_profile_id' => $profile->id]);
@@ -229,6 +237,7 @@ class DatabaseSeeder extends Seeder
             $profile = GraduateProfile::factory()->student()->create([
                 'user_id' => $user->id,
                 'department_id' => $csDept->id,
+                'program' => $csDept->name,
             ]);
 
             EducationRecord::factory()->create(['graduate_profile_id' => $profile->id]);

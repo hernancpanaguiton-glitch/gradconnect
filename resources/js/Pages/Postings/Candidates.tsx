@@ -23,8 +23,10 @@ interface EmployerFeedback {
 
 interface Applicant {
     id: number; status: string; applied_at: string | null; cover_letter: string | null;
-    graduate_profile: { id: number; user: { name: string; email: string }; current_employment_status: string | null; department: { id: number; name: string } | null };
-    resume: { id: number; original_filename: string } | null;
+    // Email is only serialized for viewers allowed to see it — see
+    // App\Http\Presenters\CandidatePresenter.
+    graduate_profile: { id: number; user: { name: string; email?: string }; current_employment_status: string | null; department: { id: number; name: string } | null };
+    resume: { id: number; original_filename: string; can_download: boolean } | null;
     employer_feedback: EmployerFeedback | null;
 }
 interface Posting { id: number; title: string }
@@ -40,6 +42,13 @@ const statusColors: Record<string, string> = {
 };
 
 const RATABLE_STATUSES = ['hired', 'rejected'];
+
+/**
+ * Statuses an employer may move an application to. 'submitted' is absent on
+ * purpose — it is the applicant's own starting state and the backend rejects
+ * it, so offering it here only produced a validation error.
+ */
+const ASSIGNABLE_STATUSES = ['under_review', 'shortlisted', 'rejected', 'hired'];
 
 const COMPETENCIES: Array<{ key: keyof CompetencyRatings; label: string }> = [
     { key: 'technical_skills', label: 'Technical Skills' },
@@ -168,7 +177,7 @@ export default function Candidates({ posting, applications }: Props) {
                                                 <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
                                             )}
                                         </td>
-                                        <td className="px-4 py-3 text-gray-600">{app.graduate_profile.user.email}</td>
+                                        <td className="px-4 py-3 text-gray-600">{app.graduate_profile.user.email ?? '—'}</td>
                                         <td className="px-4 py-3 text-gray-500 text-xs">{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</td>
                                         <td className="px-4 py-3 text-center">
                                             <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[app.status] ?? 'bg-gray-100'}`}>
@@ -178,10 +187,16 @@ export default function Candidates({ posting, applications }: Props) {
                                         <td className="px-4 py-3 text-center">
                                             <select
                                                 value={app.status}
+                                                disabled={app.status === 'withdrawn'}
                                                 onChange={(e) => updateStatus(app.id, e.target.value)}
-                                                className="rounded border border-gray-300 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                className="rounded border border-gray-300 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
                                             >
-                                                {['submitted','under_review','shortlisted','rejected','hired'].map((s) => (
+                                                {/* The applicant's own statuses are not assignable, but the
+                                                    select still has to be able to show the current one. */}
+                                                {!ASSIGNABLE_STATUSES.includes(app.status) && (
+                                                    <option value={app.status}>{app.status.replace(/_/g, ' ')}</option>
+                                                )}
+                                                {ASSIGNABLE_STATUSES.map((s) => (
                                                     <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
                                                 ))}
                                             </select>

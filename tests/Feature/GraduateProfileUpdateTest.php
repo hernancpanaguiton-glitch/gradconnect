@@ -77,26 +77,94 @@ class GraduateProfileUpdateTest extends TestCase
             ->assertSessionHasNoErrors();
     }
 
-    public function test_profile_update_persists_college_and_rejects_a_program(): void
+    public function test_profile_update_persists_a_college_on_its_own(): void
     {
         $college = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
-        $program = Department::create(['name' => 'BS IT', 'code' => 'BSIT', 'type' => 'program', 'parent_id' => $college->id]);
 
         $user = User::factory()->alumni()->create();
         $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
 
-        // A valid college is saved.
         $this->actingAs($user)->patch(
             route('graduate.profile.update'),
-            $this->formPayload($profile, ['department_id' => $college->id])
+            $this->formPayload($profile, ['college_id' => $college->id])
         )->assertSessionHasNoErrors();
-        $this->assertSame($college->id, $profile->refresh()->department_id);
 
-        // A program (non-college) department is rejected.
+        $this->assertSame($college->id, $profile->refresh()->department_id);
+    }
+
+    public function test_profile_update_stores_the_program_and_syncs_its_name(): void
+    {
+        $college = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
+        $program = Department::create(['name' => 'BS Information Technology', 'code' => 'BSIT', 'type' => 'program', 'parent_id' => $college->id]);
+
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
+
         $this->actingAs($user)->patch(
             route('graduate.profile.update'),
-            $this->formPayload($profile, ['department_id' => $program->id])
-        )->assertSessionHasErrors('department_id');
+            $this->formPayload($profile, ['college_id' => $college->id, 'program_id' => $program->id])
+        )->assertSessionHasNoErrors();
+
+        // Reports group by the program row, so the narrower id wins.
+        $this->assertSame($program->id, $profile->refresh()->department_id);
+        $this->assertSame('BS Information Technology', $profile->program);
+    }
+
+    public function test_profile_update_rejects_a_program_from_another_college(): void
+    {
+        $college = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
+        $other = Department::create(['name' => 'College of Nursing', 'code' => 'CON', 'type' => 'college']);
+        $program = Department::create(['name' => 'BS Nursing', 'code' => 'BSN', 'type' => 'program', 'parent_id' => $other->id]);
+
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->patch(
+            route('graduate.profile.update'),
+            $this->formPayload($profile, ['college_id' => $college->id, 'program_id' => $program->id])
+        )->assertSessionHasErrors('program_id');
+    }
+
+    public function test_a_graduate_attached_to_a_program_can_save_their_profile(): void
+    {
+        // Seeded graduates are linked to a program, but the form used to offer
+        // colleges only — so their department_id failed validation on every
+        // save, including from tabs where the error was never visible.
+        $college = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
+        $program = Department::create(['name' => 'BS Computer Science', 'code' => 'BSCS', 'type' => 'program', 'parent_id' => $college->id]);
+
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id, 'department_id' => $program->id]);
+
+        $this->actingAs($user)
+            ->get(route('graduate.profile.edit'))
+            ->assertInertia(fn ($page) => $page
+                ->where('selectedCollegeId', $college->id)
+                ->where('selectedProgramId', $program->id));
+
+        $this->actingAs($user)->patch(
+            route('graduate.profile.update'),
+            $this->formPayload($profile, ['college_id' => $college->id, 'program_id' => $program->id])
+        )->assertSessionHasNoErrors();
+
+        $this->assertSame($program->id, $profile->refresh()->department_id);
+    }
+
+    public function test_profile_update_ignores_protected_fields(): void
+    {
+        $user = User::factory()->alumni()->create();
+        $other = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->patch(
+            route('graduate.profile.update'),
+            $this->formPayload($profile, ['user_id' => $other->id, 'student_number' => 'HACKED'])
+        )->assertSessionHasNoErrors();
+
+        $profile->refresh();
+
+        $this->assertSame($user->id, $profile->user_id);
+        $this->assertNotSame('HACKED', $profile->student_number);
     }
 
     public function test_employability_report_reflects_status_change(): void

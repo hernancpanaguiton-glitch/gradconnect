@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Roles;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,16 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
+
+    /**
+     * Office roles, as opposed to graduates and employers. Kept in step with
+     * the shared vocabulary: 'sao' was missing from the hard-coded list
+     * isStaff() used, so a graduate messaging the Student Affairs Office got
+     * a 403 from a recipient MessageController had just offered them.
+     *
+     * @var array<int, string>
+     */
+    public const STAFF_ROLES = Roles::STAFF;
 
     protected $fillable = [
         'first_name',
@@ -62,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isStaff(): bool
     {
-        return $this->hasRole(['alumni_affairs', 'department_head', 'admin']);
+        return $this->hasRole(self::STAFF_ROLES);
     }
 
     public function department(): BelongsTo

@@ -44,7 +44,7 @@ class LearningResourceController extends Controller
         abort_unless($request->user()->hasPermissionTo('learning_resources.manage'), 403);
 
         return Inertia::render('LearningResources/Create', [
-            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'departmentGroups' => $this->departmentGroups(),
             'skills' => Skill::orderBy('category')->orderBy('name')->get(['id', 'name', 'category']),
         ]);
     }
@@ -69,7 +69,7 @@ class LearningResourceController extends Controller
 
         return Inertia::render('LearningResources/Edit', [
             'resource' => $learningResource->load('skills:id'),
-            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'departmentGroups' => $this->departmentGroups(),
             'skills' => Skill::orderBy('category')->orderBy('name')->get(['id', 'name', 'category']),
         ]);
     }
@@ -91,5 +91,42 @@ class LearningResourceController extends Controller
         $learningResource->delete();
 
         return redirect()->route('learning-resources.index')->with('success', 'Resource removed.');
+    }
+
+    /**
+     * Departments for the "restrict to" picker, grouped college → programs so
+     * the select renders <optgroup>s instead of one flat list of ~50 rows.
+     *
+     * @return array<int, array{id: int|null, name: string, programs: array<int, array{id: int, name: string}>}>
+     */
+    private function departmentGroups(): array
+    {
+        $groups = Department::colleges()
+            ->with(['children' => fn ($query) => $query->orderBy('name')])
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Department $college): array => [
+                'id' => $college->id,
+                'name' => $college->name,
+                'programs' => $college->children
+                    ->map(fn (Department $program): array => ['id' => $program->id, 'name' => $program->name])
+                    ->all(),
+            ])
+            ->all();
+
+        // A program whose college was removed still needs to be selectable.
+        $orphans = Department::programs()->whereNull('parent_id')->orderBy('name')->get();
+
+        if ($orphans->isNotEmpty()) {
+            $groups[] = [
+                'id' => null,
+                'name' => 'Unassigned programs',
+                'programs' => $orphans
+                    ->map(fn (Department $program): array => ['id' => $program->id, 'name' => $program->name])
+                    ->all(),
+            ];
+        }
+
+        return $groups;
     }
 }

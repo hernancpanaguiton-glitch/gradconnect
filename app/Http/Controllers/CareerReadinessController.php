@@ -122,9 +122,16 @@ class CareerReadinessController extends Controller
             return ['score' => null, 'band' => null];
         }
 
-        $sum = $ratingAnswers->sum(fn ($answer) => (int) $answer->value);
+        // Rows stored before survey answers were validated can hold anything
+        // at all, and a single 47 would report a 940%-ready graduate. Clamp
+        // each answer to the 1-5 scale the band thresholds assume.
+        $sum = $ratingAnswers->sum(function ($answer): int {
+            $value = is_array($answer->value) ? null : (int) $answer->value;
+
+            return max(1, min(5, $value ?? 1));
+        });
         $max = $ratingAnswers->count() * 5;
-        $score = (int) round($sum / $max * 100);
+        $score = (int) min(100, round($sum / $max * 100));
 
         foreach (self::BANDS as $threshold => $band) {
             if ($score >= $threshold) {

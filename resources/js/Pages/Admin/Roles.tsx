@@ -17,13 +17,14 @@ interface Role {
 interface Props extends PageProps {
     roles: Role[];
     permissionGroups: Record<string, Permission[]>;
+    /** Roles the backend refuses to delete — sent by the server so this page can't drift from it. */
+    protectedRoles: string[];
+    /** The super-role whose permission set the backend refuses to edit. */
+    lockedRole: string;
 }
 
-const PROTECTED = ['admin', 'alumni_affairs', 'department_head', 'industry_partner', 'alumni', 'student'];
-
-export default function Roles({ roles, permissionGroups }: Props) {
+export default function Roles({ roles, permissionGroups, protectedRoles, lockedRole }: Props) {
     const { flash } = usePage<Props>().props;
-    const allPermissions = Object.values(permissionGroups).flat();
 
     const { data, setData, post, processing, errors, reset } = useForm({ name: '' });
 
@@ -110,7 +111,10 @@ export default function Roles({ roles, permissionGroups }: Props) {
                                         <th key={role.id} className="px-3 py-3 text-center font-medium text-gray-600 min-w-[120px]">
                                             <div className="flex flex-col items-center gap-1">
                                                 <span className="capitalize">{role.name.replace(/_/g, ' ')}</span>
-                                                {!PROTECTED.includes(role.name) && (
+                                                {role.name === lockedRole && (
+                                                    <span className="text-[10px] font-normal text-gray-400">always full access</span>
+                                                )}
+                                                {!protectedRoles.includes(role.name) && (
                                                     <button
                                                         onClick={() => deleteRole(role)}
                                                         className="text-xs text-red-400 hover:text-red-600"
@@ -136,18 +140,23 @@ export default function Roles({ roles, permissionGroups }: Props) {
                                                 <td className="px-4 py-2 text-gray-700 font-mono text-xs">{perm.name}</td>
                                                 {roles.map((role) => {
                                                     const active = hasPermission(role, perm.name);
+                                                    // The admin role is seeded with everything and the
+                                                    // backend refuses to change it.
+                                                    const locked = role.name === lockedRole;
                                                     const isSaving = saving === role.id;
                                                     return (
                                                         <td key={role.id} className="px-3 py-2 text-center">
                                                             <button
                                                                 onClick={() => togglePermission(role, perm.name)}
-                                                                disabled={isSaving}
+                                                                disabled={isSaving || locked}
                                                                 className={`h-6 w-6 rounded transition-colors ${
                                                                     active
                                                                         ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                                                                         : 'bg-gray-200 hover:bg-gray-300'
-                                                                } ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                                title={`${active ? 'Remove' : 'Grant'} ${perm.name} from ${role.name}`}
+                                                                } ${isSaving || locked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                title={locked
+                                                                    ? `The ${role.name} role always holds every permission`
+                                                                    : `${active ? 'Remove' : 'Grant'} ${perm.name} from ${role.name}`}
                                                             >
                                                                 {active && (
                                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 mx-auto">

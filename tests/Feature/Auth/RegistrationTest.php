@@ -92,10 +92,15 @@ class RegistrationTest extends TestCase
     public static function approvalRoles(): array
     {
         return [
-            'alumni officer' => ['alumni_officer', 'alumni_affairs'],
-            'dean' => ['dean', 'department_head'],
+            'alumni affairs office' => ['alumni_affairs', 'alumni_affairs'],
+            'department head' => ['department_head', 'department_head'],
             'industry partner' => ['industry_partner', 'industry_partner'],
             'student affairs office' => ['sao', 'sao'],
+            'admin' => ['admin', 'admin'],
+            // Values the form used before the vocabularies merged; a tab that
+            // was already open still posts these.
+            'legacy alumni officer' => ['alumni_officer', 'alumni_affairs'],
+            'legacy dean' => ['dean', 'department_head'],
         ];
     }
 
@@ -105,9 +110,33 @@ class RegistrationTest extends TestCase
             ->assertSessionHasErrors('role');
     }
 
-    public function test_admin_role_cannot_be_self_registered(): void
+    public function test_admin_registration_is_held_for_approval(): void
     {
+        // Admin is offered on the form, but an existing administrator has to
+        // approve it — a self-serve admin would be a privilege escalation.
         $this->post('/register', $this->payload(['role' => 'admin']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertGuest();
+
+        $user = User::where('email', 'test@example.com')->firstOrFail();
+
+        $this->assertTrue($user->hasRole('admin'));
+        $this->assertSame('pending', $user->status);
+    }
+
+    public function test_pending_admin_cannot_reach_the_admin_area(): void
+    {
+        $this->post('/register', $this->payload(['role' => 'admin']));
+
+        $user = User::where('email', 'test@example.com')->firstOrFail();
+
+        $this->actingAs($user)->get('/admin/users')->assertRedirect();
+    }
+
+    public function test_unknown_role_is_rejected(): void
+    {
+        $this->post('/register', $this->payload(['role' => 'superuser']))
             ->assertSessionHasErrors('role');
 
         $this->assertGuest();

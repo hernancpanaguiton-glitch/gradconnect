@@ -8,6 +8,8 @@ use App\Notifications\ApplicationReceived;
 use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -44,11 +46,6 @@ class JobApplicationController extends Controller
      */
     public function store(Request $request, JobPosting $job): RedirectResponse
     {
-        $request->validate([
-            'resume_id' => ['nullable', 'exists:resumes,id'],
-            'cover_letter' => ['nullable', 'string'],
-        ]);
-
         abort_unless($request->user()->hasPermissionTo('jobs.apply'), 403);
 
         // A closed, draft, or moderated-away posting must not keep collecting
@@ -58,6 +55,17 @@ class JobApplicationController extends Controller
         $profile = $request->user()->graduateProfile;
 
         abort_if($profile === null, 422, 'You must have a graduate profile to apply.');
+
+        // Validated only once the applicant's own profile is known: a bare
+        // exists:resumes,id let anyone attach somebody else's résumé, which
+        // the employer's candidate page would then happily serve.
+        $request->validate([
+            'resume_id' => [
+                'nullable',
+                Rule::exists('resumes', 'id')->where('graduate_profile_id', $profile->id),
+            ],
+            'cover_letter' => ['nullable', 'string', 'max:5000'],
+        ]);
 
         $existing = $job->applications()->where('graduate_profile_id', $profile->id)->exists();
         abort_if($existing, 422, 'You have already applied to this position.');
@@ -93,6 +101,20 @@ class JobApplicationController extends Controller
             403,
         );
 
+        // The applicant pulled out; an employer must not be able to drag them
+        // back into the pipeline (and notify them about it).
+        if ($application->status === 'withdrawn') {
+            throw ValidationException::withMessages([
+                'status' => 'This applicant withdrew their application.',
+            ]);
+        }
+
+        // Re-selecting the status a row already has is a no-op, not an
+        // update worth emailing the applicant about.
+        if ($application->status === $request->status) {
+            return back();
+        }
+
         $application->update(['status' => $request->status]);
 
         // Notify the applicant of the status change.
@@ -112,6 +134,12 @@ class JobApplicationController extends Controller
             $profile && $application->graduate_profile_id === $profile->id,
             403,
         );
+
+        if (! in_array($application->status, JobApplication::WITHDRAWABLE_STATUSES, true)) {
+            throw ValidationException::withMessages([
+                'status' => 'This application can no longer be withdrawn.',
+            ]);
+        }
 
         $application->update(['status' => 'withdrawn']);
 

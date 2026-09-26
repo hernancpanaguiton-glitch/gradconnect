@@ -7,7 +7,6 @@ use App\Models\Skill;
 use App\Models\SkillAlias;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -40,7 +39,7 @@ class SkillTaxonomyController extends Controller
         abort_unless($request->user()->hasPermissionTo('learning_resources.manage'), 403);
 
         $data = $request->validate(['alias' => ['required', 'string', 'max:255']]);
-        $slug = Str::slug($data['alias']);
+        $slug = Skill::slugFor($data['alias']);
 
         abort_if(Skill::where('slug', $slug)->exists(), 422, 'That name is already a skill in its own right.');
 

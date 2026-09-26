@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Presenters\CandidatePresenter;
 use App\Models\Department;
 use App\Models\GraduateProfile;
 use Illuminate\Http\Request;
@@ -45,6 +46,11 @@ class TalentSearchController extends Controller
             ->latest()
             ->paginate(12)
             ->withQueryString();
+
+        // through() keeps the paginator's shape (data/links/total), which the
+        // page's pagination controls read.
+        $presenter = new CandidatePresenter($request->user());
+        $candidates->through(fn (GraduateProfile $profile) => $presenter->card($profile));
 
         return Inertia::render('TalentSearch', [
             'candidates' => $candidates,

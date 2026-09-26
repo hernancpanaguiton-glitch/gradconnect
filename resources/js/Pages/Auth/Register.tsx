@@ -4,30 +4,40 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import {
+    REGISTRATION_ROLES,
+    ROLE_ADMIN,
+    ROLE_DEPARTMENT_HEAD,
+    requiresApproval,
+    roleLabel,
+} from '@/lib/roles';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Register() {
+interface College {
+    id: number;
+    name: string;
+    code: string | null;
+}
+
+export default function Register({ colleges = [] }: { colleges?: College[] }) {
+    // "For Employers" links here, so honour a role named in the query string
+    // as long as it is one we actually offer.
+    const requestedRole = new URLSearchParams(window.location.search).get('role');
+    const initialRole = requestedRole && REGISTRATION_ROLES.includes(requestedRole) ? requestedRole : 'student';
+
     const { data, setData, post, processing, errors, reset } = useForm({
         first_name: '',
         last_name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        role: 'student',
+        role: initialRole,
+        department_id: '',
         consent: false as boolean,
     });
 
-    const roleOptions = [
-        { value: 'student', label: 'Student' },
-        { value: 'alumni', label: 'Alumni' },
-        { value: 'alumni_officer', label: 'Alumni Officer' },
-        { value: 'dean', label: 'Dean' },
-        { value: 'industry_partner', label: 'Industry Partner' },
-        { value: 'sao', label: 'Student Affairs Office' },
-    ];
-
-    const needsApproval = data.role !== 'student' && data.role !== 'alumni';
+    const needsApproval = requiresApproval(data.role);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -86,21 +96,51 @@ export default function Register() {
                         onChange={(e) => setData('role', e.target.value)}
                         required
                     >
-                        {roleOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
+                        {REGISTRATION_ROLES.map((role) => (
+                            <option key={role} value={role}>
+                                {roleLabel(role)}
                             </option>
                         ))}
                     </select>
 
                     <p className="mt-2 text-sm text-gray-500">
-                        {needsApproval
-                            ? 'Staff and employer accounts are reviewed by an administrator before you can sign in.'
-                            : 'You will receive a confirmation email to activate your account.'}
+                        {data.role === ROLE_ADMIN
+                            ? 'An existing administrator must approve this account, and will verify who you are first.'
+                            : needsApproval
+                              ? 'Staff and employer accounts are reviewed by an administrator before you can sign in.'
+                              : 'You will receive a confirmation email to activate your account.'}
                     </p>
 
                     <InputError message={errors.role} className="mt-2" />
                 </div>
+
+                {/* Only a department head is scoped to one college. */}
+                {data.role === ROLE_DEPARTMENT_HEAD && colleges.length > 0 && (
+                    <div className="mt-4">
+                        <InputLabel htmlFor="department_id" value="College" />
+
+                        <select
+                            id="department_id"
+                            name="department_id"
+                            value={data.department_id}
+                            onChange={(e) => setData('department_id', e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        >
+                            <option value="">— Select —</option>
+                            {colleges.map((college) => (
+                                <option key={college.id} value={college.id}>
+                                    {college.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <p className="mt-2 text-sm text-gray-500">
+                            Optional — an administrator can set or change this when approving your account.
+                        </p>
+
+                        <InputError message={errors.department_id} className="mt-2" />
+                    </div>
+                )}
 
                 <div className="mt-4">
                     <InputLabel htmlFor="email" value="Email" />

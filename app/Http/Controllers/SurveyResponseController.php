@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GraduateProfile;
 use App\Models\Survey;
+use App\Models\SurveyQuestion;
 use App\Models\SurveyResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,16 +45,15 @@ class SurveyResponseController extends Controller
     {
         $this->assertCanRespond($request, $survey);
 
-        $request->validate([
-            'answers' => ['required', 'array'],
-        ]);
+        $request->validate(['answers' => ['nullable', 'array']]);
 
         // Only accept answers for questions that actually belong to THIS
         // survey. Without this, a crafted payload could write answers keyed
         // to another survey's question IDs, which then flow into
         // applyMapsToWriteBack() and corrupt employment records.
-        $ownQuestionIds = $survey->questions()->pluck('id')->all();
-        $submitted = array_keys($request->answers);
+        $questions = $survey->questions()->get();
+        $ownQuestionIds = $questions->pluck('id')->all();
+        $submitted = array_keys($request->input('answers') ?? []);
         $unknown = array_diff($submitted, $ownQuestionIds);
 
         abort_unless(
@@ -61,6 +61,22 @@ class SurveyResponseController extends Controller
             422,
             'This submission references questions that do not belong to this survey.',
         );
+
+        // Per-question rules built from the survey definition itself: a
+        // rating stays 1-5, a choice answer has to be one of the offered
+        // options, and a required question cannot be skipped.
+        $rules = $questions->reduce(
+            fn (array $carry, SurveyQuestion $question) => $carry + $question->answerRules(),
+            [],
+        );
+
+        $request->validate($rules);
+
+        $answers = collect($request->input('answers') ?? [])
+            ->mapWithKeys(fn ($value, $questionId) => [
+                (int) $questionId => $questions->firstWhere('id', (int) $questionId)?->normalizeAnswer($value),
+            ])
+            ->all();
 
         $user = $request->user();
         $profile = $user->graduateProfile;
@@ -77,7 +93,7 @@ class SurveyResponseController extends Controller
             ],
         );
 
-        foreach ($request->answers as $questionId => $value) {
+        foreach ($answers as $questionId => $value) {
             $response->answers()->updateOrCreate(
                 ['survey_question_id' => $questionId],
                 ['value' => $value],
@@ -85,7 +101,7 @@ class SurveyResponseController extends Controller
         }
 
         if ($profile) {
-            $this->applyMapsToWriteBack($profile, $survey, $request->answers);
+            $this->applyMapsToWriteBack($profile, $survey, $answers);
         }
 
         return redirect()->route('surveys.index')->with('success', 'Survey submitted. Thank you!');
@@ -144,15 +160,18 @@ class SurveyResponseController extends Controller
         }
 
         if ($mapped->has('employment_status')) {
-            $status = $mapped->get('employment_status');
+            $status = $this->asColumnString($mapped->get('employment_status'));
             if (in_array($status, ['employed', 'unemployed', 'self_employed', 'further_study', 'not_seeking'], true)) {
                 $profile->update(['current_employment_status' => $status]);
             }
         }
 
-        $companyName = $mapped->get('current_employer');
-        $jobTitle = $mapped->get('job_title');
-        $industry = $mapped->get('industry');
+        // These land in varchar(255) columns. A multi_choice answer is an
+        // array and a long free-text answer overflows the column, either of
+        // which used to abort the whole (already saved) submission.
+        $companyName = $this->asColumnString($mapped->get('current_employer'));
+        $jobTitle = $this->asColumnString($mapped->get('job_title'));
+        $industry = $this->asColumnString($mapped->get('industry'));
 
         if ($companyName === null && $jobTitle === null && $industry === null) {
             return;
@@ -185,5 +204,24 @@ class SurveyResponseController extends Controller
         }
 
         $record->save();
+    }
+
+    /**
+     * Flatten an answer into something a varchar(255) column will accept,
+     * or null when there is nothing to write.
+     */
+    private function asColumnString(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_array($value)) {
+            $value = implode(', ', array_map(strval(...), $value));
+        }
+
+        $value = trim((string) $value);
+
+        return $value === '' ? null : mb_substr($value, 0, 255);
     }
 }

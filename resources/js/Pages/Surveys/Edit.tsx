@@ -3,17 +3,30 @@ import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
+/** A question as the server sends it: options are a list, plus its answer count. */
+interface StoredQuestion {
+    id: number; prompt: string; type: string; options: string[] | string | null;
+    is_required: boolean; maps_to: string | null; order: number; answers_count: number;
+}
+/** A question as this form edits it: options are one comma-separated line. */
 interface SurveyQuestion {
-    id?: number; prompt: string; type: string; options: string; is_required: boolean;
-    maps_to: string; order: number;
+    uid: string; id?: number; prompt: string; type: string; options: string;
+    is_required: boolean; maps_to: string; order: number; answers_count: number;
 }
 interface Survey {
     id: number; title: string; description: string | null; type: string; status: string;
     target_role: string | null; target_graduation_year: number | null;
     opens_at: string | null; closes_at: string | null;
-    questions: SurveyQuestion[];
+    questions: StoredQuestion[];
 }
 interface Props extends PageProps { survey: Survey }
+
+let nextUid = 0;
+
+/** A key that survives reordering, so React keeps each question's own input state. */
+function newUid(): string {
+    return `new-${nextUid++}`;
+}
 
 const QUESTION_TYPES = ['text','textarea','single_choice','multi_choice','rating','boolean','number'];
 const MAPS_TO_OPTIONS = [
@@ -44,15 +57,17 @@ export default function SurveyEdit({ survey }: Props) {
         opens_at: toLocalDatetime(survey.opens_at),
         closes_at: toLocalDatetime(survey.closes_at),
         questions: survey.questions.map((q) => ({
-            id: q.id, prompt: q.prompt, type: q.type,
-            options: Array.isArray(q.options) ? (q.options as string[]).join(', ') : (q.options ?? ''),
+            uid: `q-${q.id}`, id: q.id, prompt: q.prompt, type: q.type,
+            options: Array.isArray(q.options) ? q.options.join(', ') : (q.options ?? ''),
             is_required: q.is_required, maps_to: q.maps_to ?? '', order: q.order,
+            answers_count: q.answers_count ?? 0,
         })),
     });
 
     function addQuestion() {
         setData('questions', [...data.questions, {
-            prompt: '', type: 'text', options: '', is_required: true, maps_to: '', order: data.questions.length + 1,
+            uid: newUid(), prompt: '', type: 'text', options: '', is_required: true, maps_to: '',
+            order: data.questions.length + 1, answers_count: 0,
         }]);
     }
 
@@ -69,6 +84,10 @@ export default function SurveyEdit({ survey }: Props) {
         e.preventDefault();
         patch(route('surveys.update', survey.id));
     }
+
+    // Per-question failures come back under dotted keys ("questions.0.options"),
+    // which useForm's typed errors map doesn't model.
+    const fieldErrors = errors as Record<string, string | undefined>;
 
     return (
         <AuthenticatedLayout>
@@ -149,18 +168,30 @@ export default function SurveyEdit({ survey }: Props) {
                                 + Add Question
                             </button>
                         </div>
+                        {fieldErrors['questions'] && (
+                            <p className="text-xs text-red-600">{fieldErrors['questions']}</p>
+                        )}
                         {data.questions.map((q, i) => (
-                            <div key={i} className="rounded-lg border border-gray-200 p-4 space-y-3">
+                            <div key={q.uid} className="rounded-lg border border-gray-200 p-4 space-y-3">
                                 <div className="flex items-center justify-between gap-2">
                                     <span className="text-xs font-semibold text-gray-500">Q{i + 1}</span>
-                                    <button type="button" onClick={() => removeQuestion(i)} className="text-xs text-red-500 hover:text-red-700">Remove</button>
+                                    {q.answers_count > 0 ? (
+                                        <span className="text-xs text-gray-400">{q.answers_count} answer(s) — locked</span>
+                                    ) : (
+                                        <button type="button" onClick={() => removeQuestion(i)} className="text-xs text-red-500 hover:text-red-700">Remove</button>
+                                    )}
                                 </div>
                                 <input type="text" value={q.prompt} onChange={(e) => updateQuestion(i, 'prompt', e.target.value)}
                                     placeholder="Question prompt *"
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                {fieldErrors[`questions.${i}.prompt`] && (
+                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.prompt`]}</p>
+                                )}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <select value={q.type} onChange={(e) => updateQuestion(i, 'type', e.target.value)}
-                                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                    {/* Changing the type of an answered question would invalidate
+                                        the responses already collected, so the backend refuses it. */}
+                                    <select value={q.type} disabled={q.answers_count > 0} onChange={(e) => updateQuestion(i, 'type', e.target.value)}
+                                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500">
                                         {QUESTION_TYPES.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
                                     </select>
                                     <label className="flex items-center gap-2 cursor-pointer">
@@ -169,10 +200,18 @@ export default function SurveyEdit({ survey }: Props) {
                                         <span className="text-sm text-gray-700">Required</span>
                                     </label>
                                 </div>
+                                {fieldErrors[`questions.${i}.type`] && (
+                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.type`]}</p>
+                                )}
                                 {(q.type === 'single_choice' || q.type === 'multi_choice') && (
-                                    <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
-                                        placeholder="Options, comma-separated"
-                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                    <div>
+                                        <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
+                                            placeholder="Options, comma-separated"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                        {fieldErrors[`questions.${i}.options`] && (
+                                            <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.options`]}</p>
+                                        )}
+                                    </div>
                                 )}
                                 <div>
                                     <label className="mb-1 block text-xs text-gray-500">Feed this answer into (optional)</label>

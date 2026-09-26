@@ -176,7 +176,7 @@ class DemoDataSeeder extends Seeder
 
             foreach ($names as $alias) {
                 SkillAlias::firstOrCreate(
-                    ['alias_slug' => Str::slug($alias)],
+                    ['alias_slug' => Skill::slugFor($alias)],
                     ['skill_id' => $skill->id, 'alias' => $alias],
                 );
             }

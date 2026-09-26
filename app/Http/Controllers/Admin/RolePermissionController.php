@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
 use App\Models\AuditLog;
+use App\Support\Roles;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,16 +16,12 @@ use Spatie\Permission\Models\Role;
 class RolePermissionController extends Controller
 {
     /**
-     * Core roles that cannot be deleted.
+     * Core roles that cannot be deleted. Read from the shared vocabulary so
+     * a role added there is protected everywhere — 'sao' was missing here,
+     * so the one role the whole Student Affairs module gates on was
+     * deletable from the matrix.
      */
-    private const PROTECTED_ROLES = [
-        'admin',
-        'alumni_affairs',
-        'department_head',
-        'industry_partner',
-        'alumni',
-        'student',
-    ];
+    private const PROTECTED_ROLES = Roles::PROTECTED;
 
     /**
      * Show the roles and permissions matrix.
@@ -43,6 +40,9 @@ class RolePermissionController extends Controller
         return Inertia::render('Admin/Roles', [
             'roles' => $roles,
             'permissionGroups' => $permissions,
+            // The page kept its own copy of this list, which would drift.
+            'protectedRoles' => self::PROTECTED_ROLES,
+            'lockedRole' => Roles::ADMIN,
         ]);
     }
 
@@ -82,6 +82,14 @@ class RolePermissionController extends Controller
      */
     public function updatePermissions(Request $request, Role $role): RedirectResponse
     {
+        // The admin role is the platform's super-role: the seeder grants it
+        // every permission and every "can this be undone?" guard assumes it
+        // still holds them. Editing it here is how an administrator locks
+        // themselves out of /admin.
+        if ($role->name === Roles::ADMIN) {
+            return back()->with('error', 'The admin role always holds every permission and cannot be edited.');
+        }
+
         $request->validate([
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['string', 'exists:permissions,name'],

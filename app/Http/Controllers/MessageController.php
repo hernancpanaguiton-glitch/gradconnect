@@ -130,7 +130,10 @@ class MessageController extends Controller
             return [];
         }
 
-        $staff = User::role(['alumni_affairs', 'sao', 'department_head', 'admin'])
+        // Only active staff: a pending (unapproved) office account cannot
+        // sign in, so listing it offers a conversation nobody will read.
+        $staff = User::role(User::STAFF_ROLES)
+            ->where('status', 'active')
             ->get()
             ->map(fn (User $u) => ['id' => $u->id, 'name' => $u->name, 'role' => $u->getRoleNames()->first()]);
 

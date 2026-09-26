@@ -26,7 +26,9 @@ class AdminUpdateUserRequest extends FormRequest
         return [
             'status' => ['required', 'in:active,suspended,pending'],
             'roles' => ['required', 'array'],
-            'roles.*' => ['string'],
+            // syncRoles() throws on a name that has no role, which surfaced
+            // as a 500 rather than a form error.
+            'roles.*' => ['string', Rule::exists('roles', 'name')->where('guard_name', 'web')],
             'department_id' => ['nullable', Rule::exists('departments', 'id')->where('type', 'college')],
         ];
     }

@@ -1,8 +1,9 @@
-import { PageProps } from '@/types';
+import AiMatchShowcase from '@/Components/Landing/AiMatchShowcase';
+import { MatchShowcaseItem, PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import {
-    ArrowRight, Award, BarChart2, Brain, Building2, DollarSign,
-    GraduationCap, MapPin, Star, Target, TrendingUp, Zap,
+    ArrowRight, Award, BarChart2, Brain, Building2,
+    GraduationCap, Star, Target, TrendingUp, Zap,
 } from 'lucide-react';
 
 const STATS = [
@@ -27,9 +28,9 @@ const TESTIMONIALS = [
     { name: 'Ana Reyes', role: 'Career Services Director', text: 'Our employment rate jumped from 72% to 87% after deploying GradConnect. The tracer study module alone saves us 200+ hours per cycle.', avatar: 'AR' },
 ];
 
-const MATCH_SKILLS: Array<[string, number]> = [['JavaScript', 92], ['React', 88], ['Node.js', 85], ['SQL', 78]];
+interface Props extends PageProps { matchShowcase: MatchShowcaseItem[] }
 
-export default function Welcome({ auth }: PageProps) {
+export default function Welcome({ auth, matchShowcase }: Props) {
     return (
         <>
             <Head title="Welcome to GradConnect" />
@@ -75,7 +76,7 @@ export default function Welcome({ auth }: PageProps) {
                         <div className="absolute bottom-10 right-20 h-96 w-96 rounded-full bg-indigo-400 blur-3xl" />
                     </div>
                     <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
-                        <div className="grid items-center gap-16 md:grid-cols-2">
+                        <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
                             <div>
                                 <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/20 px-4 py-1.5 text-xs font-semibold text-blue-200">
                                     <Zap size={12} /> AI-Powered Career Platform
@@ -97,32 +98,9 @@ export default function Welcome({ auth }: PageProps) {
                                 </div>
                             </div>
 
-                            {/* AI match card */}
-                            <div className="hidden md:block">
-                                <div className="rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur">
-                                    <div className="mb-4 flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500"><Brain size={20} className="text-white" /></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-semibold text-white">AI Job Match Found</p>
-                                            <p className="text-xs text-blue-200">Senior Full Stack Developer</p>
-                                        </div>
-                                        <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-300">95% Match</span>
-                                    </div>
-                                    <div className="mb-4 space-y-3">
-                                        {MATCH_SKILLS.map(([skill, value]) => (
-                                            <div key={skill}>
-                                                <div className="mb-1 flex justify-between text-xs text-blue-100"><span>{skill}</span><span>{value}%</span></div>
-                                                <div className="h-1.5 rounded-full bg-white/10"><div className="h-1.5 rounded-full bg-blue-400 transition-all" style={{ width: `${value}%` }} /></div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="flex items-center justify-between border-t border-white/10 pt-3 text-xs text-blue-200">
-                                        <span className="flex items-center gap-1"><Building2 size={12} /> Cebu Pacific IT</span>
-                                        <span className="flex items-center gap-1"><DollarSign size={12} /> ₱55K–70K/mo</span>
-                                        <span className="flex items-center gap-1"><MapPin size={12} /> Cebu City</span>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* AI match examples — stacked under the hero copy
+                                on a phone, beside it from md up. */}
+                            <AiMatchShowcase items={matchShowcase} />
                         </div>
 
                         {/* Stat row */}

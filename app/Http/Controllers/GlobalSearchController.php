@@ -71,6 +71,11 @@ class GlobalSearchController extends Controller
             return collect();
         }
 
+        // The candidate page is gated on view_resumes, which is a narrower
+        // grant than search. Send anyone without it to Talent Search rather
+        // than to a result that 403s.
+        $canOpenProfiles = $user->hasPermissionTo('candidates.view_resumes');
+
         return GraduateProfile::query()
             ->with('user')
             ->whereHas('user')
@@ -88,7 +93,9 @@ class GlobalSearchController extends Controller
                 'id' => $g->id,
                 'title' => $g->user->name,
                 'subtitle' => $g->headline ?: $g->program,
-                'url' => route('candidates.show', $g),
+                'url' => $canOpenProfiles
+                    ? route('candidates.show', $g)
+                    : route('talent-search', ['search' => $g->user->name]),
             ]);
     }
 

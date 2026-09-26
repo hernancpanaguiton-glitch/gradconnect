@@ -17,9 +17,11 @@ interface Match {
     graduate_profile: {
         id: number;
         headline: string | null;
-        user: { name: string; email: string };
+        // The match list is a shortlist the employer has not engaged with, so
+        // the backend never sends an email here.
+        user: { name: string; email?: string };
     };
-    resume: { id: number; original_filename: string } | null;
+    resume: { id: number; original_filename: string; can_download: boolean } | null;
 }
 
 interface Posting {
@@ -87,8 +89,10 @@ export default function PostingsMatches({ posting, matches }: Props) {
                                     {match.graduate_profile.headline && (
                                         <p className="text-sm text-gray-600 mt-0.5">{match.graduate_profile.headline}</p>
                                     )}
-                                    <p className="text-xs text-gray-400 mt-0.5">{match.graduate_profile.user.email}</p>
-                                    {match.resume && (
+                                    {match.graduate_profile.user.email && (
+                                        <p className="text-xs text-gray-400 mt-0.5">{match.graduate_profile.user.email}</p>
+                                    )}
+                                    {match.resume && match.resume.can_download && (
                                         <a href={route('candidates.resume', match.resume.id)} target="_blank" rel="noreferrer"
                                             className="mt-1 inline-block text-xs font-medium text-indigo-600 hover:text-indigo-800">
                                             View résumé: {match.resume.original_filename}

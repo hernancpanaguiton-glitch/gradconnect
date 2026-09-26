@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -28,10 +29,22 @@ class CompanyController extends Controller
      */
     public function store(UpdateCompanyRequest $request): RedirectResponse
     {
-        Company::create([
-            ...$request->validated(),
-            'owner_user_id' => $request->user()->id,
-        ]);
+        if (! $request->user()->can('create', Company::class)) {
+            return redirect()->route('company.edit')
+                ->with('error', 'You already have a company profile. Edit it instead.');
+        }
+
+        try {
+            Company::create([
+                ...$request->validated(),
+                'owner_user_id' => $request->user()->id,
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            // Double-submitted form: the row the second request would create
+            // already exists, so land on the same page as the first one.
+            return redirect()->route('company.edit')
+                ->with('error', 'You already have a company profile. Edit it instead.');
+        }
 
         return redirect()->route('company.edit')->with('success', 'Company created.');
     }

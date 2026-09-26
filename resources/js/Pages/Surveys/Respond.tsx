@@ -14,7 +14,9 @@ interface Survey {
 interface Props extends PageProps { survey: Survey; existingAnswers: ExistingAnswer[] }
 
 export default function SurveyRespond({ survey, existingAnswers }: Props) {
-    const { flash } = usePage<Props>().props;
+    // Answers are validated per question, so the failures come back keyed by
+    // question ID ("answers.12").
+    const { errors } = usePage<Props>().props;
 
     const initialAnswers: Record<number, string | string[]> = {};
     existingAnswers.forEach((a) => {
@@ -41,6 +43,12 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
         router.post(route('surveys.respond.store', survey.id), { answers }, {
             onFinish: () => setSubmitting(false),
         });
+    }
+
+    function questionError(qId: number): string | undefined {
+        // A multi_choice failure can be reported against an element.
+        return errors[`answers.${qId}`]
+            ?? Object.keys(errors).filter((key) => key.startsWith(`answers.${qId}.`)).map((key) => errors[key])[0];
     }
 
     return (
@@ -119,6 +127,9 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                 <input type="number" value={(answers[q.id] as string) ?? ''}
                                     onChange={(e) => setAnswer(q.id, e.target.value)}
                                     className="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                            )}
+                            {questionError(q.id) && (
+                                <p className="mt-2 text-xs text-red-600">{questionError(q.id)}</p>
                             )}
                         </div>
                     ))}

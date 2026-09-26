@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesReportFilters;
 use App\Models\Report;
 use App\Services\CsvExporter;
 use App\Services\ReportService;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProgramOutcomesController extends Controller
 {
+    use ResolvesReportFilters;
+
     public function __construct(
         private readonly ReportService $reports,
         private readonly CsvExporter $csv,
@@ -28,13 +31,16 @@ class ProgramOutcomesController extends Controller
         $user = $request->user();
         abort_unless($user->hasPermissionTo('program_outcomes.view'), 403);
 
-        $departmentIds = $user->scopedDepartmentIds();
-        $filters = ['department_ids' => $departmentIds];
+        // Via the trait, so a head with no department assigned resolves to a
+        // scope that matches nothing. Passing scopedDepartmentIds() straight
+        // through sent [] instead, which ReportService reads as "no filter"
+        // — i.e. the whole institution's figures.
+        $filters = ['department_ids' => $this->departmentIdsFromRequest($request)];
 
         return Inertia::render('Reports/ProgramOutcomes', [
             ...$this->reports->employabilitySummary($filters),
             ...$this->reports->skillAnalytics($filters),
-            'hasDepartment' => $departmentIds !== [],
+            'hasDepartment' => $user->scopedDepartmentIds() !== [],
         ]);
     }
 
@@ -46,7 +52,7 @@ class ProgramOutcomesController extends Controller
         $user = $request->user();
         abort_unless($user->hasPermissionTo('program_outcomes.view'), 403);
 
-        $departmentIds = $user->scopedDepartmentIds();
+        $departmentIds = $this->departmentIdsFromRequest($request);
         $filters = ['department_ids' => $departmentIds];
 
         $employability = $this->reports->employabilitySummary($filters);

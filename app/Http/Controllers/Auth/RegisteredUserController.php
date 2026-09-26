@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\AuditLog;
+use App\Models\Department;
 use App\Models\Setting;
 use App\Models\User;
 use App\Notifications\NewAccountPendingApproval;
+use App\Support\Roles;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -18,31 +21,15 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
     /**
-     * Map the registration form's role choice to a Spatie role name.
-     */
-    private const ROLE_MAP = [
-        'student' => 'student',
-        'alumni' => 'alumni',
-        'alumni_officer' => 'alumni_affairs',
-        'dean' => 'department_head',
-        'industry_partner' => 'industry_partner',
-        'sao' => 'sao',
-    ];
-
-    /**
-     * Registrants in these roles self-serve after confirming their email.
-     * All others require an administrator to approve the account first.
-     *
-     * @var array<int, string>
-     */
-    private const SELF_SERVICE_ROLES = ['student', 'alumni'];
-
-    /**
      * Display the registration view.
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            // Only the department head picker uses these, but the form needs
+            // them up front to avoid a second round trip on role change.
+            'colleges' => Department::colleges()->orderBy('name')->get(['id', 'name', 'code']),
+        ]);
     }
 
     /**
@@ -52,8 +39,10 @@ class RegisteredUserController extends Controller
     {
         abort_unless(Setting::getBool('registration_enabled', true), 403, 'Registration is currently disabled.');
 
-        $role = self::ROLE_MAP[$request->role];
-        $isSelfService = in_array($request->role, self::SELF_SERVICE_ROLES, true);
+        // The form now posts Spatie role names directly; canonical() only has
+        // to fold the legacy "dean"/"alumni_officer" values from stale tabs.
+        $role = Roles::canonical($request->role);
+        $isSelfService = Roles::isSelfService($role);
 
         $user = User::create([
             'first_name' => $request->first_name,
@@ -63,6 +52,7 @@ class RegisteredUserController extends Controller
             // Staff/employer accounts wait for admin approval; graduates are
             // active immediately but must confirm their email address.
             'status' => $isSelfService ? 'active' : 'pending',
+            'department_id' => $request->validated('department_id'),
         ]);
 
         $user->assignRole($role);
@@ -72,8 +62,18 @@ class RegisteredUserController extends Controller
             // verified now to avoid a second (email) gate after approval.
             $user->markEmailAsVerified();
 
-            // Alert administrators that a new account is awaiting approval.
-            Notification::send(User::role('admin')->get(), new NewAccountPendingApproval($user));
+            if ($role === Roles::ADMIN) {
+                // Administrator access is registrable but never self-service,
+                // so leave a trail of who asked for it.
+                AuditLog::record('user.admin_requested', $user, "Administrator access requested by {$user->email}");
+            }
+
+            // Active admins only: a pending administrator request must not
+            // receive everyone else's approval notices while it waits.
+            Notification::send(
+                User::role(Roles::ADMIN)->where('status', 'active')->get(),
+                new NewAccountPendingApproval($user),
+            );
 
             return redirect()->route('login')->with(
                 'status',

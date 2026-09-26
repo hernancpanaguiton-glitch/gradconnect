@@ -32,14 +32,16 @@ class LearningResource extends Model
     }
 
     /**
-     * General-audience resources, or ones scoped to a specific department.
+     * General-audience resources, plus the ones scoped anywhere in this
+     * department's branch. Matching the id exactly hid every college-wide
+     * resource from graduates linked to a program under that college.
      */
     public function scopeForDepartment(Builder $query, ?int $departmentId): Builder
     {
         return $query->where(function (Builder $q) use ($departmentId) {
             $q->whereNull('department_id');
             if ($departmentId !== null) {
-                $q->orWhere('department_id', $departmentId);
+                $q->orWhereIn('department_id', Department::lineageIds($departmentId));
             }
         });
     }

@@ -2,12 +2,19 @@
 
 namespace App\Services;
 
+use App\Support\UclmCatalog;
+
 class JobContentService
 {
+    private const TITLE_LIMIT = 8;
+
     public function __construct(private readonly AiChatClient $ai) {}
 
     /**
      * Suggest real, well-known job titles matching an autocomplete query.
+     *
+     * AI suggestions lead, then the UCLM catalogue fills the tail — which is
+     * also what keeps the field useful on an installation with no AI key.
      *
      * @return array<int, string>
      */
@@ -15,7 +22,26 @@ class JobContentService
     {
         $query = trim($query);
 
-        if ($query === '' || ! $this->ai->hasProvider()) {
+        if ($query === '') {
+            return [];
+        }
+
+        return collect($this->aiTitles($query))
+            ->merge(UclmCatalog::suggestJobTitles($query, self::TITLE_LIMIT))
+            ->filter(fn ($title): bool => is_string($title) && trim($title) !== '')
+            ->map(fn (string $title): string => trim($title))
+            ->unique(fn (string $title): string => mb_strtolower($title))
+            ->take(self::TITLE_LIMIT)
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    private function aiTitles(string $query): array
+    {
+        if (! $this->ai->hasProvider()) {
             return [];
         }
 
@@ -28,13 +54,7 @@ class JobContentService
 
         $titles = $response['titles'] ?? [];
 
-        return collect(is_array($titles) ? $titles : [])
-            ->filter(fn ($title): bool => is_string($title) && trim($title) !== '')
-            ->map(fn (string $title): string => trim($title))
-            ->unique()
-            ->take(8)
-            ->values()
-            ->all();
+        return is_array($titles) ? array_values($titles) : [];
     }
 
     /**

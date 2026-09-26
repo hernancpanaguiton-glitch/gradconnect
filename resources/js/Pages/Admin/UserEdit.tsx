@@ -1,3 +1,4 @@
+import { roleLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -76,7 +77,7 @@ export default function UserEdit({ user, roles, colleges }: Props) {
                                             onChange={() => toggleRole(role.name)}
                                             className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                         />
-                                        <span className="text-sm text-gray-700 capitalize">{role.name.replace(/_/g, ' ')}</span>
+                                        <span className="text-sm text-gray-700">{roleLabel(role.name)}</span>
                                     </label>
                                 ))}
                             </div>

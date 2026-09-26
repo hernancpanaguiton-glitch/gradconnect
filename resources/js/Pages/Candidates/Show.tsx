@@ -11,7 +11,7 @@ interface EmploymentRecord {
     id: number; company_name: string; job_title: string; employment_type: string;
     is_current: boolean; start_date: string | null; end_date: string | null;
 }
-interface Resume { id: number; original_filename: string; is_primary: boolean; size_bytes: number | null }
+interface Resume { id: number; original_filename: string; is_primary: boolean; size_bytes: number | null; can_download: boolean }
 interface Profile {
     id: number;
     program: string | null;
@@ -21,7 +21,9 @@ interface Profile {
     linkedin_url: string | null;
     current_employment_status: string | null;
     willing_to_relocate: boolean;
-    user: { name: string; email: string };
+    // Email is only serialized for viewers with an institutional role or an
+    // application from this graduate — see App\Http\Presenters\CandidatePresenter.
+    user: { name: string; email?: string };
     department: { id: number; name: string } | null;
     skills: Skill[];
     education_records: EducationRecord[];
@@ -57,7 +59,7 @@ export default function CandidateShow({ profile }: Props) {
                     <h1 className="text-2xl font-bold text-gray-900">{profile.user.name}</h1>
                     {profile.headline && <p className="mt-1 text-gray-600">{profile.headline}</p>}
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
-                        <span>{profile.user.email}</span>
+                        {profile.user.email && <span>{profile.user.email}</span>}
                         {profile.department && <span>· {profile.department.name}</span>}
                         {profile.program && <span>· {profile.program}</span>}
                         {profile.city && <span>· {profile.city}</span>}
@@ -92,10 +94,14 @@ export default function CandidateShow({ profile }: Props) {
                                         {resume.original_filename}
                                         {resume.is_primary && <span className="ml-2 rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600">Primary</span>}
                                     </span>
-                                    <a href={route('candidates.resume', resume.id)} target="_blank" rel="noreferrer"
-                                        className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                                        View / Download
-                                    </a>
+                                    {resume.can_download ? (
+                                        <a href={route('candidates.resume', resume.id)} target="_blank" rel="noreferrer"
+                                            className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
+                                            View / Download
+                                        </a>
+                                    ) : (
+                                        <span className="text-xs text-gray-400">Available once they apply to you</span>
+                                    )}
                                 </li>
                             ))}
                         </ul>

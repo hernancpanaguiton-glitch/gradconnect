@@ -19,6 +19,7 @@ import {
     ListChecks,
     Megaphone,
     Settings,
+    School,
     Shield,
     Star,
     Target,
@@ -58,6 +59,7 @@ export function getNavFor(user: User): NavSection[] {
                 items: [
                     { label: 'User Management', href: '/admin/users', icon: Users },
                     { label: 'Roles & Permissions', href: '/admin/roles', icon: Shield },
+                    { label: 'Colleges & Programs', href: '/admin/colleges', icon: School },
                     { label: 'Job Management', href: '/admin/jobs', icon: Briefcase },
                     { label: 'Tracer Surveys', href: '/surveys', icon: ListChecks },
                     { label: 'Announcements', href: '/announcements', icon: Megaphone },

@@ -1,5 +1,6 @@
+import SkillCategoryPicker from '@/Components/SkillCategoryPicker';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import { College, PageProps } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
@@ -43,10 +44,19 @@ interface GraduateProfile {
     employment_records: EmploymentRecord[];
     skills: Array<Skill & { pivot: { proficiency: string | null; source: string } }>;
 }
-interface College { id: number; name: string; code: string | null }
-interface Props extends PageProps { profile: GraduateProfile; allSkills: Skill[]; colleges: College[] }
+interface Props extends PageProps {
+    profile: GraduateProfile;
+    allSkills: Skill[];
+    colleges: College[];
+    selectedCollegeId: number | null;
+    selectedProgramId: number | null;
+    skillCategory: string | null;
+}
 
 type Tab = 'basic' | 'education' | 'employment' | 'skills';
+
+/** Sentinel for "my program is not in the list" — reveals the free-text field. */
+const PROGRAM_NOT_LISTED = 'not-listed';
 
 function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
     return (
@@ -67,20 +77,23 @@ function Input({ value, onChange, type = 'text', placeholder }: {
     );
 }
 
-function Select({ value, onChange, options }: {
+function Select({ value, onChange, options, disabled = false, placeholder = '— Select —' }: {
     value: string; onChange: (v: string) => void;
-    options: Array<{ value: string; label: string }>
+    options: Array<{ value: string; label: string }>;
+    disabled?: boolean; placeholder?: string;
 }) {
     return (
-        <select value={value} onChange={(e) => onChange(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-            <option value="">— Select —</option>
+        <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-50 disabled:text-gray-400">
+            <option value="">{placeholder}</option>
             {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
     );
 }
 
-export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
+export default function ProfileEdit({
+    profile, allSkills, colleges, selectedCollegeId, selectedProgramId, skillCategory,
+}: Props) {
     const { flash } = usePage<Props>().props;
     const [tab, setTab] = useState<Tab>('basic');
 
@@ -98,13 +111,43 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
         summary: profile.summary ?? '',
         current_employment_status: profile.current_employment_status ?? '',
         willing_to_relocate: profile.willing_to_relocate,
-        department_id: profile.department_id ? String(profile.department_id) : '',
+        college_id: selectedCollegeId ? String(selectedCollegeId) : '',
+        program_id: selectedProgramId ? String(selectedProgramId) : '',
         skills: profile.skills.map((s) => s.id),
     });
 
+    // Graduates whose program predates the catalogue keep their typed course.
+    const [programNotListed, setProgramNotListed] = useState(!selectedProgramId && Boolean(profile.program));
+
+    const selectedCollege = colleges.find((c) => String(c.id) === data.college_id);
+    const programs = selectedCollege?.children ?? [];
+
+    function changeCollege(value: string) {
+        setData((current) => ({
+            ...current,
+            college_id: value,
+            // The previous program almost certainly belongs to the old college.
+            program_id: colleges
+                .find((c) => String(c.id) === value)
+                ?.children?.some((p) => String(p.id) === current.program_id)
+                ? current.program_id
+                : '',
+        }));
+    }
+
+    function changeProgram(value: string) {
+        setProgramNotListed(value === PROGRAM_NOT_LISTED);
+        setData('program_id', value === PROGRAM_NOT_LISTED ? '' : value);
+    }
+
     function saveProfile(e: FormEvent) {
         e.preventDefault();
-        patch(route('graduate.profile.update'));
+        patch(route('graduate.profile.update'), {
+            preserveScroll: true,
+            // Every field with an error message lives on the Basic tab, so a
+            // save from the Skills tab would otherwise fail in silence.
+            onError: () => setTab('basic'),
+        });
     }
 
     // Education
@@ -201,12 +244,6 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
         }
     }
 
-    const skillsByCategory = skillLibrary.reduce<Record<string, Skill[]>>((acc, skill) => {
-        const cat = skill.category ?? 'Other';
-        acc[cat] = [...(acc[cat] ?? []), skill];
-        return acc;
-    }, {});
-
     const tabs: Array<{ key: Tab; label: string }> = [
         { key: 'basic', label: 'Basic Info' },
         { key: 'education', label: `Education (${profile.education_records.length})` },
@@ -244,12 +281,20 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
                 {tab === 'basic' && (
                     <form onSubmit={saveProfile} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Program / Course" error={errors.program}>
-                                <Input value={data.program} onChange={(v) => setData('program', v)} placeholder="e.g. BS Information Technology" />
-                            </Field>
-                            <Field label="College" error={errors.department_id}>
-                                <Select value={data.department_id} onChange={(v) => setData('department_id', v)}
+                            <Field label="College" error={errors.college_id}>
+                                <Select value={data.college_id} onChange={changeCollege}
                                     options={colleges.map((c) => ({ value: String(c.id), label: c.name }))} />
+                            </Field>
+                            <Field label="Program / Course" error={errors.program_id}>
+                                <Select
+                                    value={programNotListed ? PROGRAM_NOT_LISTED : data.program_id}
+                                    onChange={changeProgram}
+                                    disabled={!data.college_id}
+                                    placeholder={data.college_id ? '— Select —' : 'Choose a college first'}
+                                    options={[
+                                        ...programs.map((p) => ({ value: String(p.id), label: p.name })),
+                                        { value: PROGRAM_NOT_LISTED, label: 'Not listed — type it instead' },
+                                    ]} />
                             </Field>
                             <Field label="Graduation Year" error={errors.graduation_year}>
                                 <Input value={data.graduation_year} onChange={(v) => setData('graduation_year', v)} type="number" placeholder="2024" />
@@ -268,6 +313,11 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
                                 <Input value={data.city} onChange={(v) => setData('city', v)} placeholder="Cebu City" />
                             </Field>
                         </div>
+                        {programNotListed && (
+                            <Field label="Program / Course (typed)" error={errors.program}>
+                                <Input value={data.program} onChange={(v) => setData('program', v)} placeholder="e.g. BS Information Technology" />
+                            </Field>
+                        )}
                         <Field label="LinkedIn URL">
                             <Input value={data.linkedin_url} onChange={(v) => setData('linkedin_url', v)} placeholder="https://linkedin.com/in/..." />
                         </Field>
@@ -437,22 +487,9 @@ export default function ProfileEdit({ profile, allSkills, colleges }: Props) {
                             )}
                         </div>
 
-                        {Object.entries(skillsByCategory).map(([cat, catSkills]) => (
-                            <div key={cat}>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">{cat}</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {catSkills.map((skill) => {
-                                        const selected = data.skills.includes(skill.id);
-                                        return (
-                                            <button key={skill.id} type="button" onClick={() => toggleSkill(skill.id)}
-                                                className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${selected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-                                                {skill.name}
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        ))}
+                        <SkillCategoryPicker skills={skillLibrary} selectedIds={data.skills}
+                            onToggle={toggleSkill} openCategory={skillCategory} />
+
                         <button onClick={saveProfile as unknown as React.MouseEventHandler} disabled={processing}
                             className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
                             Save Skills

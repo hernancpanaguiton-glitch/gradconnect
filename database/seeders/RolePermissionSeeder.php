@@ -117,6 +117,10 @@ class RolePermissionSeeder extends Seeder
             // consuming that is role:admin, so the sidebar's "Alumni Database"
             // link and the Reports Hub's user-management card both 403'd.
             'candidates.search',
+            // Talent Search and global search link straight to
+            // /candidates/{profile}, which is gated on view_resumes — without
+            // it every result this office is shown leads to a 403.
+            'candidates.view_resumes',
         ]);
 
         $departmentHead = Role::firstOrCreate(['name' => 'department_head', 'guard_name' => 'web']);

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Presenters\CandidatePresenter;
 use App\Http\Requests\StoreJobPostingRequest;
 use App\Jobs\GenerateJobPostingEmbedding;
 use App\Models\Company;
+use App\Models\JobApplication;
 use App\Models\JobPosting;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
@@ -56,8 +58,11 @@ class JobPostingController extends Controller
 
         $company = Company::where('owner_user_id', $request->user()->id)->firstOrFail();
 
+        // safe() (not except()) so only validated keys reach the model —
+        // raw input would let a crafted form set company_id,
+        // posted_by_user_id or the embedding bookkeeping columns.
         $posting = $company->jobPostings()->create([
-            ...$request->except('skills'),
+            ...$request->safe()->except('skills'),
             'posted_by_user_id' => $request->user()->id,
         ]);
 
@@ -101,7 +106,7 @@ class JobPostingController extends Controller
     {
         $this->authorize('update', $posting);
 
-        $posting->fill($request->except('skills'))->save();
+        $posting->fill($request->safe()->except('skills'))->save();
 
         if ($request->has('skills')) {
             $skillPivot = collect($request->skills)->mapWithKeys(
@@ -149,6 +154,10 @@ class JobPostingController extends Controller
             ->with(['graduateProfile.user', 'graduateProfile.department', 'resume', 'employerFeedback'])
             ->latest()
             ->paginate(30);
+
+        // through() keeps the paginator shape the page's controls expect.
+        $presenter = new CandidatePresenter($request->user());
+        $applications->through(fn (JobApplication $application) => $presenter->applicant($application));
 
         return Inertia::render('Postings/Candidates', [
             'posting' => $posting,

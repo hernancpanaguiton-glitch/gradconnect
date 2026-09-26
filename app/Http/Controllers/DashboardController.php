@@ -193,8 +193,14 @@ class DashboardController extends Controller
             ? JobApplication::where('graduate_profile_id', $profile->id)->where('status', '!=', 'withdrawn')->count()
             : 0;
 
-        $pendingSurveys = Survey::where('status', 'open')
-            ->whereDoesntHave('responses', fn ($query) => $query->where('user_id', $user->id))
+        // Same scope the surveys index uses, so the badge counts what the
+        // graduate can actually open — it used to count every open survey,
+        // including ones targeted at another role or graduation year.
+        $pendingSurveys = Survey::open()
+            ->visibleTo($user)
+            ->whereDoesntHave('responses', fn ($query) => $query
+                ->where('user_id', $user->id)
+                ->where('status', 'submitted'))
             ->count();
 
         return [

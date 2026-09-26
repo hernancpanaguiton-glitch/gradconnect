@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\LearningResource;
-use Illuminate\Support\Str;
+use App\Models\Skill;
 
 /**
  * Skill Bridge Mitigation / AI architecture Layer 4 "learning & development
@@ -32,7 +32,7 @@ class LearningResourceMatcher
 
         $slugToName = [];
         foreach ($skillNames as $name) {
-            $slugToName[Str::slug($name)] = $name;
+            $slugToName[Skill::slugFor($name)] = $name;
         }
 
         $resources = LearningResource::with('skills')

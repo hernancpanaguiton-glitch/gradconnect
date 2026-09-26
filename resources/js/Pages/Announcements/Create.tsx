@@ -1,3 +1,4 @@
+import { AUDIENCE_ROLES, roleAudienceLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -7,13 +8,7 @@ interface Props extends PageProps {}
 
 const AUDIENCES = [
     { value: '', label: 'Everyone' },
-    { value: 'alumni', label: 'Alumni' },
-    { value: 'student', label: 'Graduate Students' },
-    { value: 'industry_partner', label: 'Industry Partners' },
-    { value: 'alumni_affairs', label: 'Alumni Affairs Office' },
-    { value: 'department_head', label: 'Department Heads' },
-    { value: 'sao', label: 'Student Affairs Office' },
-    { value: 'admin', label: 'Admins' },
+    ...AUDIENCE_ROLES.map((role) => ({ value: role, label: roleAudienceLabel(role) })),
 ];
 
 export default function AnnouncementCreate({}: Props) {

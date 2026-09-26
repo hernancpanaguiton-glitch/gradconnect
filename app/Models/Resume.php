@@ -16,6 +16,15 @@ class Resume extends Model
         'embedding_status', 'embedded_at',
     ];
 
+    /**
+     * Never serialize the résumé's full text, its storage path, or the raw
+     * pgvector column: this model is nested inside employer-facing payloads
+     * (applicant lists, AI matches), and extracted_text is the whole résumé.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = ['embedding', 'extracted_text', 'path'];
+
     protected function casts(): array
     {
         return [

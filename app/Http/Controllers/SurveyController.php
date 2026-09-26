@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSurveyRequest;
 use App\Models\Survey;
+use App\Models\SurveyQuestion;
+use App\Models\SurveyResponse;
 use App\Notifications\SurveyInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,10 +32,16 @@ class SurveyController extends Controller
 
         $surveys = $query->withCount('responses')->get();
 
-        // Append user's own response status for respondents
+        // Append the user's own response status for respondents. One keyed
+        // query for the whole list rather than one per survey.
         if (! $user->hasPermissionTo('surveys.manage')) {
-            $surveys->each(function (Survey $survey) use ($user): void {
-                $survey->user_response = $survey->responses()->where('user_id', $user->id)->first(['id', 'status']);
+            $responses = SurveyResponse::where('user_id', $user->id)
+                ->whereIn('survey_id', $surveys->pluck('id'))
+                ->get(['id', 'survey_id', 'status'])
+                ->keyBy('survey_id');
+
+            $surveys->each(function (Survey $survey) use ($responses): void {
+                $survey->user_response = $responses->get($survey->id)?->only(['id', 'status']);
             });
         }
 
@@ -58,8 +68,10 @@ class SurveyController extends Controller
     {
         $this->authorize('create', Survey::class);
 
+        // safe() (not except()) so raw input cannot overwrite
+        // created_by_user_id with somebody else's.
         $survey = Survey::create([
-            ...$request->except('questions'),
+            ...$request->safe()->except('questions'),
             'created_by_user_id' => $request->user()->id,
         ]);
 
@@ -88,7 +100,8 @@ class SurveyController extends Controller
     {
         $this->authorize('update', $survey);
 
-        $survey->load('questions');
+        // answers_count tells the editor which questions are already locked.
+        $survey->load(['questions' => fn ($query) => $query->withCount('answers')]);
 
         return Inertia::render('Surveys/Edit', [
             'survey' => $survey,
@@ -96,7 +109,7 @@ class SurveyController extends Controller
     }
 
     /**
-     * Update a survey and resync its questions.
+     * Update a survey and reconcile its questions in place.
      */
     public function update(StoreSurveyRequest $request, Survey $survey): RedirectResponse
     {
@@ -104,21 +117,15 @@ class SurveyController extends Controller
 
         $wasOpen = $survey->status === 'open';
 
-        $survey->fill($request->except('questions'))->save();
+        DB::transaction(function () use ($request, $survey): void {
+            $survey->fill($request->safe()->except('questions'))->save();
 
-        // Delete and recreate questions to maintain ordering
-        $survey->questions()->delete();
-
-        foreach ($request->input('questions', []) as $index => $questionData) {
-            $survey->questions()->create([
-                'order' => $index + 1,
-                'prompt' => $questionData['prompt'],
-                'type' => $questionData['type'],
-                'options' => $questionData['options'] ?? null,
-                'is_required' => $questionData['is_required'] ?? false,
-                'maps_to' => $questionData['maps_to'] ?? null,
-            ]);
-        }
+            // No `questions` key at all means "this request isn't about the
+            // questions" — leave them alone rather than wiping them.
+            if ($request->has('questions')) {
+                $this->syncQuestions($survey, $request->input('questions') ?? []);
+            }
+        });
 
         // Only invite the first time a survey goes live, not on every edit.
         if (! $wasOpen && $survey->status === 'open') {
@@ -126,6 +133,77 @@ class SurveyController extends Controller
         }
 
         return back()->with('success', 'Survey updated.');
+    }
+
+    /**
+     * Reconcile a survey's questions with the submitted list, matching on ID.
+     *
+     * This used to delete every question and recreate it, and survey_answers
+     * cascade on survey_questions — so any edit at all (even fixing a typo in
+     * the title) silently destroyed every response already collected. Tracer
+     * study data is not recoverable, so the diff below refuses outright to
+     * drop or retype a question that has been answered.
+     *
+     * @param  array<int, array<string, mixed>>  $questions
+     */
+    private function syncQuestions(Survey $survey, array $questions): void
+    {
+        $existing = $survey->questions()->withCount('answers')->get()->keyBy('id');
+        $keptIds = [];
+
+        foreach (array_values($questions) as $index => $data) {
+            $attributes = [
+                'order' => $index + 1,
+                'prompt' => $data['prompt'],
+                'type' => $data['type'],
+                'options' => $data['options'] ?? null,
+                'is_required' => $data['is_required'] ?? false,
+                'maps_to' => $data['maps_to'] ?? null,
+            ];
+
+            $question = isset($data['id']) ? $existing->get((int) $data['id']) : null;
+
+            if ($question === null) {
+                $survey->questions()->create($attributes);
+
+                continue;
+            }
+
+            if ($question->answers_count > 0 && $question->type !== $attributes['type']) {
+                throw ValidationException::withMessages([
+                    "questions.{$index}.type" => 'This question has already been answered, so its type can no longer be changed.',
+                ]);
+            }
+
+            $question->fill($attributes)->save();
+            $keptIds[] = $question->id;
+        }
+
+        $removed = $existing->reject(fn (SurveyQuestion $question) => in_array($question->id, $keptIds, true));
+
+        if ($removed->isEmpty()) {
+            return;
+        }
+
+        if ($removed->contains(fn (SurveyQuestion $question) => $question->answers_count > 0)) {
+            throw ValidationException::withMessages([
+                'questions' => 'A question that has already been answered cannot be removed. Close the survey instead.',
+            ]);
+        }
+
+        // Guarded delete: a response submitted between the count above and
+        // this statement would otherwise be destroyed by the cascade. If the
+        // delete touches fewer rows than expected, that is exactly what
+        // happened, so abandon the whole edit.
+        $deleted = SurveyQuestion::whereIn('id', $removed->pluck('id'))
+            ->whereDoesntHave('answers')
+            ->delete();
+
+        if ($deleted !== $removed->count()) {
+            throw ValidationException::withMessages([
+                'questions' => 'Someone answered this survey while you were editing it. Reload the page and try again.',
+            ]);
+        }
     }
 
     /**

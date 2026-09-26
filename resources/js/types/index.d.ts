@@ -30,6 +30,34 @@ export type PageProps<
     maintenanceBanner?: string | null;
 };
 
+/** A program (degree course) or, with `children`, the college above it. */
+export interface Program {
+    id: number;
+    name: string;
+    code: string | null;
+}
+
+export interface College extends Program {
+    children?: Program[];
+}
+
+/**
+ * One illustrative AI match per college, from App\Support\UclmCatalog. The
+ * employer is a generic TYPE of employer, never a real company.
+ */
+export interface MatchShowcaseItem {
+    college_code: string;
+    college_name: string;
+    short_label: string;
+    job_title: string;
+    match: number;
+    skills: Array<{ name: string; match: number }>;
+    employer_type: string;
+    salary_min: number;
+    salary_max: number;
+    location: string;
+}
+
 export interface NotificationItem {
     id: string;
     title: string;

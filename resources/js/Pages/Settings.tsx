@@ -1,3 +1,4 @@
+import { roleLabel } from '@/lib/roles';
 import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useTheme } from '@/hooks/useTheme';
@@ -74,7 +75,7 @@ function AccountTab({ account }: { account: Props['account'] }) {
             <div className="grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
                 <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Role</p>
-                    <p className="mt-1 text-sm capitalize text-foreground">{account.role?.replace(/_/g, ' ') ?? '—'}</p>
+                    <p className="mt-1 text-sm text-foreground">{account.role ? roleLabel(account.role) : '—'}</p>
                 </div>
                 <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">College</p>

@@ -45,6 +45,10 @@ export default function SurveyCreate({}: Props) {
         post(route('surveys.store'));
     }
 
+    // Per-question failures come back under dotted keys ("questions.0.options"),
+    // which useForm's typed errors map doesn't model.
+    const fieldErrors = errors as Record<string, string | undefined>;
+
     return (
         <AuthenticatedLayout>
             <Head title="New Survey" />
@@ -128,6 +132,9 @@ export default function SurveyCreate({}: Props) {
                                     <input type="text" value={q.prompt} onChange={(e) => updateQuestion(i, 'prompt', e.target.value)}
                                         placeholder="Question prompt *"
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                    {fieldErrors[`questions.${i}.prompt`] && (
+                                        <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.prompt`]}</p>
+                                    )}
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <select value={q.type} onChange={(e) => updateQuestion(i, 'type', e.target.value)}
@@ -140,10 +147,18 @@ export default function SurveyCreate({}: Props) {
                                         <span className="text-sm text-gray-700">Required</span>
                                     </label>
                                 </div>
+                                {fieldErrors[`questions.${i}.type`] && (
+                                    <p className="text-xs text-red-600">{fieldErrors[`questions.${i}.type`]}</p>
+                                )}
                                 {(q.type === 'single_choice' || q.type === 'multi_choice') && (
-                                    <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
-                                        placeholder="Options, comma-separated"
-                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                    <div>
+                                        <input type="text" value={q.options} onChange={(e) => updateQuestion(i, 'options', e.target.value)}
+                                            placeholder="Options, comma-separated"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                                        {fieldErrors[`questions.${i}.options`] && (
+                                            <p className="mt-1 text-xs text-red-600">{fieldErrors[`questions.${i}.options`]}</p>
+                                        )}
+                                    </div>
                                 )}
                                 <div>
                                     <label className="mb-1 block text-xs text-gray-500">Feed this answer into (optional)</label>

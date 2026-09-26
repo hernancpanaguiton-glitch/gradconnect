@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Skill>
@@ -29,7 +28,7 @@ class SkillFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Skill::slugFor($name),
             'category' => fake()->randomElement(['Technical', 'Soft Skills', 'Tools', 'Frameworks']),
         ];
     }
