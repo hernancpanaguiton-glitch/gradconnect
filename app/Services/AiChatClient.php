@@ -48,13 +48,26 @@ class AiChatClient
 
     private function send(string $prompt, bool $json): ?string
     {
-        try {
-            return $this->callGroq($prompt, $json) ?? $this->callGemini($prompt, $json);
-        } catch (\Throwable $e) {
-            Log::warning('AI chat request threw', ['exception' => $e->getMessage()]);
+        // Each provider gets its own guard: wrapping both together meant a
+        // Groq timeout threw past the Gemini fallback, so the fallback only
+        // ever ran when Groq returned cleanly but empty.
+        foreach (['callGroq', 'callGemini'] as $provider) {
+            try {
+                $result = $this->{$provider}($prompt, $json);
 
-            return null;
+                if ($result !== null) {
+                    return $result;
+                }
+            } catch (\Throwable $e) {
+                Log::warning('AI chat provider failed', [
+                    'provider' => $provider,
+                    // The message can carry the request URL, so log the type only.
+                    'exception' => class_basename($e),
+                ]);
+            }
         }
+
+        return null;
     }
 
     private function callGroq(string $prompt, bool $json): ?string
@@ -75,7 +88,10 @@ class AiChatClient
             $payload['response_format'] = ['type' => 'json_object'];
         }
 
-        $response = Http::withToken($apiKey)->timeout(20)->post(config('services.groq.api_url'), $payload);
+        $response = Http::withToken($apiKey)
+            ->connectTimeout((int) config('ai.http.connect_timeout'))
+            ->timeout((int) config('ai.http.timeout'))
+            ->post(config('services.groq.api_url'), $payload);
 
         return $response->successful() ? $response->json('choices.0.message.content') : null;
     }
@@ -96,7 +112,12 @@ class AiChatClient
             $payload['generationConfig'] = ['responseMimeType' => 'application/json'];
         }
 
-        $response = Http::withQueryParameters(['key' => $apiKey])->timeout(20)->post($url, $payload);
+        // The key goes in a header, not the query string: a URL with the key
+        // in it ends up in exception messages, logs and proxy access logs.
+        $response = Http::withHeaders(['x-goog-api-key' => $apiKey])
+            ->connectTimeout((int) config('ai.http.connect_timeout'))
+            ->timeout((int) config('ai.http.timeout'))
+            ->post($url, $payload);
 
         return $response->successful() ? $response->json('candidates.0.content.parts.0.text') : null;
     }

@@ -64,16 +64,13 @@ class RunDatabaseBackup extends Command
         $result = Process::env(['PGPASSWORD' => $config['password']])
             ->timeout(300)
             ->run([
-                'pg_dump',
-                '--host='.$config['host'],
-                '--port='.$config['port'],
-                '--username='.$config['username'],
-                '--format=plain',
-                '--file='.$path,
-                $config['database'],
+                ...self::dumpArguments($config, $path),
             ]);
 
         if ($result->failed()) {
+            // A partial dump looks like a usable backup in the admin list.
+            $disk->delete("backups/{$filename}");
+
             $this->error('Backup failed: '.$result->errorOutput());
 
             return self::FAILURE;
@@ -82,5 +79,33 @@ class RunDatabaseBackup extends Command
         $this->info("Backup written to {$path}");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * pg_dump arguments.
+     *
+     * --clean --if-exists makes the dump drop each object before recreating
+     * it; without them a restore into a database that already has tables
+     * fails on every single statement. --no-owner/--no-privileges let the
+     * dump restore as a different role than it was taken by.
+     *
+     * @param  array<string, mixed>  $config
+     * @return array<int, string>
+     */
+    public static function dumpArguments(array $config, string $path): array
+    {
+        return [
+            'pg_dump',
+            '--host='.$config['host'],
+            '--port='.$config['port'],
+            '--username='.$config['username'],
+            '--format=plain',
+            '--clean',
+            '--if-exists',
+            '--no-owner',
+            '--no-privileges',
+            '--file='.$path,
+            $config['database'],
+        ];
     }
 }

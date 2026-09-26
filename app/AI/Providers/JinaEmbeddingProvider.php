@@ -18,6 +18,8 @@ class JinaEmbeddingProvider implements EmbeddingProvider
 
         try {
             $response = Http::withToken($apiKey)
+                ->connectTimeout((int) config('ai.http.connect_timeout'))
+                ->timeout((int) config('ai.http.timeout'))
                 ->post(config('services.jina.api_url'), [
                     'model' => config('services.jina.model'),
                     'input' => [$text],

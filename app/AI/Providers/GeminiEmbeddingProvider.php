@@ -21,6 +21,8 @@ class GeminiEmbeddingProvider implements EmbeddingProvider
 
         try {
             $response = Http::withHeaders(['x-goog-api-key' => $apiKey])
+                ->connectTimeout((int) config('ai.http.connect_timeout'))
+                ->timeout((int) config('ai.http.timeout'))
                 ->post($url, [
                     'content' => ['parts' => [['text' => $text]]],
                     'outputDimensionality' => $this->dimension(),

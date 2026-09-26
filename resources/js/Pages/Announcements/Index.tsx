@@ -11,7 +11,7 @@ interface Announcement {
     status: 'draft' | 'published';
     published_at: string | null;
     created_at: string;
-    created_by: { name: string };
+    created_by: { name: string } | null;
 }
 interface Props extends PageProps { announcements: Announcement[] }
 
@@ -52,7 +52,7 @@ export default function AnnouncementsIndex({ announcements }: Props) {
                                     </div>
                                     <p className="mt-2 line-clamp-2 text-sm text-gray-600">{a.body}</p>
                                     <p className="mt-2 text-xs text-gray-400">
-                                        By {a.created_by.name} · {new Date(a.created_at).toLocaleDateString()}
+                                        By {a.created_by?.name ?? 'Former staff member'} · {new Date(a.created_at).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,7 +53,19 @@ class BackupController extends Controller
 
         $exitCode = Artisan::call('backup:run');
 
-        AuditLog::record('backup.created', $request->user(), 'Triggered a manual database backup');
+        // The audit trail is where someone looks to confirm a backup exists,
+        // so a failed run must not leave a "backup.created" entry behind.
+        AuditLog::record(
+            $exitCode === 0 ? 'backup.created' : 'backup.failed',
+            $request->user(),
+            $exitCode === 0
+                ? 'Triggered a manual database backup'
+                : 'Manual database backup failed',
+        );
+
+        if ($exitCode !== 0) {
+            Log::error('Manual database backup failed.', ['output' => Artisan::output()]);
+        }
 
         return back()->with(
             $exitCode === 0 ? 'success' : 'error',

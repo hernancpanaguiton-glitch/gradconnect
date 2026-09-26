@@ -46,12 +46,7 @@ class RestoreDatabaseBackup extends Command
         $result = Process::env(['PGPASSWORD' => $config['password']])
             ->timeout(300)
             ->run([
-                'psql',
-                '--host='.$config['host'],
-                '--port='.$config['port'],
-                '--username='.$config['username'],
-                '--file='.$path,
-                $config['database'],
+                ...self::restoreArguments($config, $path),
             ]);
 
         if ($result->failed()) {
@@ -63,5 +58,31 @@ class RestoreDatabaseBackup extends Command
         $this->info("Database restored from {$path}");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * psql arguments.
+     *
+     * Without ON_ERROR_STOP psql reports success after every statement in the
+     * file failed, so a restore that did nothing looked like it worked.
+     * --single-transaction then makes a failed restore leave the database as
+     * it was rather than half-written.
+     *
+     * @param  array<string, mixed>  $config
+     * @return array<int, string>
+     */
+    public static function restoreArguments(array $config, string $path): array
+    {
+        return [
+            'psql',
+            '--host='.$config['host'],
+            '--port='.$config['port'],
+            '--username='.$config['username'],
+            '--set=ON_ERROR_STOP=1',
+            '--single-transaction',
+            '--no-psqlrc',
+            '--file='.$path,
+            $config['database'],
+        ];
     }
 }

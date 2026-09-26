@@ -40,7 +40,9 @@ return [
             'connection' => env('DB_QUEUE_CONNECTION'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
-            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+            // Longer than the slowest job's timeout (matching, 300s), or the
+            // queue releases a job that is still running to another worker.
+            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 330),
             'after_commit' => false,
         ],
 

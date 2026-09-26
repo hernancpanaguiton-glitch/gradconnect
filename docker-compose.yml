@@ -35,7 +35,7 @@ services:
     environment:
       # The web container owns migrations/seeding; the worker just processes jobs.
       RUN_MIGRATIONS: "false"
-    command: php artisan queue:work --tries=3 --timeout=120
+    command: php artisan queue:work --tries=3 --timeout=300
     volumes:
       - storage-data:/var/www/html/storage
     depends_on:

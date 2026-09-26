@@ -47,7 +47,7 @@ class EventController extends Controller
                 'ends_at' => $event->ends_at,
                 'capacity' => $event->capacity,
                 'status' => $event->status,
-                'created_by' => $event->createdBy->name,
+                'created_by' => $event->createdBy?->name ?? 'Former staff member',
                 'going_count' => $goingCounts->get($event->id, 0),
                 'my_rsvp' => $myRsvps->get($event->id),
             ])->values(),

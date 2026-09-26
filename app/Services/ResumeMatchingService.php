@@ -11,6 +11,12 @@ use Illuminate\Support\Collection;
 
 class ResumeMatchingService
 {
+    /**
+     * When AI scoring must stop, as a monotonic timestamp. Set on the first
+     * scored pair of a run.
+     */
+    protected ?float $deadline = null;
+
     public function __construct(
         protected VectorSearch $vectorSearch,
         protected AiManager $aiManager,
@@ -66,11 +72,17 @@ class ResumeMatchingService
             $resume->graduateProfile->buildProfileText()."\n\n".($resume->extracted_text ?? '')
         );
 
-        $matchResult = $this->aiManager->scoreWithFallback(
-            $candidateText,
-            $jobPosting->buildEmbeddingText(),
-            ['required_skills' => $jobPosting->requiredSkillNames()],
-        );
+        // A shortlist is scored one candidate at a time, and a slow provider
+        // can push the run past the job's timeout — which kills it mid-way
+        // and loses the pairs already scored. Past the budget the run keeps
+        // the vector similarity and skips the AI pass, so it finishes.
+        $matchResult = $this->withinTimeBudget()
+            ? $this->aiManager->scoreWithFallback(
+                $candidateText,
+                $jobPosting->buildEmbeddingText(),
+                ['required_skills' => $jobPosting->requiredSkillNames()],
+            )
+            : null;
 
         // The vector stage succeeded to get here, so similarity is always
         // worth recording.
@@ -103,5 +115,15 @@ class ResumeMatchingService
             ],
             $attributes,
         );
+    }
+
+    /**
+     * Whether this run still has time to make an AI call.
+     */
+    protected function withinTimeBudget(): bool
+    {
+        $this->deadline ??= microtime(true) + (int) config('ai.matching.time_budget');
+
+        return microtime(true) < $this->deadline;
     }
 }

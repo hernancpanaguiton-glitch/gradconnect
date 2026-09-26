@@ -25,6 +25,8 @@ class GeminiMatchScorer implements MatchScorer
 
         try {
             $response = Http::withHeaders(['x-goog-api-key' => $apiKey])
+                ->connectTimeout((int) config('ai.http.connect_timeout'))
+                ->timeout((int) config('ai.http.timeout'))
                 ->post($url, [
                     'contents' => [
                         ['parts' => [['text' => $this->buildPrompt($resumeText, $jobText, $context)]]],

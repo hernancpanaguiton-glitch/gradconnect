@@ -22,4 +22,22 @@ return [
         'fallback' => env('AI_SCORING_FALLBACK', 'gemini'),
     ],
 
+    /*
+     * Limits for outbound AI calls. Laravel's default is no connect timeout
+     * and 30s per request; a matching run makes one call per candidate and
+     * can fall back to a second provider, so unbounded calls overran the
+     * job's own timeout and the work was abandoned halfway.
+     */
+    'http' => [
+        'connect_timeout' => (int) env('AI_CONNECT_TIMEOUT', 5),
+        'timeout' => (int) env('AI_TIMEOUT', 20),
+    ],
+
+    'matching' => [
+        // Wall-clock budget for AI scoring inside one job. Past it the run
+        // keeps the vector-similarity score and skips the AI pass, so it
+        // finishes with partial results instead of being killed.
+        'time_budget' => (int) env('AI_MATCHING_TIME_BUDGET', 240),
+    ],
+
 ];

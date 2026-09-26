@@ -22,6 +22,8 @@ class GroqMatchScorer implements MatchScorer
 
         try {
             $response = Http::withToken($apiKey)
+                ->connectTimeout((int) config('ai.http.connect_timeout'))
+                ->timeout((int) config('ai.http.timeout'))
                 ->post(config('services.groq.api_url'), [
                     'model' => config('services.groq.model'),
                     'messages' => [
