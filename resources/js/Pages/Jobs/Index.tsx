@@ -30,19 +30,19 @@ export default function JobsIndex({ postings, filters }: Props) {
             <Head title="Job Board" />
             <div className="space-y-5">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Job Board</h1>
-                    <p className="mt-1 text-gray-500">{postings.total} open positions</p>
+                    <h1 className="text-2xl font-bold text-foreground">Job Board</h1>
+                    <p className="mt-1 text-muted-foreground">{postings.total} open positions</p>
                 </div>
 
                 {/* Filters */}
-                <form onSubmit={applyFilters} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 flex flex-wrap gap-3 items-end">
+                <form onSubmit={applyFilters} className="rounded-xl bg-card p-4 shadow-sm ring-1 ring-gray-200 flex flex-wrap gap-3 items-end">
                     <div className="flex-1 min-w-48">
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Search</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Search</label>
                         <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Job title or keyword…"
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Type</label>
                         <select value={type} onChange={(e) => setType(e.target.value)}
                             className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                             <option value="">All types</option>
@@ -54,8 +54,8 @@ export default function JobsIndex({ postings, filters }: Props) {
                         </select>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer pb-2">
-                        <input type="checkbox" checked={remote} onChange={(e) => setRemote(e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
-                        <span className="text-sm text-gray-700">Remote only</span>
+                        <input type="checkbox" checked={remote} onChange={(e) => setRemote(e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-primary" />
+                        <span className="text-sm text-foreground">Remote only</span>
                     </label>
                     <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Filter</button>
                 </form>
@@ -64,37 +64,37 @@ export default function JobsIndex({ postings, filters }: Props) {
                 <div className="space-y-3">
                     {postings.data.map((job) => (
                         <Link key={job.id} href={route('jobs.show', job.id)}
-                            className="block rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300 transition-all">
+                            className="block rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300 transition-all">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="min-w-0 flex-1">
-                                    <h3 className="font-semibold text-gray-900 truncate">{job.title}</h3>
-                                    <p className="text-sm text-gray-600 mt-0.5">{job.company.name}{job.company.industry ? ` · ${job.company.industry}` : ''}</p>
+                                    <h3 className="font-semibold text-foreground truncate">{job.title}</h3>
+                                    <p className="text-sm text-muted-foreground mt-0.5">{job.company.name}{job.company.industry ? ` · ${job.company.industry}` : ''}</p>
                                     <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600 capitalize">
+                                        <span className="rounded-full bg-muted px-2 py-0.5 text-muted-foreground capitalize">
                                             {job.employment_type.replace(/_/g, ' ')}
                                         </span>
-                                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600">
+                                        <span className="rounded-full bg-muted px-2 py-0.5 text-muted-foreground">
                                             {job.is_remote ? 'Remote' : (job.location ?? 'On-site')}
                                         </span>
-                                        {job.salary_range && <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600">{job.salary_range}</span>}
+                                        {job.salary_range && <span className="rounded-full bg-muted px-2 py-0.5 text-muted-foreground">{job.salary_range}</span>}
                                     </div>
                                     {job.skills.length > 0 && (
                                         <div className="mt-2 flex flex-wrap gap-1">
                                             {job.skills.slice(0, 5).map((s) => (
                                                 <span key={s.id} className="rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-700">{s.name}</span>
                                             ))}
-                                            {job.skills.length > 5 && <span className="text-xs text-gray-400">+{job.skills.length - 5}</span>}
+                                            {job.skills.length > 5 && <span className="text-xs text-muted-foreground">+{job.skills.length - 5}</span>}
                                         </div>
                                     )}
                                 </div>
                                 <div className="shrink-0 text-right">
-                                    <p className="text-xs text-gray-400">{new Date(job.created_at).toLocaleDateString()}</p>
+                                    <p className="text-xs text-muted-foreground">{new Date(job.created_at).toLocaleDateString()}</p>
                                 </div>
                             </div>
                         </Link>
                     ))}
                     {postings.data.length === 0 && (
-                        <p className="text-center py-12 text-gray-400">No open positions match your search.</p>
+                        <p className="text-center py-12 text-muted-foreground">No open positions match your search.</p>
                     )}
                 </div>
 

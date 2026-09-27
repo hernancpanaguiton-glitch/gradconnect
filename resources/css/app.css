@@ -77,6 +77,41 @@
         color: var(--foreground);
     }
 
+    /*
+     * Form controls have to be bound to the theme explicitly.
+     *
+     * `@tailwindcss/forms` paints every control `#fff`, and Tailwind's
+     * preflight gives them `color: inherit` — so they inherit the body's
+     * `--foreground`. In dark mode that is near-white text on a white field:
+     * whatever you type is invisible. Binding both ends to tokens keeps light
+     * mode pixel-identical (`--input` is `#fff` there) and makes dark mode
+     * legible. Checkboxes and radios are excluded because the forms plugin
+     * drives their checked state through `background-color`.
+     */
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+    select,
+    textarea {
+        background-color: var(--input);
+        color: var(--foreground);
+    }
+
+    /* Native dropdown lists inherit the select's colours on most engines. */
+    option {
+        background-color: var(--input);
+        color: var(--foreground);
+    }
+
+    /*
+     * `@tailwindcss/forms` ships `[type='text']::placeholder { color: gray-500 }`,
+     * which outranks a bare `::placeholder`. The `:not()` arguments raise this
+     * selector above it without resorting to `!important`.
+     */
+    input:not([type='checkbox']):not([type='radio'])::placeholder,
+    textarea::placeholder {
+        color: var(--muted-foreground);
+        opacity: 1;
+    }
+
     /* Headings use the display face (Plus Jakarta Sans); body stays Inter. */
     h1,
     h2,
@@ -124,6 +159,27 @@
 
 /* Hide the app shell when printing, so pages like the Résumé Builder print cleanly. */
 @media print {
+    /*
+     * Paper is white whatever the screen theme is. Without this, printing the
+     * résumé builder or a report while in dark mode lays near-white text
+     * (#e8eef7) onto white paper and the page comes out blank.
+     */
+    :root,
+    .dark {
+        --background: #ffffff;
+        --foreground: #0f1f3d;
+        --card: #ffffff;
+        --card-foreground: #0f1f3d;
+        --popover: #ffffff;
+        --popover-foreground: #0f1f3d;
+        --muted: #f0f4f9;
+        --muted-foreground: #465671;
+        --secondary: #e8eef7;
+        --secondary-foreground: #1a3a6b;
+        --border: #cdd8e8;
+        --input: #ffffff;
+    }
+
     aside,
     header {
         display: none !important;

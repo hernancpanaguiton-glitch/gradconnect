@@ -30,8 +30,8 @@ export function formatSalary(range: string): string {
 function MetaField({ label, value, valueClass = '' }: { label: string; value: string; valueClass?: string }) {
     return (
         <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</p>
-            <p className={`mt-0.5 text-sm font-medium text-gray-800 ${valueClass}`}>{value}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+            <p className={`mt-0.5 text-sm font-medium text-foreground ${valueClass}`}>{value}</p>
         </div>
     );
 }
@@ -71,16 +71,16 @@ export default function JobShow({ posting, userApplication }: Props) {
             <Head title={posting.title} />
             <div className="max-w-3xl space-y-5">
                 <div className="flex items-center gap-3">
-                    <Link href={route('jobs.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Job Board</Link>
+                    <Link href={route('jobs.index')} className="text-sm text-primary hover:text-indigo-800">← Job Board</Link>
                 </div>
 
 
                 {/* Header */}
-                <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div className="min-w-0">
-                            <h1 className="text-2xl font-bold text-gray-900">{posting.title}</h1>
-                            <p className="mt-1 text-gray-600">{posting.company.name}
+                            <h1 className="text-2xl font-bold text-foreground">{posting.title}</h1>
+                            <p className="mt-1 text-muted-foreground">{posting.company.name}
                                 {posting.company.is_verified && <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">Verified</span>}
                             </p>
                             <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:gap-x-10">
@@ -108,7 +108,7 @@ export default function JobShow({ posting, userApplication }: Props) {
                                             Applied · {userApplication.status.replace(/_/g, ' ')}
                                         </span>
                                         {WITHDRAWABLE.includes(userApplication.status) && (
-                                            <button onClick={withdraw} className="block mt-1 text-xs text-red-500 hover:text-red-700">
+                                            <button onClick={withdraw} className="block mt-1 text-xs text-destructive hover:text-destructive">
                                                 Withdraw
                                             </button>
                                         )}
@@ -121,42 +121,42 @@ export default function JobShow({ posting, userApplication }: Props) {
 
                 {/* Required Skills */}
                 {posting.skills.length > 0 && (
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <h2 className="text-sm font-semibold text-gray-700 mb-3">Skills</h2>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <h2 className="text-sm font-semibold text-foreground mb-3">Skills</h2>
                         <div className="flex flex-wrap gap-2">
                             {posting.skills.map((s) => (
-                                <span key={s.id} className={`rounded-full px-3 py-1 text-sm ${s.pivot.is_required ? 'bg-indigo-100 text-indigo-700 font-medium' : 'bg-gray-100 text-gray-600'}`}>
+                                <span key={s.id} className={`rounded-full px-3 py-1 text-sm ${s.pivot.is_required ? 'bg-indigo-100 text-indigo-700 font-medium' : 'bg-muted text-muted-foreground'}`}>
                                     {s.name}{s.pivot.is_required ? ' *' : ''}
                                 </span>
                             ))}
                         </div>
-                        <p className="mt-2 text-xs text-gray-400">* Required</p>
+                        <p className="mt-2 text-xs text-muted-foreground">* Required</p>
                     </div>
                 )}
 
                 {/* Description */}
-                <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-4">
+                <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200 space-y-4">
                     <div>
-                        <h2 className="text-sm font-semibold text-gray-700 mb-2">Job Description</h2>
-                        <p className="text-sm text-gray-700 whitespace-pre-wrap">{posting.description}</p>
+                        <h2 className="text-sm font-semibold text-foreground mb-2">Job Description</h2>
+                        <p className="text-sm text-foreground whitespace-pre-wrap">{posting.description}</p>
                     </div>
                     {posting.qualifications && (
                         <div>
-                            <h2 className="text-sm font-semibold text-gray-700 mb-2">Qualifications</h2>
-                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{posting.qualifications}</p>
+                            <h2 className="text-sm font-semibold text-foreground mb-2">Qualifications</h2>
+                            <p className="text-sm text-foreground whitespace-pre-wrap">{posting.qualifications}</p>
                         </div>
                     )}
                 </div>
 
                 {/* Company */}
-                <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                    <h2 className="text-sm font-semibold text-gray-700 mb-2">About the Company</h2>
-                    <p className="font-medium text-gray-900">{posting.company.name}</p>
-                    {posting.company.industry && <p className="text-sm text-gray-500">{posting.company.industry}</p>}
-                    {posting.company.location && <p className="text-sm text-gray-500">{posting.company.location}</p>}
+                <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                    <h2 className="text-sm font-semibold text-foreground mb-2">About the Company</h2>
+                    <p className="font-medium text-foreground">{posting.company.name}</p>
+                    {posting.company.industry && <p className="text-sm text-muted-foreground">{posting.company.industry}</p>}
+                    {posting.company.location && <p className="text-sm text-muted-foreground">{posting.company.location}</p>}
                     {posting.company.website && (
                         <a href={posting.company.website} target="_blank" rel="noopener noreferrer"
-                            className="text-sm text-indigo-600 hover:text-indigo-800 mt-1 block">
+                            className="text-sm text-primary hover:text-indigo-800 mt-1 block">
                             {posting.company.website}
                         </a>
                     )}

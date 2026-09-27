@@ -14,12 +14,12 @@ const typeLabels: Record<string, string> = {
     employability: 'Employability', tracer: 'Tracer', custom: 'Custom',
 };
 const statusColors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-600',
+    draft: 'bg-muted text-muted-foreground',
     open: 'bg-green-100 text-green-700',
     closed: 'bg-red-100 text-red-700',
 };
 /** A status this page hasn't learned yet still has to render as a badge. */
-const STATUS_FALLBACK = 'bg-gray-100 text-gray-600';
+const STATUS_FALLBACK = 'bg-muted text-muted-foreground';
 
 export default function SurveysIndex({ surveys, canManage }: Props) {
     const { flash } = usePage<Props>().props;
@@ -39,8 +39,8 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
             <div className="space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Surveys</h1>
-                        <p className="mt-1 text-gray-500">{surveys.length} survey(s)</p>
+                        <h1 className="text-2xl font-bold text-foreground">Surveys</h1>
+                        <p className="mt-1 text-muted-foreground">{surveys.length} survey(s)</p>
                     </div>
                     {canManage && (
                         <Link href={route('surveys.create')}
@@ -53,11 +53,11 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
 
                 <div className="space-y-3">
                     {surveys.map((survey) => (
-                        <div key={survey.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                        <div key={survey.id} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
                             <div className="flex items-start justify-between gap-4 flex-wrap">
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <h3 className="font-semibold text-gray-900">{survey.title}</h3>
+                                        <h3 className="font-semibold text-foreground">{survey.title}</h3>
                                         <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[survey.status] ?? STATUS_FALLBACK}`}>
                                             {survey.status}
                                         </span>
@@ -65,7 +65,7 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
                                             {typeLabels[survey.type] ?? survey.type}
                                         </span>
                                     </div>
-                                    <div className="mt-2 flex flex-wrap gap-3 text-sm text-gray-500">
+                                    <div className="mt-2 flex flex-wrap gap-3 text-sm text-muted-foreground">
                                         <span>{survey.questions_count} question(s)</span>
                                         {canManage && <span>{survey.responses_count} response(s)</span>}
                                         {survey.closes_at && <span>Closes {new Date(survey.closes_at).toLocaleDateString()}</span>}
@@ -85,7 +85,7 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
                                                 Results
                                             </Link>
                                             <Link href={route('surveys.edit', survey.id)}
-                                                className="rounded-lg px-3 py-1.5 text-sm text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50">
+                                                className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground ring-1 ring-gray-300 hover:bg-background">
                                                 Edit
                                             </Link>
                                             <button onClick={() => destroy(survey.id)}
@@ -110,7 +110,7 @@ export default function SurveysIndex({ surveys, canManage }: Props) {
                         </div>
                     ))}
                     {surveys.length === 0 && (
-                        <p className="text-center py-12 text-gray-400">No surveys yet.</p>
+                        <p className="text-center py-12 text-muted-foreground">No surveys yet.</p>
                     )}
                 </div>
             </div>

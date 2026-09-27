@@ -60,6 +60,6 @@ describe('Company profile form', () => {
     it('shows nothing when the save succeeded', () => {
         render(<CompanyEdit {...sharedProps()} company={COMPANY} />);
 
-        expect(document.querySelectorAll('.text-red-600')).toHaveLength(0);
+        expect(document.querySelectorAll('.text-destructive')).toHaveLength(0);
     });
 });

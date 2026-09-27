@@ -103,7 +103,7 @@ function EditRow({ row, colleges, onDelete }: { row: DepartmentRow; colleges: Co
             </div>
 
             {(errors.name || errors.code || errors.parent_id) && (
-                <p className="text-xs text-red-600 sm:w-full">{errors.name ?? errors.code ?? errors.parent_id}</p>
+                <p className="text-xs text-destructive sm:w-full">{errors.name ?? errors.code ?? errors.parent_id}</p>
             )}
         </form>
     );
@@ -150,7 +150,7 @@ function AddProgram({ collegeId }: { collegeId: number }) {
             </button>
 
             {(errors.name || errors.code) && (
-                <p className="text-xs text-red-600 sm:w-full">{errors.name ?? errors.code}</p>
+                <p className="text-xs text-destructive sm:w-full">{errors.name ?? errors.code}</p>
             )}
         </form>
     );
@@ -212,7 +212,7 @@ export default function Colleges({ colleges, orphanPrograms }: Props) {
                             aria-label="New college code"
                             className={`${inputClass} w-full font-mono uppercase`}
                         />
-                        {addCollege.errors.code && <p className="mt-1 text-xs text-red-600">{addCollege.errors.code}</p>}
+                        {addCollege.errors.code && <p className="mt-1 text-xs text-destructive">{addCollege.errors.code}</p>}
                     </div>
                     <div className="flex-1">
                         <input
@@ -222,7 +222,7 @@ export default function Colleges({ colleges, orphanPrograms }: Props) {
                             aria-label="New college name"
                             className={`${inputClass} w-full`}
                         />
-                        {addCollege.errors.name && <p className="mt-1 text-xs text-red-600">{addCollege.errors.name}</p>}
+                        {addCollege.errors.name && <p className="mt-1 text-xs text-destructive">{addCollege.errors.name}</p>}
                     </div>
                     <button
                         type="submit"

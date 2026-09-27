@@ -34,8 +34,8 @@ export default function PostingCreate({ skills }: Props) {
 
             <div className="max-w-2xl space-y-5">
                 <div className="flex items-center gap-4">
-                    <Link href={route('postings.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Back</Link>
-                    <h1 className="text-2xl font-bold text-gray-900">New Job Posting</h1>
+                    <Link href={route('postings.index')} className="text-sm text-primary hover:text-indigo-800">← Back</Link>
+                    <h1 className="text-2xl font-bold text-foreground">New Job Posting</h1>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -46,7 +46,7 @@ export default function PostingCreate({ skills }: Props) {
                             className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
                             Publish Posting
                         </button>
-                        <Link href={route('postings.index')} className="rounded-lg px-6 py-2 text-sm font-medium text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50">
+                        <Link href={route('postings.index')} className="rounded-lg px-6 py-2 text-sm font-medium text-muted-foreground ring-1 ring-gray-300 hover:bg-background">
                             Cancel
                         </Link>
                     </div>

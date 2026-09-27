@@ -38,7 +38,7 @@ function CreateForm({ onDone }: { onDone: () => void }) {
         <form onSubmit={submit} className="space-y-3 rounded-xl border border-border bg-card p-5 shadow-sm">
             <input type="text" placeholder="Program name *" value={data.name} onChange={(e) => setData('name', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+            {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
             <div className="form-grid-tight">
                 <input type="text" placeholder="Provider" value={data.provider} onChange={(e) => setData('provider', e.target.value)}
                     className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
@@ -74,7 +74,7 @@ function RecipientPanel({ scholarship, graduates }: { scholarship: ScholarshipIt
                 {scholarship.recipients.map((r) => (
                     <span key={r.id} className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs text-foreground">
                         {r.graduate_profile.user.name}
-                        <button onClick={() => removeRecipient(r.id)} className="text-red-500 hover:text-red-700">×</button>
+                        <button onClick={() => removeRecipient(r.id)} className="text-destructive hover:text-destructive">×</button>
                     </span>
                 ))}
                 {scholarship.recipients.length === 0 && <span className="text-xs text-muted-foreground">No recipients yet.</span>}
@@ -127,7 +127,7 @@ export default function Scholarships({ scholarships, totalBudget, totalRecipient
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS[s.status] ?? STATUS_FALLBACK}`}>{s.status}</span>
-                                    <button onClick={() => destroy(s.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
+                                    <button onClick={() => destroy(s.id)} className="text-xs text-destructive hover:text-destructive">Delete</button>
                                 </div>
                             </div>
                             <div className="mt-2 flex gap-4 text-sm text-muted-foreground">

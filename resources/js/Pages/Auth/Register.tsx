@@ -103,7 +103,7 @@ export default function Register({ colleges = [] }: { colleges?: College[] }) {
                         ))}
                     </select>
 
-                    <p className="mt-2 text-sm text-gray-500">
+                    <p className="mt-2 text-sm text-muted-foreground">
                         {data.role === ROLE_ADMIN
                             ? 'An existing administrator must approve this account, and will verify who you are first.'
                             : needsApproval
@@ -134,7 +134,7 @@ export default function Register({ colleges = [] }: { colleges?: College[] }) {
                             ))}
                         </select>
 
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-muted-foreground">
                             Optional — an administrator can set or change this when approving your account.
                         </p>
 
@@ -208,9 +208,9 @@ export default function Register({ colleges = [] }: { colleges?: College[] }) {
                             checked={data.consent}
                             onChange={(e) => setData('consent', e.target.checked)}
                         />
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                             I have read and agree to the{' '}
-                            <Link href="/privacy" target="_blank" className="text-indigo-600 underline hover:text-indigo-800">
+                            <Link href="/privacy" target="_blank" className="text-primary underline hover:text-indigo-800">
                                 Privacy Policy
                             </Link>
                             , and consent to the collection and processing of my data as described, in accordance
@@ -223,7 +223,7 @@ export default function Register({ colleges = [] }: { colleges?: College[] }) {
                 <div className="mt-4 flex items-center justify-end">
                     <Link
                         href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Already registered?
                     </Link>

@@ -50,7 +50,7 @@ export default function SystemSettings({ settings }: Props) {
                         <input type="email" value={data.support_email} onChange={(e) => setData('support_email', e.target.value)}
                             placeholder="support@gradconnect.edu.ph"
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                        {errors.support_email && <p className="mt-1 text-xs text-red-500">{errors.support_email}</p>}
+                        {errors.support_email && <p className="mt-1 text-xs text-destructive">{errors.support_email}</p>}
                     </div>
 
                     <div>
@@ -59,7 +59,7 @@ export default function SystemSettings({ settings }: Props) {
                         <textarea value={data.maintenance_banner_message} onChange={(e) => setData('maintenance_banner_message', e.target.value)} rows={2}
                             placeholder="e.g. Scheduled maintenance this Saturday, 10 PM–12 AM."
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                        {errors.maintenance_banner_message && <p className="mt-1 text-xs text-red-500">{errors.maintenance_banner_message}</p>}
+                        {errors.maintenance_banner_message && <p className="mt-1 text-xs text-destructive">{errors.maintenance_banner_message}</p>}
                     </div>
 
                     <div>
@@ -78,7 +78,7 @@ export default function SystemSettings({ settings }: Props) {
                         <input type="number" min={0} max={100} value={data.matching_min_fit_score}
                             onChange={(e) => setData('matching_min_fit_score', e.target.value)}
                             className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                        {errors.matching_min_fit_score && <p className="mt-1 text-xs text-red-500">{errors.matching_min_fit_score}</p>}
+                        {errors.matching_min_fit_score && <p className="mt-1 text-xs text-destructive">{errors.matching_min_fit_score}</p>}
                     </div>
 
                     <div className="flex items-center gap-3">

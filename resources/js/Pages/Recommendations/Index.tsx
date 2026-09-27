@@ -35,14 +35,14 @@ function MatchFeedbackButtons({ matchId, current }: { matchId: number; current: 
 
     return (
         <div className="flex items-center gap-1">
-            <span className="mr-1 text-xs text-gray-400">Helpful?</span>
+            <span className="mr-1 text-xs text-muted-foreground">Helpful?</span>
             <button onClick={() => rate('helpful')}
-                className={`rounded-lg p-1.5 ${current === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'text-gray-400 hover:bg-gray-100'}`}
+                className={`rounded-lg p-1.5 ${current === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'text-muted-foreground hover:bg-muted'}`}
                 aria-label="Mark as helpful">
                 <ThumbsUp size={14} />
             </button>
             <button onClick={() => rate('not_helpful')}
-                className={`rounded-lg p-1.5 ${current === 'not_helpful' ? 'bg-red-100 text-red-700' : 'text-gray-400 hover:bg-gray-100'}`}
+                className={`rounded-lg p-1.5 ${current === 'not_helpful' ? 'bg-red-100 text-red-700' : 'text-muted-foreground hover:bg-muted'}`}
                 aria-label="Mark as not helpful">
                 <ThumbsDown size={14} />
             </button>
@@ -93,8 +93,8 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
             <div className="space-y-5">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Job Recommendations</h1>
-                        <p className="mt-1 text-gray-500">AI-ranked jobs based on your resume.</p>
+                        <h1 className="text-2xl font-bold text-foreground">Job Recommendations</h1>
+                        <p className="mt-1 text-muted-foreground">AI-ranked jobs based on your resume.</p>
                     </div>
                     {hasProfile && (
                         <button
@@ -121,17 +121,17 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
 
                 <div className="space-y-3">
                     {matches.map((match) => (
-                        <div key={match.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                        <div key={match.id} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                                 <div className="min-w-0 flex-1">
-                                    <Link href={route('jobs.show', match.job_posting.id)} className="font-semibold text-gray-900 hover:text-indigo-600">
+                                    <Link href={route('jobs.show', match.job_posting.id)} className="font-semibold text-foreground hover:text-primary">
                                         {match.job_posting.title}
                                     </Link>
-                                    <p className="text-sm text-gray-600 mt-0.5">
+                                    <p className="text-sm text-muted-foreground mt-0.5">
                                         {match.job_posting.company.name}
                                         {match.job_posting.company.industry ? ` · ${match.job_posting.company.industry}` : ''}
                                     </p>
-                                    <p className="text-xs text-gray-400 mt-0.5">
+                                    <p className="text-xs text-muted-foreground mt-0.5">
                                         {match.job_posting.is_remote ? 'Remote' : (match.job_posting.location ?? 'On-site')}
                                     </p>
                                 </div>
@@ -139,13 +139,13 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
                                     <FitScoreBar fitScore={match.fit_score} similarity={match.similarity} recommendation={match.recommendation} />
                                 </div>
                             </div>
-                            {match.explanation && <p className="mt-3 text-sm text-gray-600">{match.explanation}</p>}
+                            {match.explanation && <p className="mt-3 text-sm text-muted-foreground">{match.explanation}</p>}
                             <div className="mt-3">
                                 <SkillGapList matchedSkills={match.matched_skills} skillGaps={match.skill_gaps} />
                             </div>
                             {Object.keys(match.learning_resources).length > 0 && (
                                 <div className="mt-3 border-t border-gray-100 pt-3">
-                                    <p className="mb-1.5 text-xs font-medium text-gray-500">Suggested resources to close the gap:</p>
+                                    <p className="mb-1.5 text-xs font-medium text-muted-foreground">Suggested resources to close the gap:</p>
                                     <div className="flex flex-wrap gap-1.5">
                                         {Object.values(match.learning_resources).flat().map((r) => (
                                             <a key={r.id} href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel="noreferrer"
@@ -162,7 +162,7 @@ export default function RecommendationsIndex({ matches, hasProfile }: Props) {
                         </div>
                     ))}
                     {matches.length === 0 && hasProfile && (
-                        <p className="text-center py-12 text-gray-400">
+                        <p className="text-center py-12 text-muted-foreground">
                             No recommendations yet. Upload a resume and click &ldquo;Refresh recommendations&rdquo; to get started.
                         </p>
                     )}

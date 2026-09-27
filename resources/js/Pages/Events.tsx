@@ -33,7 +33,7 @@ function CreateEventForm({ onDone }: { onDone: () => void }) {
         <form onSubmit={submit} className="space-y-3 rounded-xl border border-border bg-card p-5 shadow-sm">
             <input type="text" placeholder="Title *" value={data.title} onChange={(e) => setData('title', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-            {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
+            {errors.title && <p className="text-xs text-destructive">{errors.title}</p>}
             <textarea placeholder="Description" value={data.description} onChange={(e) => setData('description', e.target.value)} rows={2}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
             <div className="form-grid-tight">
@@ -55,7 +55,7 @@ function CreateEventForm({ onDone }: { onDone: () => void }) {
                     <option value="draft">Draft</option>
                 </select>
             </div>
-            {errors.starts_at && <p className="text-xs text-red-500">{errors.starts_at}</p>}
+            {errors.starts_at && <p className="text-xs text-destructive">{errors.starts_at}</p>}
             <div className="flex justify-end gap-2">
                 <button type="button" onClick={onDone} className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted">Cancel</button>
                 <button type="submit" disabled={processing} className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-blue-700 disabled:opacity-50">Create</button>
@@ -119,7 +119,7 @@ export default function Events({ events, canManage }: Props) {
                                     ))}
                                 </div>
                                 {canManage && (
-                                    <button onClick={() => destroy(e.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
+                                    <button onClick={() => destroy(e.id)} className="text-xs text-destructive hover:text-destructive">Delete</button>
                                 )}
                             </div>
                         </div>

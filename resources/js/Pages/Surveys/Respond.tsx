@@ -56,20 +56,20 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
             <Head title={survey.title} />
             <div className="max-w-2xl space-y-5">
                 <div className="flex items-center gap-3">
-                    <Link href={route('surveys.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Surveys</Link>
+                    <Link href={route('surveys.index')} className="text-sm text-primary hover:text-indigo-800">← Surveys</Link>
                 </div>
 
 
-                <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h1 className="text-2xl font-bold text-gray-900">{survey.title}</h1>
-                    {survey.description && <p className="mt-2 text-gray-600 text-sm">{survey.description}</p>}
+                <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                    <h1 className="text-2xl font-bold text-foreground">{survey.title}</h1>
+                    {survey.description && <p className="mt-2 text-muted-foreground text-sm">{survey.description}</p>}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {survey.questions.sort((a, b) => a.order - b.order).map((q) => (
-                        <div key={q.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                            <p className="text-sm font-medium text-gray-800 mb-3">
-                                {q.order}. {q.prompt} {q.is_required && <span className="text-red-500">*</span>}
+                        <div key={q.id} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                            <p className="text-sm font-medium text-foreground mb-3">
+                                {q.order}. {q.prompt} {q.is_required && <span className="text-destructive">*</span>}
                             </p>
                             {q.type === 'text' && (
                                 <input type="text" value={(answers[q.id] as string) ?? ''}
@@ -86,8 +86,8 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                     <input type="radio" name={`q-${q.id}`} value={opt}
                                         checked={(answers[q.id] as string) === opt}
                                         onChange={() => setAnswer(q.id, opt)}
-                                        className="h-4 w-4 border-gray-300 text-indigo-600" />
-                                    <span className="text-sm text-gray-700">{opt}</span>
+                                        className="h-4 w-4 border-gray-300 text-primary" />
+                                    <span className="text-sm text-foreground">{opt}</span>
                                 </label>
                             ))}
                             {q.type === 'multi_choice' && q.options?.map((opt) => (
@@ -95,8 +95,8 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                     <input type="checkbox"
                                         checked={((answers[q.id] as string[]) ?? []).includes(opt)}
                                         onChange={() => toggleMulti(q.id, opt)}
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
-                                    <span className="text-sm text-gray-700">{opt}</span>
+                                        className="h-4 w-4 rounded border-gray-300 text-primary" />
+                                    <span className="text-sm text-foreground">{opt}</span>
                                 </label>
                             ))}
                             {q.type === 'rating' && (
@@ -104,7 +104,7 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                     {[1,2,3,4,5].map((n) => (
                                         <button key={n} type="button"
                                             onClick={() => setAnswer(q.id, String(n))}
-                                            className={`h-9 w-9 rounded-full text-sm font-medium ${(answers[q.id] as string) === String(n) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                                            className={`h-9 w-9 rounded-full text-sm font-medium ${(answers[q.id] as string) === String(n) ? 'bg-indigo-600 text-white' : 'bg-muted text-foreground hover:bg-muted'}`}>
                                             {n}
                                         </button>
                                     ))}
@@ -117,8 +117,8 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                             <input type="radio" name={`q-${q.id}`} value={opt}
                                                 checked={(answers[q.id] as string) === opt}
                                                 onChange={() => setAnswer(q.id, opt)}
-                                                className="h-4 w-4 border-gray-300 text-indigo-600" />
-                                            <span className="text-sm text-gray-700">{opt}</span>
+                                                className="h-4 w-4 border-gray-300 text-primary" />
+                                            <span className="text-sm text-foreground">{opt}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -129,7 +129,7 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                                     className="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                             )}
                             {questionError(q.id) && (
-                                <p className="mt-2 text-xs text-red-600">{questionError(q.id)}</p>
+                                <p className="mt-2 text-xs text-destructive">{questionError(q.id)}</p>
                             )}
                         </div>
                     ))}
@@ -139,7 +139,7 @@ export default function SurveyRespond({ survey, existingAnswers }: Props) {
                             className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
                             Submit Response
                         </button>
-                        <Link href={route('surveys.index')} className="rounded-lg px-6 py-2 text-sm font-medium text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50">Cancel</Link>
+                        <Link href={route('surveys.index')} className="rounded-lg px-6 py-2 text-sm font-medium text-muted-foreground ring-1 ring-gray-300 hover:bg-background">Cancel</Link>
                     </div>
                 </form>
             </div>

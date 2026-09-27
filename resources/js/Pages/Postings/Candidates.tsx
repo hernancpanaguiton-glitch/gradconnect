@@ -40,7 +40,7 @@ const statusColors: Record<string, string> = {
     shortlisted: 'bg-green-100 text-green-700',
     rejected: 'bg-red-100 text-red-700',
     hired: 'bg-emerald-100 text-emerald-700',
-    withdrawn: 'bg-gray-100 text-gray-600',
+    withdrawn: 'bg-muted text-muted-foreground',
 };
 
 const RATABLE_STATUSES = ['hired', 'rejected'];
@@ -94,15 +94,15 @@ function FeedbackForm({ applicationId, onDone }: { applicationId: number; onDone
     }
 
     return (
-        <form onSubmit={submit} className="space-y-3 rounded-lg bg-gray-50 p-4 ring-1 ring-gray-200">
+        <form onSubmit={submit} className="space-y-3 rounded-lg bg-background p-4 ring-1 ring-gray-200">
             <div>
-                <p className="mb-1 text-xs font-medium text-gray-700">Overall Rating</p>
+                <p className="mb-1 text-xs font-medium text-foreground">Overall Rating</p>
                 <StarRating value={overall} onChange={setOverall} />
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {COMPETENCIES.map((c) => (
                     <div key={c.key}>
-                        <p className="mb-1 text-xs text-gray-600">{c.label}</p>
+                        <p className="mb-1 text-xs text-muted-foreground">{c.label}</p>
                         <StarRating
                             value={competencies[c.key] ?? 0}
                             onChange={(v) => setCompetencies((prev) => ({ ...prev, [c.key]: v }))}
@@ -118,7 +118,7 @@ function FeedbackForm({ applicationId, onDone }: { applicationId: number; onDone
                 className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
             <div className="flex justify-end gap-2">
-                <button type="button" onClick={onDone} className="rounded px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100">Cancel</button>
+                <button type="button" onClick={onDone} className="rounded px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted">Cancel</button>
                 <button type="submit" disabled={overall === 0 || submitting} className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
                     Submit Feedback
                 </button>
@@ -148,47 +148,47 @@ export default function Candidates({ posting, applications }: Props) {
             <Head title={`Candidates — ${posting.title}`} />
             <div className="space-y-5">
                 <div className="flex items-center gap-4">
-                    <Link href={route('postings.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Postings</Link>
+                    <Link href={route('postings.index')} className="text-sm text-primary hover:text-indigo-800">← Postings</Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">{posting.title}</h1>
-                        <p className="text-gray-500 text-sm">{applications.total} applicant(s)</p>
+                        <h1 className="text-2xl font-bold text-foreground">{posting.title}</h1>
+                        <p className="text-muted-foreground text-sm">{applications.total} applicant(s)</p>
                     </div>
                 </div>
                 <TableCard wide>
                     <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-background border-b border-gray-200">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Applicant</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Applied</th>
-                                <th className="px-4 py-3 text-center font-medium text-gray-600">Status</th>
-                                <th className="px-4 py-3 text-center font-medium text-gray-600">Update</th>
-                                <th className="px-4 py-3 text-center font-medium text-gray-600">Feedback</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Applicant</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Applied</th>
+                                <th className="px-4 py-3 text-center font-medium text-muted-foreground">Status</th>
+                                <th className="px-4 py-3 text-center font-medium text-muted-foreground">Update</th>
+                                <th className="px-4 py-3 text-center font-medium text-muted-foreground">Feedback</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {applications.data.map((app) => (
                                 <Fragment key={app.id}>
-                                    <tr className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 font-medium text-gray-900">
+                                    <tr className="hover:bg-background">
+                                        <td className="px-4 py-3 font-medium text-foreground">
                                             <button type="button" onClick={() => setSelectedCandidate(app.graduate_profile.id)}
-                                                className="text-left hover:text-indigo-600 hover:underline">
+                                                className="text-left hover:text-primary hover:underline">
                                                 {app.graduate_profile.user.name}
                                             </button>
                                             {app.graduate_profile.department && (
-                                                <span className="block text-xs font-normal text-gray-400">{app.graduate_profile.department.name}</span>
+                                                <span className="block text-xs font-normal text-muted-foreground">{app.graduate_profile.department.name}</span>
                                             )}
                                             {app.resume && app.resume.can_download && (
                                                 <a href={route('candidates.resume', app.resume.id)} target="_blank" rel="noreferrer"
-                                                    className="mt-1 inline-block text-xs font-medium text-indigo-600 hover:text-indigo-800">
+                                                    className="mt-1 inline-block text-xs font-medium text-primary hover:text-indigo-800">
                                                     View résumé: {app.resume.original_filename}
                                                 </a>
                                             )}
                                         </td>
-                                        <td className="px-4 py-3 text-gray-600">{app.graduate_profile.user.email ?? '—'}</td>
-                                        <td className="px-4 py-3 text-gray-500 text-xs">{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</td>
+                                        <td className="px-4 py-3 text-muted-foreground">{app.graduate_profile.user.email ?? '—'}</td>
+                                        <td className="px-4 py-3 text-muted-foreground text-xs">{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</td>
                                         <td className="px-4 py-3 text-center">
-                                            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[app.status] ?? 'bg-gray-100'}`}>
+                                            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[app.status] ?? 'bg-muted'}`}>
                                                 {app.status.replace(/_/g, ' ')}
                                             </span>
                                         </td>
@@ -197,7 +197,7 @@ export default function Candidates({ posting, applications }: Props) {
                                                 value={app.status}
                                                 disabled={app.status === 'withdrawn'}
                                                 onChange={(e) => updateStatus(app.id, e.target.value)}
-                                                className="rounded border border-gray-300 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                                                className="rounded border border-gray-300 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
                                             >
                                                 {/* The applicant's own statuses are not assignable, but the
                                                     select still has to be able to show the current one. */}
@@ -210,12 +210,12 @@ export default function Candidates({ posting, applications }: Props) {
                                             </select>
                                         </td>
                                         <td className="px-4 py-3 text-center">
-                                            {!RATABLE_STATUSES.includes(app.status) && <span className="text-xs text-gray-400">—</span>}
+                                            {!RATABLE_STATUSES.includes(app.status) && <span className="text-xs text-muted-foreground">—</span>}
                                             {RATABLE_STATUSES.includes(app.status) && app.employer_feedback && (
                                                 <FeedbackSummary feedback={app.employer_feedback} />
                                             )}
                                             {RATABLE_STATUSES.includes(app.status) && !app.employer_feedback && feedbackForm !== app.id && (
-                                                <button type="button" onClick={() => setFeedbackForm(app.id)} className="text-xs font-medium text-indigo-600 hover:underline">
+                                                <button type="button" onClick={() => setFeedbackForm(app.id)} className="text-xs font-medium text-primary hover:underline">
                                                     Give Feedback
                                                 </button>
                                             )}
@@ -223,7 +223,7 @@ export default function Candidates({ posting, applications }: Props) {
                                     </tr>
                                     {feedbackForm === app.id && (
                                         <tr>
-                                            <td colSpan={6} className="bg-gray-50 px-4 py-3">
+                                            <td colSpan={6} className="bg-background px-4 py-3">
                                                 <FeedbackForm applicationId={app.id} onDone={() => setFeedbackForm(null)} />
                                             </td>
                                         </tr>
@@ -231,7 +231,7 @@ export default function Candidates({ posting, applications }: Props) {
                                 </Fragment>
                             ))}
                             {applications.data.length === 0 && (
-                                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No applications yet.</td></tr>
+                                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No applications yet.</td></tr>
                             )}
                         </tbody>
                     </table>

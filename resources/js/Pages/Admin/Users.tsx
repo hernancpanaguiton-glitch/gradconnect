@@ -60,8 +60,8 @@ export default function Users({ users, filters }: Props) {
             <div className="space-y-5">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-                        <p className="mt-1 text-gray-500">{users.total} users total</p>
+                        <h1 className="text-2xl font-bold text-foreground">User Management</h1>
+                        <p className="mt-1 text-muted-foreground">{users.total} users total</p>
                     </div>
                     <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
                         <input
@@ -80,24 +80,24 @@ export default function Users({ users, filters }: Props) {
 
                 <TableCard wide>
                     <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-background border-b border-gray-200">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Name</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">ID Number</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
-                                <th className="px-4 py-3 text-left font-medium text-gray-600">Roles</th>
-                                <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Name</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">ID Number</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
+                                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Roles</th>
+                                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {users.data.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 font-medium text-gray-900">{user.name}</td>
-                                    <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                                    <td className="px-4 py-3 text-gray-500">{user.id_number ?? '—'}</td>
+                                <tr key={user.id} className="hover:bg-background">
+                                    <td className="px-4 py-3 font-medium text-foreground">{user.name}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">{user.id_number ?? '—'}</td>
                                     <td className="px-4 py-3">
-                                        <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[user.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                                        <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[user.status] ?? 'bg-muted text-muted-foreground'}`}>
                                             {user.status}
                                         </span>
                                     </td>
@@ -108,20 +108,20 @@ export default function Users({ users, filters }: Props) {
                                                     {roleLabel(r.name)}
                                                 </span>
                                             ))}
-                                            {user.roles.length === 0 && <span className="text-gray-400 text-xs">none</span>}
+                                            {user.roles.length === 0 && <span className="text-muted-foreground text-xs">none</span>}
                                         </div>
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         <div className="flex justify-end gap-2">
                                             <Link
                                                 href={route('admin.users.edit', user.id)}
-                                                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                                                className="text-xs text-primary hover:text-indigo-800 font-medium"
                                             >
                                                 Edit
                                             </Link>
                                             <button
                                                 onClick={() => deleteUser(user.id, user.name)}
-                                                className="text-xs text-red-500 hover:text-red-700 font-medium"
+                                                className="text-xs text-destructive hover:text-destructive font-medium"
                                             >
                                                 Delete
                                             </button>
@@ -131,7 +131,7 @@ export default function Users({ users, filters }: Props) {
                             ))}
                             {users.data.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-4 py-8 text-center text-gray-400">No users found.</td>
+                                    <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No users found.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -141,7 +141,7 @@ export default function Users({ users, filters }: Props) {
                 {/* Pagination */}
                 {users.last_page > 1 && (
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                             Showing {users.from}–{users.to} of {users.total}
                         </p>
                         <Pagination links={users.links} />

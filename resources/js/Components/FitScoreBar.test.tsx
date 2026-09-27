@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 /** The inner filled element, whose inline width draws the bar. */
 function barWidth(container: HTMLElement): string {
-    const track = container.querySelector('.bg-gray-100') as HTMLElement;
+    const track = container.querySelector('.bg-muted') as HTMLElement;
 
     return (track.firstElementChild as HTMLElement).style.width;
 }

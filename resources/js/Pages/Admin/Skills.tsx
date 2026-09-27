@@ -36,7 +36,7 @@ function AliasForm({ skillId }: { skillId: number }) {
                     className="w-32 rounded-lg border border-border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary" />
                 <button type="submit" disabled={processing} className="rounded-lg bg-muted px-2 py-1 text-xs font-medium hover:bg-muted/70 disabled:opacity-50">Add</button>
             </div>
-            {errors.alias && <p className="max-w-48 text-xs text-red-500">{errors.alias}</p>}
+            {errors.alias && <p className="max-w-48 text-xs text-destructive">{errors.alias}</p>}
         </form>
     );
 }
@@ -84,7 +84,7 @@ export default function Skills({ skills, filters }: Props) {
                                             {s.aliases.map((a) => (
                                                 <span key={a.id} className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-foreground">
                                                     {a.alias}
-                                                    <button onClick={() => removeAlias(a.id, a.alias)} className="text-red-500 hover:text-red-700">×</button>
+                                                    <button onClick={() => removeAlias(a.id, a.alias)} className="text-destructive hover:text-destructive">×</button>
                                                 </span>
                                             ))}
                                             {s.aliases.length === 0 && <span className="text-xs text-muted-foreground">—</span>}

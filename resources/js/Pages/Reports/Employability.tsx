@@ -88,12 +88,12 @@ export default function EmployabilityReport({
             <div className="space-y-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 print:hidden">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Employability Report</h1>
-                        <p className="mt-1 text-gray-500">Graduate employment statistics</p>
+                        <h1 className="text-2xl font-bold text-foreground">Employability Report</h1>
+                        <p className="mt-1 text-muted-foreground">Graduate employment statistics</p>
                     </div>
                     <div className="flex gap-2">
                         <button onClick={() => window.print()}
-                            className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            className="flex items-center gap-2 rounded-lg border border-gray-300 bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-background">
                             <Printer size={16} /> Print / Save as PDF
                         </button>
                         <a href={exportUrl()}
@@ -130,62 +130,62 @@ export default function EmployabilityReport({
 
                 {/* KPI Cards */}
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Total Graduates</p>
-                        <p className="mt-1 text-3xl font-bold text-gray-900">{totalGraduates}</p>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <p className="text-sm text-muted-foreground">Total Graduates</p>
+                        <p className="mt-1 text-3xl font-bold text-foreground">{totalGraduates}</p>
                     </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Employment Rate</p>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <p className="text-sm text-muted-foreground">Employment Rate</p>
                         <p className="mt-1 text-3xl font-bold text-green-600">{employmentRate}%</p>
                     </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Willing to Relocate</p>
-                        <p className="mt-1 text-3xl font-bold text-indigo-600">{relocateRate}%</p>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <p className="text-sm text-muted-foreground">Willing to Relocate</p>
+                        <p className="mt-1 text-3xl font-bold text-primary">{relocateRate}%</p>
                     </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Job-Relevant Employment</p>
-                        <p className="mt-1 text-3xl font-bold text-blue-600">{jobRelevanceRate ?? '—'}{jobRelevanceRate !== null && '%'}</p>
-                        <p className="mt-1 text-xs text-gray-400">Current job related to their course</p>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <p className="text-sm text-muted-foreground">Job-Relevant Employment</p>
+                        <p className="mt-1 text-3xl font-bold text-primary">{jobRelevanceRate ?? '—'}{jobRelevanceRate !== null && '%'}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Current job related to their course</p>
                     </div>
-                    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                        <p className="text-sm text-gray-500">Avg. Time to Employment</p>
-                        <p className="mt-1 text-3xl font-bold text-gray-900">{avgTimeToEmploymentMonths ?? '—'}{avgTimeToEmploymentMonths !== null && ' mo'}</p>
-                        <p className="mt-1 text-xs text-gray-400">From graduation year to first job</p>
+                    <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                        <p className="text-sm text-muted-foreground">Avg. Time to Employment</p>
+                        <p className="mt-1 text-3xl font-bold text-foreground">{avgTimeToEmploymentMonths ?? '—'}{avgTimeToEmploymentMonths !== null && ' mo'}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">From graduation year to first job</p>
                     </div>
                 </div>
 
                 {/* Employment Breakdown */}
-                <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h2 className="text-sm font-semibold text-gray-700 mb-4">Employment Status Breakdown</h2>
+                <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                    <h2 className="text-sm font-semibold text-foreground mb-4">Employment Status Breakdown</h2>
                     <div className="space-y-3">
                         {Object.entries(employmentBreakdown).map(([key, count]) => {
                             const pct = totalGraduates > 0 ? Math.round((count / totalGraduates) * 100) : 0;
                             return (
                                 <div key={key}>
                                     <div className="flex items-center justify-between text-sm mb-1">
-                                        <span className="text-gray-700">{LABELS[key] ?? key}</span>
-                                        <span className="text-gray-500">{count} ({pct}%)</span>
+                                        <span className="text-foreground">{LABELS[key] ?? key}</span>
+                                        <span className="text-muted-foreground">{count} ({pct}%)</span>
                                     </div>
-                                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                                         <div className={`h-full rounded-full ${COLORS[key] ?? 'bg-gray-400'}`} style={{ width: `${pct}%` }} />
                                     </div>
                                 </div>
                             );
                         })}
                         {Object.keys(employmentBreakdown).length === 0 && (
-                            <p className="text-sm text-gray-400">No employment status data for this filter.</p>
+                            <p className="text-sm text-muted-foreground">No employment status data for this filter.</p>
                         )}
                     </div>
                 </div>
 
                 {Object.keys(salaryDistribution).length > 0 && (
-                    <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                        <h2 className="text-sm font-semibold text-gray-700 mb-4">Salary Range Distribution</h2>
+                    <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                        <h2 className="text-sm font-semibold text-foreground mb-4">Salary Range Distribution</h2>
                         <div className="space-y-2">
                             {Object.entries(salaryDistribution).map(([range, count]) => (
                                 <div key={range} className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-700">{range}</span>
-                                    <span className="text-gray-500">{count}</span>
+                                    <span className="text-foreground">{range}</span>
+                                    <span className="text-muted-foreground">{count}</span>
                                 </div>
                             ))}
                         </div>
@@ -193,16 +193,16 @@ export default function EmployabilityReport({
                 )}
 
                 {surveyResponseRates.length > 0 && (
-                    <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                        <h2 className="text-sm font-semibold text-gray-700 mb-4">Tracer &amp; Employability Survey Response Rates</h2>
+                    <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                        <h2 className="text-sm font-semibold text-foreground mb-4">Tracer &amp; Employability Survey Response Rates</h2>
                         <div className="space-y-3">
                             {surveyResponseRates.map((s) => (
                                 <div key={s.id}>
                                     <div className="flex items-center justify-between text-sm mb-1">
-                                        <span className="text-gray-700">{s.title}</span>
-                                        <span className="text-gray-500">{s.submitted}/{s.eligible} ({s.responseRate}%)</span>
+                                        <span className="text-foreground">{s.title}</span>
+                                        <span className="text-muted-foreground">{s.submitted}/{s.eligible} ({s.responseRate}%)</span>
                                     </div>
-                                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-2 bg-muted rounded-full overflow-hidden">
                                         <div className="h-full rounded-full bg-indigo-500" style={{ width: `${s.responseRate}%` }} />
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@ export default function EmployabilityReport({
                     </div>
                 )}
 
-                <p className="text-xs text-gray-400 text-right">
+                <p className="text-xs text-muted-foreground text-right">
                     Data reflects registered graduate profiles matching the selected filters, updated in real time.
                 </p>
             </div>

@@ -33,8 +33,8 @@ export default function Login({
             <Head title="Log in" />
 
             <div className="mb-6">
-                <h1 className="text-xl font-bold text-gray-900">Welcome back</h1>
-                <p className="mt-1 text-sm text-gray-500">Sign in to your GradConnect account.</p>
+                <h1 className="text-xl font-bold text-foreground">Welcome back</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Sign in to your GradConnect account.</p>
             </div>
 
             {status && (
@@ -89,7 +89,7 @@ export default function Login({
                                 )
                             }
                         />
-                        <span className="ms-2 text-sm text-gray-600">
+                        <span className="ms-2 text-sm text-muted-foreground">
                             Remember me
                         </span>
                     </label>
@@ -99,7 +99,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Forgot your password?
                         </Link>

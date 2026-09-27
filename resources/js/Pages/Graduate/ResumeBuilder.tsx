@@ -72,12 +72,12 @@ export default function ResumeBuilder({ profile }: Props) {
             <div className="mx-auto max-w-3xl space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Résumé Builder</h1>
-                        <p className="mt-1 text-sm text-gray-500">Generated automatically from your profile, education, employment, and skills.</p>
+                        <h1 className="text-2xl font-bold text-foreground">Résumé Builder</h1>
+                        <p className="mt-1 text-sm text-muted-foreground">Generated automatically from your profile, education, employment, and skills.</p>
                     </div>
                     <div className="flex gap-2">
                         <button onClick={() => window.print()}
-                            className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            className="flex items-center gap-2 rounded-lg border border-gray-300 bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-background">
                             <Printer size={16} /> Print / Save as PDF
                         </button>
                         <button onClick={saveAsResume} disabled={saving || !hasContent}
@@ -94,28 +94,28 @@ export default function ResumeBuilder({ profile }: Props) {
                 )}
 
                 {/* The résumé itself — this is what prints. */}
-                <div className="rounded-xl bg-white p-10 shadow-sm ring-1 ring-gray-200 print:rounded-none print:p-0 print:shadow-none print:ring-0">
+                <div className="rounded-xl bg-card p-10 shadow-sm ring-1 ring-gray-200 print:rounded-none print:p-0 print:shadow-none print:ring-0">
                     <div className="border-b-2 border-gray-800 pb-4">
-                        <h2 className="text-3xl font-bold tracking-tight text-gray-900">{user.name}</h2>
-                        <p className="mt-1 text-sm text-gray-600">
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground">{user.name}</h2>
+                        <p className="mt-1 text-sm text-muted-foreground">
                             {[user.email, profile.phone, profile.city, profile.linkedin_url].filter(Boolean).join('  •  ')}
                         </p>
-                        {profile.headline && <p className="mt-2 font-medium text-indigo-700">{profile.headline}</p>}
+                        {profile.headline && <p className="mt-2 font-medium text-primary">{profile.headline}</p>}
                     </div>
 
                     {profile.summary && (
                         <section className="mt-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">Summary</h3>
-                            <p className="mt-2 text-sm leading-relaxed text-gray-700">{profile.summary}</p>
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Summary</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-foreground">{profile.summary}</p>
                         </section>
                     )}
 
                     {profile.skills.length > 0 && (
                         <section className="mt-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">Skills</h3>
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Skills</h3>
                             <div className="mt-2 flex flex-wrap gap-1.5">
                                 {profile.skills.map((s) => (
-                                    <span key={s.id} className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-700 print:border print:border-gray-300">
+                                    <span key={s.id} className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-foreground print:border print:border-gray-300">
                                         {s.name}
                                     </span>
                                 ))}
@@ -125,18 +125,18 @@ export default function ResumeBuilder({ profile }: Props) {
 
                     {profile.employment_records.length > 0 && (
                         <section className="mt-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">Experience</h3>
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Experience</h3>
                             <div className="mt-2 space-y-4">
                                 {profile.employment_records.map((rec) => (
                                     <div key={rec.id}>
                                         <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                                            <p className="font-semibold text-gray-900">{rec.job_title} — {rec.company_name}</p>
-                                            <p className="text-xs text-gray-500">{formatMonthYear(rec.start_date)} – {rec.is_current ? 'Present' : formatMonthYear(rec.end_date)}</p>
+                                            <p className="font-semibold text-foreground">{rec.job_title} — {rec.company_name}</p>
+                                            <p className="text-xs text-muted-foreground">{formatMonthYear(rec.start_date)} – {rec.is_current ? 'Present' : formatMonthYear(rec.end_date)}</p>
                                         </div>
                                         {(rec.industry || rec.location) && (
-                                            <p className="text-xs text-gray-500">{[rec.industry, rec.location].filter(Boolean).join(' · ')}</p>
+                                            <p className="text-xs text-muted-foreground">{[rec.industry, rec.location].filter(Boolean).join(' · ')}</p>
                                         )}
-                                        {rec.description && <p className="mt-1 text-sm text-gray-700">{rec.description}</p>}
+                                        {rec.description && <p className="mt-1 text-sm text-foreground">{rec.description}</p>}
                                     </div>
                                 ))}
                             </div>
@@ -145,15 +145,15 @@ export default function ResumeBuilder({ profile }: Props) {
 
                     {profile.education_records.length > 0 && (
                         <section className="mt-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">Education</h3>
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Education</h3>
                             <div className="mt-2 space-y-3">
                                 {profile.education_records.map((rec) => (
                                     <div key={rec.id}>
                                         <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                                            <p className="font-semibold text-gray-900">{rec.degree}{rec.field_of_study ? ` in ${rec.field_of_study}` : ''}</p>
-                                            <p className="text-xs text-gray-500">{formatYear(rec.start_year)} – {formatYear(rec.end_year)}</p>
+                                            <p className="font-semibold text-foreground">{rec.degree}{rec.field_of_study ? ` in ${rec.field_of_study}` : ''}</p>
+                                            <p className="text-xs text-muted-foreground">{formatYear(rec.start_year)} – {formatYear(rec.end_year)}</p>
                                         </div>
-                                        <p className="text-sm text-gray-700">{rec.institution}{rec.honors ? ` — ${rec.honors}` : ''}</p>
+                                        <p className="text-sm text-foreground">{rec.institution}{rec.honors ? ` — ${rec.honors}` : ''}</p>
                                     </div>
                                 ))}
                             </div>

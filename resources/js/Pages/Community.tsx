@@ -41,7 +41,7 @@ function CommentBox({ postId }: { postId: number }) {
                 <button type="submit" disabled={sending}
                     className="shrink-0 rounded-lg bg-muted px-3 py-1.5 text-xs font-medium hover:bg-muted/70 disabled:opacity-50">Reply</button>
             </div>
-            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
         </form>
     );
 }
@@ -90,7 +90,7 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                             maxLength={POST_MAX}
                             placeholder="Share an update with the alumni community…"
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
-                        {postError && <p className="mt-1 text-xs text-red-600">{postError}</p>}
+                        {postError && <p className="mt-1 text-xs text-destructive">{postError}</p>}
                         <div className="mt-2 flex items-center justify-end gap-3">
                             <span className="text-xs text-muted-foreground">{newPost.length}/{POST_MAX}</span>
                             <button type="submit" disabled={posting}
@@ -108,7 +108,7 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                                     <p className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleString()}</p>
                                 </div>
                                 {canModify(post.user.id) && (
-                                    <button onClick={() => deletePost(post.id)} className="text-xs text-red-500 hover:text-red-700">Delete</button>
+                                    <button onClick={() => deletePost(post.id)} className="text-xs text-destructive hover:text-destructive">Delete</button>
                                 )}
                             </div>
                             <p className="mt-2 whitespace-pre-wrap break-words text-sm text-foreground [overflow-wrap:anywhere]">{post.body}</p>
@@ -126,7 +126,7 @@ export default function Community({ posts, canPost, canModerate }: Props) {
                                                 <p className="break-words text-sm text-foreground [overflow-wrap:anywhere]">{c.body}</p>
                                             </div>
                                             {canModify(c.user.id) && (
-                                                <button onClick={() => deleteComment(c.id)} className="shrink-0 text-xs text-red-500 hover:text-red-700">×</button>
+                                                <button onClick={() => deleteComment(c.id)} className="shrink-0 text-xs text-destructive hover:text-destructive">×</button>
                                             )}
                                         </div>
                                     ))}

@@ -47,56 +47,56 @@ export default function Resumes({ resumes }: Props) {
 
             <div className="max-w-2xl space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                    <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
+                    <h1 className="text-2xl font-bold text-foreground">My Resumes</h1>
                     <Link href={route('resume-builder.index')} className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100">
                         Build from My Profile
                     </Link>
                 </div>
 
                 {/* Upload */}
-                <form onSubmit={handleUpload} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
-                    <p className="text-sm font-medium text-gray-700">Upload New Resume</p>
+                <form onSubmit={handleUpload} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
+                    <p className="text-sm font-medium text-foreground">Upload New Resume</p>
                     <div className="flex gap-3 items-start">
                         <div className="flex-1">
                             <input type="file" accept=".pdf,.txt,.docx" onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
-                                className="block w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100" />
-                            {errors.file && <p className="mt-1 text-xs text-red-600">{errors.file}</p>}
+                                className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100" />
+                            {errors.file && <p className="mt-1 text-xs text-destructive">{errors.file}</p>}
                         </div>
                         <button type="submit" disabled={processing || !data.file}
                             className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 shrink-0">
                             Upload
                         </button>
                     </div>
-                    <p className="text-xs text-gray-400">PDF, DOCX or TXT, max 10 MB. Or build one automatically from your profile above.</p>
+                    <p className="text-xs text-muted-foreground">PDF, DOCX or TXT, max 10 MB. Or build one automatically from your profile above.</p>
                 </form>
 
                 {/* Resume list */}
                 <div className="space-y-3">
                     {resumes.map((resume) => (
-                        <div key={resume.id} className={`rounded-xl bg-white p-4 shadow-sm ring-1 ${resume.is_primary ? 'ring-indigo-400' : 'ring-gray-200'}`}>
+                        <div key={resume.id} className={`rounded-xl bg-card p-4 shadow-sm ring-1 ${resume.is_primary ? 'ring-indigo-400' : 'ring-gray-200'}`}>
                             <div className="flex items-center justify-between gap-3">
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <p className="font-medium text-gray-900 truncate">{resume.original_filename}</p>
+                                        <p className="font-medium text-foreground truncate">{resume.original_filename}</p>
                                         {resume.is_primary && (
                                             <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">Primary</span>
                                         )}
                                         {resume.source === 'built' && (
                                             <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">Built from Profile</span>
                                         )}
-                                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[resume.embedding_status] ?? 'bg-gray-100 text-gray-600'}`}>
+                                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[resume.embedding_status] ?? 'bg-muted text-muted-foreground'}`}>
                                             {resume.embedding_status}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-gray-400 mt-0.5">{formatBytes(resume.size_bytes)} · {new Date(resume.created_at).toLocaleDateString()}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{formatBytes(resume.size_bytes)} · {new Date(resume.created_at).toLocaleDateString()}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                     {!resume.is_primary && (
-                                        <button onClick={() => setPrimary(resume.id)} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                        <button onClick={() => setPrimary(resume.id)} className="text-xs text-primary hover:text-indigo-800 font-medium">
                                             Set Primary
                                         </button>
                                     )}
-                                    <button onClick={() => deleteResume(resume.id, resume.original_filename)} className="text-xs text-red-500 hover:text-red-700 font-medium">
+                                    <button onClick={() => deleteResume(resume.id, resume.original_filename)} className="text-xs text-destructive hover:text-destructive font-medium">
                                         Delete
                                     </button>
                                 </div>
@@ -104,7 +104,7 @@ export default function Resumes({ resumes }: Props) {
                         </div>
                     ))}
                     {resumes.length === 0 && (
-                        <p className="text-center py-8 text-gray-400">No resumes yet. Upload your first one above.</p>
+                        <p className="text-center py-8 text-muted-foreground">No resumes yet. Upload your first one above.</p>
                     )}
                 </div>
             </div>

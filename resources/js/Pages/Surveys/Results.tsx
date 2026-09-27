@@ -21,12 +21,12 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
             <Head title={`Results — ${survey.title}`} />
             <div className="max-w-2xl space-y-5">
                 <div className="flex items-center gap-3">
-                    <Link href={route('surveys.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Surveys</Link>
+                    <Link href={route('surveys.index')} className="text-sm text-primary hover:text-indigo-800">← Surveys</Link>
                 </div>
 
-                <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h1 className="text-2xl font-bold text-gray-900">{survey.title}</h1>
-                    <p className="mt-1 text-gray-500 text-sm">{totalResponses} submitted response(s)</p>
+                <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                    <h1 className="text-2xl font-bold text-foreground">{survey.title}</h1>
+                    <p className="mt-1 text-muted-foreground text-sm">{totalResponses} submitted response(s)</p>
                 </div>
 
                 <div className="space-y-4">
@@ -44,10 +44,10 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
                         const tally = Object.entries(q.distribution ?? {});
 
                         return (
-                        <div key={q.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                            <p className="font-medium text-gray-800 mb-3">
+                        <div key={q.id} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                            <p className="font-medium text-foreground mb-3">
                                 {q.order}. {q.prompt}
-                                <span className="ml-2 text-xs text-gray-400">({q.total_answers} answer(s))</span>
+                                <span className="ml-2 text-xs text-muted-foreground">({q.total_answers} answer(s))</span>
                             </p>
                             {tally.length > 0 ? (
                                 <div className="space-y-2">
@@ -56,10 +56,10 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
                                         return (
                                             <div key={option}>
                                                 <div className="flex items-center justify-between text-sm mb-1">
-                                                    <span className="text-gray-700">{option}</span>
-                                                    <span className="text-gray-500">{count} ({pct}%)</span>
+                                                    <span className="text-foreground">{option}</span>
+                                                    <span className="text-muted-foreground">{count} ({pct}%)</span>
                                                 </div>
-                                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                <div className="h-2 bg-muted rounded-full overflow-hidden">
                                                     <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${pct}%` }} />
                                                 </div>
                                             </div>
@@ -69,18 +69,18 @@ export default function SurveyResults({ survey, results, totalResponses }: Props
                             ) : (
                                 <div className="space-y-1 max-h-48 overflow-y-auto">
                                     {q.answers.map((a, i) => (
-                                        <div key={i} className="rounded bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                                        <div key={i} className="rounded bg-background px-3 py-2 text-sm text-foreground">
                                             {Array.isArray(a.value) ? a.value.join(', ') : String(a.value ?? '—')}
                                         </div>
                                     ))}
-                                    {q.answers.length === 0 && <p className="text-sm text-gray-400">No answers yet.</p>}
+                                    {q.answers.length === 0 && <p className="text-sm text-muted-foreground">No answers yet.</p>}
                                 </div>
                             )}
                         </div>
                         );
                     })}
                     {results.length === 0 && (
-                        <p className="text-center py-12 text-gray-400">No results yet.</p>
+                        <p className="text-center py-12 text-muted-foreground">No results yet.</p>
                     )}
                 </div>
             </div>

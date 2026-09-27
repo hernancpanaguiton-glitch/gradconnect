@@ -62,9 +62,9 @@ const PROGRAM_NOT_LISTED = 'not-listed';
 function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <label className="block text-sm font-medium text-foreground mb-1">{label}</label>
             {children}
-            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
         </div>
     );
 }
@@ -74,7 +74,7 @@ function Input({ value, onChange, type = 'text', placeholder, disabled = false }
 }) {
     return (
         <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} disabled={disabled}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400" />
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground" />
     );
 }
 
@@ -85,7 +85,7 @@ function Select({ value, onChange, options, disabled = false, placeholder = '—
 }) {
     return (
         <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-50 disabled:text-gray-400">
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-background disabled:text-muted-foreground">
             <option value="">{placeholder}</option>
             {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -277,12 +277,12 @@ export default function ProfileEdit({
 
             <div className="max-w-3xl space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                    <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">My Career Profile</h1>
+                    <h1 className="text-xl font-bold text-foreground sm:text-2xl">My Career Profile</h1>
                     <div className="flex items-center gap-2">
-                        <div className="h-2 w-24 rounded-full bg-gray-200 sm:w-32">
+                        <div className="h-2 w-24 rounded-full bg-muted sm:w-32">
                             <div className="h-2 rounded-full bg-indigo-600 transition-all" style={{ width: `${profile.profile_completion}%` }} />
                         </div>
-                        <span className="whitespace-nowrap text-sm text-gray-500">{profile.profile_completion}% complete</span>
+                        <span className="whitespace-nowrap text-sm text-muted-foreground">{profile.profile_completion}% complete</span>
                     </div>
                 </div>
 
@@ -295,7 +295,7 @@ export default function ProfileEdit({
 
                 {/* Basic Info */}
                 {tab === 'basic' && (
-                    <form onSubmit={saveProfile} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
+                    <form onSubmit={saveProfile} className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
                         <div className="form-grid">
                             <Field label="College" error={errors.college_id}>
                                 <Select value={data.college_id} onChange={changeCollege}
@@ -357,8 +357,8 @@ export default function ProfileEdit({
                         </Field>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" checked={data.willing_to_relocate} onChange={(e) => setData('willing_to_relocate', e.target.checked)}
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700">Willing to relocate</span>
+                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-indigo-500" />
+                            <span className="text-sm text-foreground">Willing to relocate</span>
                         </label>
                         <button type="submit" disabled={processing} className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
                             Save Profile
@@ -370,18 +370,18 @@ export default function ProfileEdit({
                 {tab === 'education' && (
                     <div className="space-y-4">
                         {profile.education_records.map((rec) => (
-                            <div key={rec.id} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 flex justify-between items-start">
+                            <div key={rec.id} className="rounded-xl bg-card p-4 shadow-sm ring-1 ring-gray-200 flex justify-between items-start">
                                 <div>
-                                    <p className="font-medium text-gray-900">{rec.institution}</p>
-                                    <p className="text-sm text-gray-600">{rec.degree}{rec.field_of_study ? ` — ${rec.field_of_study}` : ''}</p>
-                                    {(rec.start_year || rec.end_year) && <p className="text-xs text-gray-400">{rec.start_year ?? '?'} – {rec.end_year ?? 'present'}</p>}
-                                    {rec.honors && <p className="text-xs text-indigo-600 mt-0.5">{rec.honors}</p>}
+                                    <p className="font-medium text-foreground">{rec.institution}</p>
+                                    <p className="text-sm text-muted-foreground">{rec.degree}{rec.field_of_study ? ` — ${rec.field_of_study}` : ''}</p>
+                                    {(rec.start_year || rec.end_year) && <p className="text-xs text-muted-foreground">{rec.start_year ?? '?'} – {rec.end_year ?? 'present'}</p>}
+                                    {rec.honors && <p className="text-xs text-primary mt-0.5">{rec.honors}</p>}
                                 </div>
-                                <button onClick={() => deleteEducation(rec.id)} className="text-red-400 hover:text-red-600 text-xs">Remove</button>
+                                <button onClick={() => deleteEducation(rec.id)} className="text-red-400 hover:text-destructive text-xs">Remove</button>
                             </div>
                         ))}
-                        <form onSubmit={addEducation} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
-                            <p className="text-sm font-medium text-gray-700">Add Education Record</p>
+                        <form onSubmit={addEducation} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
+                            <p className="text-sm font-medium text-foreground">Add Education Record</p>
                             <div className="form-grid-tight">
                                 <Field label="Institution" error={eduErrors.institution}>
                                     <Input value={eduForm.institution} onChange={(v) => setEduForm((f) => ({ ...f, institution: v }))} placeholder="University of Cebu" />
@@ -412,17 +412,17 @@ export default function ProfileEdit({
                 {tab === 'employment' && (
                     <div className="space-y-4">
                         {profile.employment_records.map((rec) => (
-                            <div key={rec.id} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 flex justify-between items-start">
+                            <div key={rec.id} className="rounded-xl bg-card p-4 shadow-sm ring-1 ring-gray-200 flex justify-between items-start">
                                 <div>
-                                    <p className="font-medium text-gray-900">{rec.job_title}</p>
-                                    <p className="text-sm text-gray-600">{rec.company_name}{rec.industry ? ` · ${rec.industry}` : ''}</p>
-                                    <p className="text-xs text-gray-400">{rec.employment_type.replace(/_/g, ' ')} · {formatMonthYear(rec.start_date)} – {rec.is_current ? 'Present' : formatMonthYear(rec.end_date)}</p>
+                                    <p className="font-medium text-foreground">{rec.job_title}</p>
+                                    <p className="text-sm text-muted-foreground">{rec.company_name}{rec.industry ? ` · ${rec.industry}` : ''}</p>
+                                    <p className="text-xs text-muted-foreground">{rec.employment_type.replace(/_/g, ' ')} · {formatMonthYear(rec.start_date)} – {rec.is_current ? 'Present' : formatMonthYear(rec.end_date)}</p>
                                 </div>
-                                <button onClick={() => deleteEmployment(rec.id)} className="text-red-400 hover:text-red-600 text-xs">Remove</button>
+                                <button onClick={() => deleteEmployment(rec.id)} className="text-red-400 hover:text-destructive text-xs">Remove</button>
                             </div>
                         ))}
-                        <form onSubmit={addEmployment} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
-                            <p className="text-sm font-medium text-gray-700">Add Employment Record</p>
+                        <form onSubmit={addEmployment} className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200 space-y-3">
+                            <p className="text-sm font-medium text-foreground">Add Employment Record</p>
                             <div className="form-grid-tight">
                                 <Field label="Company Name" error={empErrors.company_name}>
                                     <Input value={empForm.company_name} onChange={(v) => setEmpForm((f) => ({ ...f, company_name: v }))} placeholder="ACME Corporation" />
@@ -453,8 +453,8 @@ export default function ProfileEdit({
                             <label className="flex min-h-10 items-center gap-2 cursor-pointer">
                                 <input type="checkbox" checked={empForm.is_current}
                                     onChange={(e) => setEmpForm((f) => ({ ...f, is_current: e.target.checked, end_date: e.target.checked ? '' : f.end_date }))}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
-                                <span className="text-sm text-gray-700">Currently working here</span>
+                                    className="h-4 w-4 rounded border-gray-300 text-primary" />
+                                <span className="text-sm text-foreground">Currently working here</span>
                             </label>
                             <button type="submit" disabled={empSaving}
                                 className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">Add</button>
@@ -464,10 +464,10 @@ export default function ProfileEdit({
 
                 {/* Skills */}
                 {tab === 'skills' && (
-                    <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+                    <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
                         {/* Add a custom skill with AI autocomplete */}
                         <div className="relative">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Add a skill</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Add a skill</label>
                             <input
                                 type="text"
                                 value={skillQuery}
@@ -482,15 +482,15 @@ export default function ProfileEdit({
                                 }}
                                 placeholder="Type a skill, e.g. Kubernetes"
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                            <p className="mt-1 text-xs text-gray-400">
+                            <p className="mt-1 text-xs text-muted-foreground">
                                 Suggestions are checked by AI so only real skills are added. Press Enter to add what you typed.
                             </p>
-                            {skillError && <p className="mt-1 text-xs text-red-600">{skillError}</p>}
+                            {skillError && <p className="mt-1 text-xs text-destructive">{skillError}</p>}
 
                             {(skillLoading || suggestions.length > 0) && skillQuery.trim().length >= 2 && (
-                                <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+                                <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-card shadow-lg">
                                     {skillLoading && suggestions.length === 0 && (
-                                        <p className="px-3 py-2 text-sm text-gray-400">Searching…</p>
+                                        <p className="px-3 py-2 text-sm text-muted-foreground">Searching…</p>
                                     )}
                                     {suggestions.map((item, index) => (
                                         <button
@@ -499,8 +499,8 @@ export default function ProfileEdit({
                                             disabled={addingSkill}
                                             onClick={() => addSuggestion(item)}
                                             className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-indigo-50 disabled:opacity-50">
-                                            <span className="text-gray-800">{item.name}</span>
-                                            <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium ${item.source === 'library' ? 'bg-gray-100 text-gray-500' : 'bg-indigo-50 text-indigo-600'}`}>
+                                            <span className="text-foreground">{item.name}</span>
+                                            <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium ${item.source === 'library' ? 'bg-muted text-muted-foreground' : 'bg-indigo-50 text-indigo-600'}`}>
                                                 {item.source === 'library' ? 'In library' : 'AI suggested'}
                                             </span>
                                         </button>

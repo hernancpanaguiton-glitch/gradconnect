@@ -54,17 +54,17 @@ function AccountTab({ account }: { account: Props['account'] }) {
                 <div>
                     <label className="mb-1 block text-sm font-medium text-foreground">First name</label>
                     <input value={data.first_name} onChange={(e) => setData('first_name', e.target.value)} className={inputClass} />
-                    {errors.first_name && <p className="mt-1 text-xs text-red-500">{errors.first_name}</p>}
+                    {errors.first_name && <p className="mt-1 text-xs text-destructive">{errors.first_name}</p>}
                 </div>
                 <div>
                     <label className="mb-1 block text-sm font-medium text-foreground">Last name</label>
                     <input value={data.last_name} onChange={(e) => setData('last_name', e.target.value)} className={inputClass} />
-                    {errors.last_name && <p className="mt-1 text-xs text-red-500">{errors.last_name}</p>}
+                    {errors.last_name && <p className="mt-1 text-xs text-destructive">{errors.last_name}</p>}
                 </div>
                 <div className="sm:col-span-2">
                     <label className="mb-1 block text-sm font-medium text-foreground">Email</label>
                     <input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className={inputClass} />
-                    {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+                    {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
                     {!account.email_verified && (
                         <p className="mt-1 text-xs text-amber-600">This email address is not verified.</p>
                     )}
@@ -118,19 +118,19 @@ function PasswordTab() {
                 <label className="mb-1 block text-sm font-medium text-foreground">Current password</label>
                 <input type="password" autoComplete="current-password" value={data.current_password}
                     onChange={(e) => setData('current_password', e.target.value)} className={inputClass} />
-                {errors.current_password && <p className="mt-1 text-xs text-red-500">{errors.current_password}</p>}
+                {errors.current_password && <p className="mt-1 text-xs text-destructive">{errors.current_password}</p>}
             </div>
             <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">New password</label>
                 <input type="password" autoComplete="new-password" value={data.password}
                     onChange={(e) => setData('password', e.target.value)} className={inputClass} />
-                {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+                {errors.password && <p className="mt-1 text-xs text-destructive">{errors.password}</p>}
             </div>
             <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Confirm new password</label>
                 <input type="password" autoComplete="new-password" value={data.password_confirmation}
                     onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} />
-                {errors.password_confirmation && <p className="mt-1 text-xs text-red-500">{errors.password_confirmation}</p>}
+                {errors.password_confirmation && <p className="mt-1 text-xs text-destructive">{errors.password_confirmation}</p>}
             </div>
             <div className="flex items-center gap-3">
                 <button type="submit" disabled={processing}

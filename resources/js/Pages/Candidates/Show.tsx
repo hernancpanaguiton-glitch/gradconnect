@@ -39,8 +39,8 @@ const STATUS_LABELS: Record<string, string> = {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-        <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">{title}</h2>
+        <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{title}</h2>
             {children}
         </div>
     );
@@ -52,13 +52,13 @@ export default function CandidateShow({ profile }: Props) {
             <Head title={profile.user.name} />
 
             <div className="max-w-3xl space-y-5">
-                <Link href={route('postings.index')} className="text-sm text-indigo-600 hover:text-indigo-800">← Back</Link>
+                <Link href={route('postings.index')} className="text-sm text-primary hover:text-indigo-800">← Back</Link>
 
                 {/* Header */}
-                <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h1 className="break-words text-xl font-bold text-gray-900 sm:text-2xl">{profile.user.name}</h1>
-                    {profile.headline && <p className="mt-1 text-gray-600">{profile.headline}</p>}
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200">
+                    <h1 className="break-words text-xl font-bold text-foreground sm:text-2xl">{profile.user.name}</h1>
+                    {profile.headline && <p className="mt-1 text-muted-foreground">{profile.headline}</p>}
+                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         {profile.user.email && <span className="break-all">{profile.user.email}</span>}
                         {profile.department && <span>· {profile.department.name}</span>}
                         {profile.program && <span>· {profile.program}</span>}
@@ -66,7 +66,7 @@ export default function CandidateShow({ profile }: Props) {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                         {profile.current_employment_status && (
-                            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                            <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
                                 {STATUS_LABELS[profile.current_employment_status] ?? profile.current_employment_status}
                             </span>
                         )}
@@ -85,22 +85,22 @@ export default function CandidateShow({ profile }: Props) {
                 {/* Résumés */}
                 <Section title="Résumés">
                     {profile.resumes.length === 0 ? (
-                        <p className="text-sm text-gray-400">No résumé uploaded.</p>
+                        <p className="text-sm text-muted-foreground">No résumé uploaded.</p>
                     ) : (
                         <ul className="divide-y divide-gray-100">
                             {profile.resumes.map((resume) => (
                                 <li key={resume.id} className="flex items-center justify-between py-2">
-                                    <span className="text-sm text-gray-700">
+                                    <span className="text-sm text-foreground">
                                         {resume.original_filename}
                                         {resume.is_primary && <span className="ml-2 rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600">Primary</span>}
                                     </span>
                                     {resume.can_download ? (
                                         <a href={route('candidates.resume', resume.id)} target="_blank" rel="noreferrer"
-                                            className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
+                                            className="text-sm font-medium text-primary hover:text-indigo-800">
                                             View / Download
                                         </a>
                                     ) : (
-                                        <span className="text-xs text-gray-400">Available once they apply to you</span>
+                                        <span className="text-xs text-muted-foreground">Available once they apply to you</span>
                                     )}
                                 </li>
                             ))}
@@ -110,7 +110,7 @@ export default function CandidateShow({ profile }: Props) {
 
                 {profile.summary && (
                     <Section title="Summary">
-                        <p className="whitespace-pre-line text-sm text-gray-700">{profile.summary}</p>
+                        <p className="whitespace-pre-line text-sm text-foreground">{profile.summary}</p>
                     </Section>
                 )}
 
@@ -118,7 +118,7 @@ export default function CandidateShow({ profile }: Props) {
                     <Section title="Skills">
                         <div className="flex flex-wrap gap-2">
                             {profile.skills.map((skill) => (
-                                <span key={skill.id} className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">{skill.name}</span>
+                                <span key={skill.id} className="rounded-full bg-muted px-3 py-1 text-sm font-medium text-foreground">{skill.name}</span>
                             ))}
                         </div>
                     </Section>
@@ -129,10 +129,10 @@ export default function CandidateShow({ profile }: Props) {
                         <div className="space-y-3">
                             {profile.education_records.map((rec) => (
                                 <div key={rec.id}>
-                                    <p className="font-medium text-gray-900">{rec.institution}</p>
-                                    <p className="text-sm text-gray-600">{rec.degree}{rec.field_of_study ? ` — ${rec.field_of_study}` : ''}</p>
-                                    {(rec.start_year || rec.end_year) && <p className="text-xs text-gray-400">{rec.start_year ?? '?'} – {rec.end_year ?? 'present'}</p>}
-                                    {rec.honors && <p className="text-xs text-indigo-600">{rec.honors}</p>}
+                                    <p className="font-medium text-foreground">{rec.institution}</p>
+                                    <p className="text-sm text-muted-foreground">{rec.degree}{rec.field_of_study ? ` — ${rec.field_of_study}` : ''}</p>
+                                    {(rec.start_year || rec.end_year) && <p className="text-xs text-muted-foreground">{rec.start_year ?? '?'} – {rec.end_year ?? 'present'}</p>}
+                                    {rec.honors && <p className="text-xs text-primary">{rec.honors}</p>}
                                 </div>
                             ))}
                         </div>
@@ -144,9 +144,9 @@ export default function CandidateShow({ profile }: Props) {
                         <div className="space-y-3">
                             {profile.employment_records.map((rec) => (
                                 <div key={rec.id}>
-                                    <p className="font-medium text-gray-900">{rec.job_title}</p>
-                                    <p className="text-sm text-gray-600">{rec.company_name}</p>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="font-medium text-foreground">{rec.job_title}</p>
+                                    <p className="text-sm text-muted-foreground">{rec.company_name}</p>
+                                    <p className="text-xs text-muted-foreground">
                                         {rec.employment_type.replace(/_/g, ' ')}{rec.is_current ? ' · Current' : ''}
                                     </p>
                                 </div>

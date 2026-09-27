@@ -106,9 +106,9 @@ export default function SkillCategoryPicker({ skills, selectedIds, onToggle, ope
                         }}
                         className="rounded-lg border border-gray-200"
                     >
-                        <summary className="cursor-pointer select-none px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <summary className="cursor-pointer select-none px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             {category}
-                            <span className="ml-2 font-normal normal-case tracking-normal text-gray-400">
+                            <span className="ml-2 font-normal normal-case tracking-normal text-muted-foreground">
                                 {selectedCount > 0 ? `${selectedCount} selected · ` : ''}
                                 {matches.length} skill{matches.length === 1 ? '' : 's'}
                             </span>
@@ -124,7 +124,7 @@ export default function SkillCategoryPicker({ skills, selectedIds, onToggle, ope
                                         aria-pressed={selected}
                                         onClick={() => onToggle(skill.id)}
                                         className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
-                                            selected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            selected ? 'bg-indigo-600 text-white' : 'bg-muted text-foreground hover:bg-muted'
                                         }`}
                                     >
                                         {skill.name}
@@ -137,7 +137,7 @@ export default function SkillCategoryPicker({ skills, selectedIds, onToggle, ope
             })}
 
             {visible.length === 0 && (
-                <p className="px-1 py-6 text-center text-sm text-gray-400">No skills match "{query.trim()}".</p>
+                <p className="px-1 py-6 text-center text-sm text-muted-foreground">No skills match "{query.trim()}".</p>
             )}
         </div>
     );

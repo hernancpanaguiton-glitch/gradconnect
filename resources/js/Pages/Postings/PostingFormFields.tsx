@@ -177,10 +177,10 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
 
     return (
         <>
-            <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
+            <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
                 {/* Title with AI autocomplete */}
                 <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                    <label className="block text-sm font-medium text-foreground mb-1">Job Title *</label>
                     <input
                         type="text"
                         value={data.title}
@@ -189,16 +189,16 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                         onBlur={() => setTimeout(() => setTitleFocused(false), 150)}
                         placeholder="Start typing, e.g. Backend Developer"
                         className={inputClass} />
-                    {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title}</p>}
+                    {errors.title && <p className="mt-1 text-xs text-destructive">{errors.title}</p>}
                     {titleFocused && (titleLoading || titleSuggestions.length > 0) && data.title.trim().length >= 2 && (
-                        <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+                        <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-card shadow-lg">
                             {titleLoading && titleSuggestions.length === 0 && (
-                                <p className="px-3 py-2 text-sm text-gray-400">Suggesting…</p>
+                                <p className="px-3 py-2 text-sm text-muted-foreground">Suggesting…</p>
                             )}
                             {titleSuggestions.map((title) => (
                                 <button key={title} type="button"
                                     onMouseDown={(e) => { e.preventDefault(); setData('title', title); setTitleSuggestions([]); }}
-                                    className="block w-full px-3 py-2 text-left text-sm text-gray-800 hover:bg-indigo-50">
+                                    className="block w-full px-3 py-2 text-left text-sm text-foreground hover:bg-muted">
                                     {title}
                                 </button>
                             ))}
@@ -208,7 +208,7 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type *</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Employment Type *</label>
                         <select value={data.employment_type} onChange={(e) => setData('employment_type', e.target.value)} className={inputClass}>
                             <option value="full_time">Full-time</option>
                             <option value="part_time">Part-time</option>
@@ -216,76 +216,76 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                             <option value="internship">Internship</option>
                             <option value="freelance">Freelance</option>
                         </select>
-                        {errors.employment_type && <p className="mt-1 text-xs text-red-600">{errors.employment_type}</p>}
+                        {errors.employment_type && <p className="mt-1 text-xs text-destructive">{errors.employment_type}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Status</label>
                         <select value={data.status} onChange={(e) => setData('status', e.target.value)} className={inputClass}>
                             <option value="draft">Draft</option>
                             <option value="open">Open</option>
                             <option value="closed">Closed</option>
                         </select>
-                        {errors.status && <p className="mt-1 text-xs text-red-600">{errors.status}</p>}
+                        {errors.status && <p className="mt-1 text-xs text-destructive">{errors.status}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Location</label>
                         <input type="text" value={data.location} onChange={(e) => setData('location', e.target.value)}
-                            placeholder="Cebu City" disabled={data.is_remote} className={`${inputClass} disabled:bg-gray-50`} />
-                        {errors.location && <p className="mt-1 text-xs text-red-600">{errors.location}</p>}
+                            placeholder="Cebu City" disabled={data.is_remote} className={`${inputClass} disabled:bg-background`} />
+                        {errors.location && <p className="mt-1 text-xs text-destructive">{errors.location}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Salary Range</label>
                         <input type="text" value={data.salary_range} onChange={(e) => setData('salary_range', e.target.value)}
                             placeholder="₱20,000 – ₱30,000/mo" className={inputClass} />
-                        {errors.salary_range && <p className="mt-1 text-xs text-red-600">{errors.salary_range}</p>}
+                        {errors.salary_range && <p className="mt-1 text-xs text-destructive">{errors.salary_range}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="application_deadline">Application Deadline</label>
+                        <label className="block text-sm font-medium text-foreground mb-1" htmlFor="application_deadline">Application Deadline</label>
                         <input id="application_deadline" type="date" value={data.application_deadline}
                             onChange={(e) => setData('application_deadline', e.target.value)} className={inputClass} />
-                        {errors.application_deadline && <p className="mt-1 text-xs text-red-600">{errors.application_deadline}</p>}
+                        {errors.application_deadline && <p className="mt-1 text-xs text-destructive">{errors.application_deadline}</p>}
                     </div>
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={data.is_remote} onChange={(e) => setData('is_remote', e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
-                    <span className="text-sm text-gray-700">Remote position</span>
+                        className="h-4 w-4 rounded border-gray-300 text-primary" />
+                    <span className="text-sm text-foreground">Remote position</span>
                 </label>
-                {errors.is_remote && <p className="text-xs text-red-600">{errors.is_remote}</p>}
+                {errors.is_remote && <p className="text-xs text-destructive">{errors.is_remote}</p>}
 
                 {/* Description with AI generate */}
                 <div>
                     <div className="mb-1 flex items-center justify-between">
-                        <label className="block text-sm font-medium text-gray-700">Job Description *</label>
+                        <label className="block text-sm font-medium text-foreground">Job Description *</label>
                         <button type="button" onClick={generateDescription} disabled={generatingDesc}
                             className="rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50">
                             {generatingDesc ? 'Generating…' : '✨ Generate from title'}
                         </button>
                     </div>
                     <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} rows={5} className={inputClass} />
-                    {errors.description && <p className="mt-1 text-xs text-red-600">{errors.description}</p>}
+                    {errors.description && <p className="mt-1 text-xs text-destructive">{errors.description}</p>}
                 </div>
 
                 {/* Qualifications with AI generate */}
                 <div>
                     <div className="mb-1 flex items-center justify-between">
-                        <label className="block text-sm font-medium text-gray-700">Qualifications</label>
+                        <label className="block text-sm font-medium text-foreground">Qualifications</label>
                         <button type="button" onClick={generateQualifications} disabled={generatingQual}
                             className="rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50">
                             {generatingQual ? 'Generating…' : '✨ Generate from title'}
                         </button>
                     </div>
                     <textarea value={data.qualifications} onChange={(e) => setData('qualifications', e.target.value)} rows={3} className={inputClass} />
-                    {errors.qualifications && <p className="mt-1 text-xs text-red-600">{errors.qualifications}</p>}
+                    {errors.qualifications && <p className="mt-1 text-xs text-destructive">{errors.qualifications}</p>}
                 </div>
 
                 {genError && <p className="text-xs text-amber-600">{genError}</p>}
             </div>
 
             {/* Required skills */}
-            <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
-                <p className="text-sm font-medium text-gray-700">Required Skills ({data.skills.length} selected)</p>
-                {skillsError && <p className="text-xs text-red-600">{skillsError}</p>}
+            <div className="rounded-xl bg-card p-6 shadow-sm ring-1 ring-gray-200 space-y-4">
+                <p className="text-sm font-medium text-foreground">Required Skills ({data.skills.length} selected)</p>
+                {skillsError && <p className="text-xs text-destructive">{skillsError}</p>}
 
                 <div className="relative">
                     <input
@@ -300,19 +300,19 @@ export default function PostingFormFields({ data, setData, errors, skills }: Pro
                         }}
                         placeholder="Add a skill, e.g. Kubernetes"
                         className={inputClass} />
-                    <p className="mt-1 text-xs text-gray-400">AI suggests and checks skills so only real ones are added. Press Enter to add what you typed.</p>
-                    {skillError && <p className="mt-1 text-xs text-red-600">{skillError}</p>}
+                    <p className="mt-1 text-xs text-muted-foreground">AI suggests and checks skills so only real ones are added. Press Enter to add what you typed.</p>
+                    {skillError && <p className="mt-1 text-xs text-destructive">{skillError}</p>}
                     {(skillLoading || skillSuggestions.length > 0) && skillQuery.trim().length >= 2 && (
-                        <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+                        <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-card shadow-lg">
                             {skillLoading && skillSuggestions.length === 0 && (
-                                <p className="px-3 py-2 text-sm text-gray-400">Searching…</p>
+                                <p className="px-3 py-2 text-sm text-muted-foreground">Searching…</p>
                             )}
                             {skillSuggestions.map((item, index) => (
                                 <button key={`${item.name}-${index}`} type="button" disabled={addingSkill}
                                     onClick={() => addSuggestion(item)}
                                     className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-indigo-50 disabled:opacity-50">
-                                    <span className="text-gray-800">{item.name}</span>
-                                    <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium ${item.source === 'library' ? 'bg-gray-100 text-gray-500' : 'bg-indigo-50 text-indigo-600'}`}>
+                                    <span className="text-foreground">{item.name}</span>
+                                    <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium ${item.source === 'library' ? 'bg-muted text-muted-foreground' : 'bg-indigo-50 text-indigo-600'}`}>
                                         {item.source === 'library' ? 'In library' : 'AI suggested'}
                                     </span>
                                 </button>

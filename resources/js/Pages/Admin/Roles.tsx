@@ -68,15 +68,15 @@ export default function Roles({ roles, permissionGroups, protectedRoles, lockedR
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Roles & Permissions</h1>
-                        <p className="mt-1 text-gray-500">Manage role definitions and permission assignments.</p>
+                        <h1 className="text-2xl font-bold text-foreground">Roles & Permissions</h1>
+                        <p className="mt-1 text-muted-foreground">Manage role definitions and permission assignments.</p>
                     </div>
                 </div>
 
 
                 {/* Create role */}
-                <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                    <h2 className="text-base font-semibold text-gray-900 mb-3">Create New Role</h2>
+                <div className="rounded-xl bg-card p-5 shadow-sm ring-1 ring-gray-200">
+                    <h2 className="text-base font-semibold text-foreground mb-3">Create New Role</h2>
                     <form onSubmit={handleCreate} className="flex gap-3">
                         <input
                             type="text"
@@ -93,31 +93,31 @@ export default function Roles({ roles, permissionGroups, protectedRoles, lockedR
                             Create Role
                         </button>
                     </form>
-                    {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                    {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
                 </div>
 
                 {/* Permissions matrix */}
-                <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+                <div className="rounded-xl bg-card shadow-sm ring-1 ring-gray-200 overflow-hidden">
                     <div className="px-5 py-4 border-b border-gray-200">
-                        <h2 className="text-base font-semibold text-gray-900">Permission Matrix</h2>
-                        <p className="text-xs text-gray-500 mt-0.5">Click a cell to toggle a permission for that role.</p>
+                        <h2 className="text-base font-semibold text-foreground">Permission Matrix</h2>
+                        <p className="text-xs text-muted-foreground mt-0.5">Click a cell to toggle a permission for that role.</p>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
-                            <thead className="bg-gray-50">
+                            <thead className="bg-background">
                                 <tr>
-                                    <th className="px-4 py-3 text-left font-medium text-gray-600 w-56">Permission</th>
+                                    <th className="px-4 py-3 text-left font-medium text-muted-foreground w-56">Permission</th>
                                     {roles.map((role) => (
-                                        <th key={role.id} className="px-3 py-3 text-center font-medium text-gray-600 min-w-[120px]">
+                                        <th key={role.id} className="px-3 py-3 text-center font-medium text-muted-foreground min-w-[120px]">
                                             <div className="flex flex-col items-center gap-1">
                                                 <span className="capitalize">{role.name.replace(/_/g, ' ')}</span>
                                                 {role.name === lockedRole && (
-                                                    <span className="text-[10px] font-normal text-gray-400">always full access</span>
+                                                    <span className="text-[10px] font-normal text-muted-foreground">always full access</span>
                                                 )}
                                                 {!protectedRoles.includes(role.name) && (
                                                     <button
                                                         onClick={() => deleteRole(role)}
-                                                        className="text-xs text-red-400 hover:text-red-600"
+                                                        className="text-xs text-red-400 hover:text-destructive"
                                                     >
                                                         delete
                                                     </button>
@@ -130,14 +130,14 @@ export default function Roles({ roles, permissionGroups, protectedRoles, lockedR
                             <tbody className="divide-y divide-gray-100">
                                 {Object.entries(permissionGroups).map(([group, perms]) => (
                                     <>
-                                        <tr key={`group-${group}`} className="bg-gray-50">
-                                            <td colSpan={roles.length + 1} className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                        <tr key={`group-${group}`} className="bg-background">
+                                            <td colSpan={roles.length + 1} className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                                                 {group}
                                             </td>
                                         </tr>
                                         {perms.map((perm) => (
-                                            <tr key={perm.id} className="hover:bg-gray-50">
-                                                <td className="px-4 py-2 text-gray-700 font-mono text-xs">{perm.name}</td>
+                                            <tr key={perm.id} className="hover:bg-background">
+                                                <td className="px-4 py-2 text-foreground font-mono text-xs">{perm.name}</td>
                                                 {roles.map((role) => {
                                                     const active = hasPermission(role, perm.name);
                                                     // The admin role is seeded with everything and the
@@ -152,7 +152,7 @@ export default function Roles({ roles, permissionGroups, protectedRoles, lockedR
                                                                 className={`h-6 w-6 rounded transition-colors ${
                                                                     active
                                                                         ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                                                        : 'bg-gray-200 hover:bg-gray-300'
+                                                                        : 'bg-muted hover:bg-secondary'
                                                                 } ${isSaving || locked ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 title={locked
                                                                     ? `The ${role.name} role always holds every permission`
