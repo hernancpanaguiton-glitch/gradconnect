@@ -206,6 +206,7 @@
         <li><a href="#sao">Student Affairs Office</a></li>
         <li><a href="#admin">Administrator</a></li>
         <li><a href="#phone">Test on a phone</a></li>
+        <li><a href="#theme">Light and dark mode</a></li>
         <li><a href="#report">Report a problem</a></li>
         <li><a href="#gaps">Known gaps (not bugs)</a></li>
     </ol>
@@ -499,7 +500,24 @@
 <div class="check"><input type="checkbox"><span class="txt"><b>Visit five or six more pages at phone size</b><span class="see">None of them scroll sideways.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="report"><span class="num">12</span>Report a problem</h2>
+<h2 id="theme"><span class="num">12</span>Light and dark mode</h2>
+<p class="role-note">The app has two colour themes. Both must be readable. The switch is the moon/sun icon in the top bar once you are signed in.</p>
+
+<div class="box tip">
+    <p><b>What you are checking:</b> that no text ever disappears into its background. If you can see a heading, a label, or what you typed, it passes.</p>
+</div>
+
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in, then click the moon icon in the top bar</b><span class="see">The whole app turns dark. Every heading, label and paragraph is still easy to read.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Profile" and type your name into a box</b><span class="see">What you type is clearly visible — light text on a dark box. It must never be invisible.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the faint example text inside empty boxes (such as "Cebu City")</b><span class="see">Readable grey — dimmer than real text, but not close to invisible.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open a dropdown, for example College</b><span class="see">The list of choices is readable, not dark text on a dark strip.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Visit five more pages while still in dark mode</b><span class="see">No page has text that vanishes into the background.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Still in dark mode, open Résumé Builder and press <code>Ctrl</code> + <code>P</code></b><span class="see">The print preview is black text on white paper — not a dark page, and never blank.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click the sun icon to switch back</b><span class="see">Everything returns to the light theme and is still readable.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out and look at the home page in both themes</b><span class="see">The headings ("Everything You Need to Succeed" and the card titles) are readable in both.</span></span></div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<h2 id="report"><span class="num">13</span>Report a problem</h2>
 <p class="role-note">A good report can be acted on straight away. A vague one cannot.</p>
 
 <p>For anything that does not match this guide, write down these five things:</p>
@@ -531,7 +549,7 @@
 </ol>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="gaps"><span class="num">13</span>Known gaps (not bugs)</h2>
+<h2 id="gaps"><span class="num">14</span>Known gaps (not bugs)</h2>
 <p class="role-note">These are expected. Please do not report them.</p>
 
 <div class="tablewrap">
@@ -541,7 +559,6 @@
         <tr><td>AI features return nothing, or a "not configured" note</td><td>The AI service needs a paid key. Without one, the system deliberately falls back instead of failing.</td></tr>
         <tr><td>No real emails arrive</td><td>By design. Everything goes to Mailpit at <code>localhost:8025</code>.</td></tr>
         <tr><td>Emails never mention anybody's name</td><td>Deliberate. Personal details stay inside the app, behind the sign-in.</td></tr>
-        <tr><td>Some pages look plain in dark mode</td><td>Dark mode is not finished on every page yet.</td></tr>
         <tr><td>Home page figures like "4,820+ Graduates Placed"</td><td>Sample marketing text, not live data.</td></tr>
         <tr><td>Match scores are missing on brand-new postings</td><td>Matching runs in the background. Wait a moment and reload.</td></tr>
     </tbody>
