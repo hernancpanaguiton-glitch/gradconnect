@@ -33,7 +33,7 @@ export default function PublicNav({ user }: { user?: NavUser | null }) {
     const signedIn = Boolean(user);
 
     return (
-        <nav ref={panelRef} className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur">
+        <nav ref={panelRef} className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
                 <Link href="/" className="flex min-w-0 items-center gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700">
@@ -69,7 +69,7 @@ export default function PublicNav({ user }: { user?: NavUser | null }) {
                         <div className="hidden items-center gap-2 sm:flex">
                             <Link
                                 href={route('login')}
-                                className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-blue-50"
+                                className="rounded-lg px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
                             >
                                 Sign In
                             </Link>
@@ -96,7 +96,7 @@ export default function PublicNav({ user }: { user?: NavUser | null }) {
             </div>
 
             {open && (
-                <div id="public-mobile-menu" className="border-t border-border bg-white px-4 py-3 md:hidden">
+                <div id="public-mobile-menu" className="border-t border-border bg-card px-4 py-3 md:hidden">
                     <div className="flex flex-col">
                         {LINKS.map((link) => (
                             <Link
@@ -115,7 +115,7 @@ export default function PublicNav({ user }: { user?: NavUser | null }) {
                             <Link
                                 href={route('login')}
                                 onClick={() => setOpen(false)}
-                                className="flex min-h-11 items-center justify-center rounded-lg border border-border text-sm font-semibold text-primary transition-colors hover:bg-blue-50"
+                                className="flex min-h-11 items-center justify-center rounded-lg border border-border text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
                             >
                                 Sign In
                             </Link>

@@ -42,12 +42,12 @@ export default function About({ auth }: PageProps) {
                     </div>
                 </section>
 
-                <section className="bg-[#f0f4f9] py-20">
+                <section className="bg-background py-20">
                     <div className="mx-auto max-w-5xl px-6">
                         <div className="grid gap-6 md:grid-cols-3">
                             {PILLARS.map((p) => (
-                                <div key={p.title} className="rounded-2xl border border-border bg-white p-6 shadow-sm">
-                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                                <div key={p.title} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                                         <p.icon size={22} className="text-primary" />
                                     </div>
                                     <h3 className="mb-2 font-bold text-foreground">{p.title}</h3>
@@ -58,7 +58,7 @@ export default function About({ auth }: PageProps) {
                     </div>
                 </section>
 
-                <section className="bg-white py-20">
+                <section className="bg-card py-20">
                     <div className="mx-auto max-w-4xl px-4 sm:px-6">
                         <h2 className="mb-4 text-2xl font-bold text-foreground">Who it's for</h2>
                         <div className="grid gap-4 text-sm leading-relaxed text-muted-foreground md:grid-cols-2">

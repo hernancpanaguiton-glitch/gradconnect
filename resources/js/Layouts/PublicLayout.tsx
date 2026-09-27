@@ -20,7 +20,7 @@ export default function PublicLayout({
     footer?: boolean;
 }) {
     return (
-        <div className="min-h-screen bg-white text-foreground">
+        <div className="min-h-screen bg-background text-foreground">
             <PublicNav user={user} />
             {children}
             {footer && <PublicFooter />}

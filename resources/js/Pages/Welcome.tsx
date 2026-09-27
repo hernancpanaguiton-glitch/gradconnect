@@ -56,7 +56,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                                     through AI resume matching, career analytics, and a nationwide employer network.
                                 </p>
                                 <div className="flex flex-wrap gap-4">
-                                    <Link href={auth.user ? route('dashboard') : route('register')} className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-primary shadow-lg transition-colors hover:bg-blue-50">
+                                    <Link href={auth.user ? route('dashboard') : route('register')} className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-[#1a56db] shadow-lg transition-colors hover:bg-blue-50">
                                         {auth.user ? 'Open Dashboard' : 'Start Your Journey'} <ArrowRight size={16} />
                                     </Link>
                                     <Link href={route('login')} className="flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10">
@@ -83,7 +83,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                 </section>
 
                 {/* Features */}
-                <section id="features" className="scroll-mt-20 bg-[#f0f4f9] py-24">
+                <section id="features" className="scroll-mt-20 bg-background py-24">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6">
                         <div className="mb-16 text-center">
                             <h2 className="mb-4 text-3xl font-bold text-foreground">Everything You Need to Succeed</h2>
@@ -91,8 +91,8 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                         </div>
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {FEATURES.map((f) => (
-                                <div key={f.title} className="rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                                <div key={f.title} className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+                                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                                         <f.icon size={22} className="text-primary" />
                                     </div>
                                     <h3 className="mb-2 font-bold text-foreground">{f.title}</h3>
@@ -104,14 +104,14 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                 </section>
 
                 {/* Testimonials */}
-                <section className="bg-white py-24">
+                <section className="bg-card py-24">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6">
                         <div className="mb-16 text-center">
                             <h2 className="text-3xl font-bold text-foreground">What Our Community Says</h2>
                         </div>
                         <div className="grid gap-6 md:grid-cols-3">
                             {TESTIMONIALS.map((t) => (
-                                <div key={t.name} className="rounded-2xl border border-border bg-[#f0f4f9] p-6">
+                                <div key={t.name} className="rounded-2xl border border-border bg-background p-6">
                                     <div className="mb-4 flex gap-1">{Array(5).fill(0).map((_, i) => <Star key={i} size={14} className="fill-amber-400 text-amber-400" />)}</div>
                                     <p className="mb-6 text-sm leading-relaxed text-foreground">"{t.text}"</p>
                                     <div className="flex items-center gap-3">
@@ -133,7 +133,7 @@ export default function Welcome({ auth, matchShowcase }: Props) {
                         <h2 className="mb-4 text-3xl font-bold">Ready to Take the Next Step?</h2>
                         <p className="mb-8 text-lg text-blue-100">Join thousands of UCLM graduates building successful careers with GradConnect.</p>
                         {!auth.user && (
-                            <Link href={route('register')} className="inline-block rounded-xl bg-white px-8 py-3.5 text-base font-bold text-primary shadow-lg transition-colors hover:bg-blue-50">
+                            <Link href={route('register')} className="inline-block rounded-xl bg-white px-8 py-3.5 text-base font-bold text-[#1a56db] shadow-lg transition-colors hover:bg-blue-50">
                                 Create Free Account
                             </Link>
                         )}
