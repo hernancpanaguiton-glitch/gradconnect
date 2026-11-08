@@ -49,6 +49,10 @@ services:
 
   db:
     image: pgvector/pgvector:pg16
+    # Bound to loopback so GUI clients (HeidiSQL, DBeaver) can connect
+    # without exposing the database to the rest of the network.
+    ports:
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: gradconnect
       POSTGRES_USER: gradconnect
