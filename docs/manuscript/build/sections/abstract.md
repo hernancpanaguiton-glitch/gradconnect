@@ -1,0 +1,9 @@
+# Abstract
+
+Graduate employability has become an important measure of how well a university prepares its students for work, and monitoring it requires timely, organized information about graduates and the jobs open to them. This study developed GradConnect: Graduate Employability and Career Development Platform, a web-based and mobile-responsive system for the University of Cebu Lapu-Lapu and Mandaue that brings graduate tracking, tracer surveys, job matching and career support together in one place.
+
+The study followed a Research and Development design, and the system was built using the Agile Software Development Life Cycle. GradConnect serves seven user roles: Graduate Student, Alumni, Industry Partner, Alumni Affairs Office, Student Affairs Office, Department Head and Administrator. It maintains a centralized record of graduates from all ten colleges of the university, conducts employability and tracer surveys electronically, and tracks employment status and career progression. Its AI-powered résumé matching compares each graduate's résumé with job postings and scores every match, which in turn supports career recommendations and a skill-gap analysis that points graduates to relevant learning resources. Industry partners post jobs and review ranked candidates, while university offices view employability reports, manage alumni engagement, and handle student concerns, scholarships and clearance. The platform was built with Laravel, React and PostgreSQL with vector search, and its features were verified through automated unit and integration tests.
+
+The system was evaluated by selected respondents from each user group using the ISO/IEC 25010 software quality model and a five-point Likert scale. «TO FILL: key findings from the acceptability evaluation»
+
+**Keywords:** graduate employability, tracer study, AI résumé matching, career development, web application

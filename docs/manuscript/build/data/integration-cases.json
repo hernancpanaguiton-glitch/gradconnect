@@ -1,0 +1,138 @@
+[
+  {
+    "id": "I1",
+    "module1": "Registration Process",
+    "process": "A new Industry Partner registers; the account is held for admin approval",
+    "module2": "User Management",
+    "precondition": "Registration is enabled",
+    "testRef": "Tests.Feature.Auth.RegistrationTest::test_staff_and_employer_roles_are_pending_and_not_logged_in with data set \"industry partner\""
+  },
+  {
+    "id": "I2",
+    "module1": "Registration Process",
+    "process": "Admins are notified that an account awaits approval",
+    "module2": "Notification Management",
+    "precondition": "At least one active admin exists",
+    "testRef": "Tests.Feature.NotificationTest::test_admins_are_notified_when_a_pending_account_registers"
+  },
+  {
+    "id": "I3",
+    "module1": "User Management",
+    "process": "Admin approves the account and the user is notified",
+    "module2": "Notification Management",
+    "precondition": "The account is pending",
+    "testRef": "Tests.Feature.NotificationTest::test_user_is_notified_when_admin_approves_their_account"
+  },
+  {
+    "id": "I4",
+    "module1": "Job Opportunity Management",
+    "process": "The embedding job prepares a posting’s AI representation for matching",
+    "module2": "AI Resume Matching",
+    "precondition": "The posting exists",
+    "testRef": "Tests.Feature.Jobs.GenerateJobPostingEmbeddingTest::test_it_embeds_the_posting_and_marks_it_done_on_success"
+  },
+  {
+    "id": "I5",
+    "module1": "AI Resume Matching",
+    "process": "Matching a job scores and stores a result for each shortlisted résumé",
+    "module2": "Applicant Management",
+    "precondition": "Résumés with embeddings exist",
+    "testRef": "Tests.Unit.Services.ResumeMatchingServiceTest::test_matching_a_job_to_candidates_upserts_a_match_result_per_shortlisted_resume"
+  },
+  {
+    "id": "I6",
+    "module1": "AI Resume Matching",
+    "process": "Scored candidates appear on the partner’s matches page, best first",
+    "module2": "Applicant Management",
+    "precondition": "Match results exist for the posting",
+    "testRef": "Tests.Feature.CandidateMatchControllerTest::test_the_owning_partner_sees_ranked_candidates"
+  },
+  {
+    "id": "I7",
+    "module1": "Job Application",
+    "process": "A graduate applies and the employer is notified",
+    "module2": "Notification Management",
+    "precondition": "The posting is open",
+    "testRef": "Tests.Feature.NotificationTest::test_employer_is_notified_when_a_candidate_applies"
+  },
+  {
+    "id": "I8",
+    "module1": "Applicant Management",
+    "process": "The employer changes an application’s status and the applicant is notified",
+    "module2": "Notification Management",
+    "precondition": "An application exists",
+    "testRef": "Tests.Feature.NotificationTest::test_applicant_is_notified_on_status_change"
+  },
+  {
+    "id": "I9",
+    "module1": "Tracer Survey Management",
+    "process": "An employment-status survey answer updates the graduate’s profile",
+    "module2": "Alumni Profile Management",
+    "precondition": "The question is mapped to employment status",
+    "testRef": "Tests.Feature.SurveyDistributionTest::test_employment_status_answer_writes_back_to_profile"
+  },
+  {
+    "id": "I10",
+    "module1": "Tracer Survey Management",
+    "process": "An employer survey answer creates the current employment record",
+    "module2": "Employment History",
+    "precondition": "The questions are mapped to employer fields",
+    "testRef": "Tests.Feature.SurveyDistributionTest::test_employer_answers_create_a_current_employment_record"
+  },
+  {
+    "id": "I11",
+    "module1": "Alumni Profile Management",
+    "process": "A changed employment status is reflected in the employability report",
+    "module2": "Reports and Analytics",
+    "precondition": "The graduate has a profile",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_employability_report_reflects_status_change"
+  },
+  {
+    "id": "I12",
+    "module1": "Resume Management",
+    "process": "Uploading a résumé queues it for AI analysis",
+    "module2": "AI Resume Matching",
+    "precondition": "The graduate has a profile",
+    "testRef": "Tests.Feature.ResumeControllerTest::test_uploading_a_resume_dispatches_the_embedding_job"
+  },
+  {
+    "id": "I13",
+    "module1": "Resume Management",
+    "process": "The uploaded résumé’s text is extracted and embedded",
+    "module2": "AI Resume Matching",
+    "precondition": "The résumé file is readable",
+    "testRef": "Tests.Feature.Jobs.GenerateResumeEmbeddingTest::test_it_extracts_text_and_marks_the_resume_embedded_on_success"
+  },
+  {
+    "id": "I14",
+    "module1": "User Profile Management",
+    "process": "Résumé analysis flags a profile skill missing from the résumé",
+    "module2": "AI Resume Matching",
+    "precondition": "The graduate has a résumé and skills",
+    "testRef": "Tests.Feature.ResumeAnalysisTest::test_flags_profile_skill_missing_from_resume"
+  },
+  {
+    "id": "I15",
+    "module1": "Skill Gap Analysis",
+    "process": "A skill gap recommends a matching learning resource",
+    "module2": "Learning Resources",
+    "precondition": "A resource is linked to the missing skill",
+    "testRef": "Tests.Feature.SkillGapControllerTest::test_gaps_include_recommended_learning_resources"
+  },
+  {
+    "id": "I16",
+    "module1": "Announcements",
+    "process": "Publishing an announcement notifies only the targeted role",
+    "module2": "Notification Management",
+    "precondition": "The announcement targets one role",
+    "testRef": "Tests.Feature.AnnouncementControllerTest::test_publishing_notifies_the_targeted_audience_only"
+  },
+  {
+    "id": "I17",
+    "module1": "User Management",
+    "process": "Deleting a staff account keeps their surveys and the answers given to them",
+    "module2": "Tracer Survey Management",
+    "precondition": "The staff member created a survey with answers",
+    "testRef": "Tests.Feature.StaffDeletionRetainsContentTest::test_deleting_the_creator_keeps_their_content_and_survey_answers"
+  }
+]

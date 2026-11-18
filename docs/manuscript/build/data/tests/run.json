@@ -1,0 +1,18 @@
+{
+  "runDate": "2026-11-13",
+  "gitCommit": "047d721",
+  "php": "8.4.27",
+  "node": "26.8.2",
+  "totals": {
+    "php": {
+      "passed": 479,
+      "skipped": 5,
+      "failed": 0
+    },
+    "frontend": {
+      "passed": 151,
+      "skipped": 0,
+      "failed": 0
+    }
+  }
+}

@@ -1,0 +1,1162 @@
+[
+  {
+    "id": "U1",
+    "module": "Login Process",
+    "unit": "Log-in page",
+    "description": "Open the log-in page",
+    "expected": "The log-in page is displayed",
+    "testRef": "Tests.Feature.Auth.AuthenticationTest::test_login_screen_can_be_rendered"
+  },
+  {
+    "id": "U2",
+    "module": "Login Process",
+    "unit": "Log in",
+    "description": "Valid email and password",
+    "expected": "The user is signed in",
+    "testRef": "Tests.Feature.Auth.AuthenticationTest::test_users_can_authenticate_using_the_login_screen"
+  },
+  {
+    "id": "U3",
+    "module": "Login Process",
+    "unit": "Log in",
+    "description": "Valid email, wrong password",
+    "expected": "Sign-in is refused with an error message",
+    "testRef": "Tests.Feature.Auth.AuthenticationTest::test_users_can_not_authenticate_with_invalid_password"
+  },
+  {
+    "id": "U4",
+    "module": "Login Process",
+    "unit": "Log in",
+    "description": "An account still awaiting approval signs in",
+    "expected": "The app is not opened to the account",
+    "testRef": "Tests.Feature.RoleAccessTest::test_pending_user_is_blocked"
+  },
+  {
+    "id": "U5",
+    "module": "Login Process",
+    "unit": "Log out",
+    "description": "Log out from a signed-in session",
+    "expected": "The session ends and the user is signed out",
+    "testRef": "Tests.Feature.Auth.AuthenticationTest::test_users_can_logout"
+  },
+  {
+    "id": "U6",
+    "module": "Registration Process",
+    "unit": "Register",
+    "description": "Register as a Graduate Student",
+    "expected": "The account is active and signed in immediately",
+    "testRef": "Tests.Feature.Auth.RegistrationTest::test_student_registers_active_and_is_logged_in"
+  },
+  {
+    "id": "U7",
+    "module": "Registration Process",
+    "unit": "Register",
+    "description": "Register as an Industry Partner",
+    "expected": "The account is held for admin approval and not signed in",
+    "testRef": "Tests.Feature.Auth.RegistrationTest::test_staff_and_employer_roles_are_pending_and_not_logged_in with data set \"industry partner\""
+  },
+  {
+    "id": "U8",
+    "module": "Registration Process",
+    "unit": "Register",
+    "description": "Register without ticking the privacy consent",
+    "expected": "Registration is refused",
+    "testRef": "Tests.Feature.Auth.RegistrationTest::test_consent_is_required"
+  },
+  {
+    "id": "U9",
+    "module": "Registration Process",
+    "unit": "Email verification",
+    "description": "Open a valid email verification link",
+    "expected": "The email address is marked as verified",
+    "testRef": "Tests.Feature.Auth.EmailVerificationTest::test_email_can_be_verified"
+  },
+  {
+    "id": "U10",
+    "module": "Forgot Password",
+    "unit": "Request reset link",
+    "description": "Request a reset link for a registered email",
+    "expected": "A reset link is sent",
+    "testRef": "Tests.Feature.Auth.PasswordResetTest::test_reset_password_link_can_be_requested"
+  },
+  {
+    "id": "U11",
+    "module": "Forgot Password",
+    "unit": "Set new password",
+    "description": "Set a new password using a valid link",
+    "expected": "The password is changed",
+    "testRef": "Tests.Feature.Auth.PasswordResetTest::test_password_can_be_reset_with_valid_token"
+  },
+  {
+    "id": "U12",
+    "module": "Forgot Password",
+    "unit": "Request reset link",
+    "description": "Inspect the emailed reset link",
+    "expected": "The link does not contain the email address",
+    "testRef": "Tests.Feature.EmailPrivacyTest::test_password_reset_link_does_not_carry_the_email_address"
+  },
+  {
+    "id": "U13",
+    "module": "Forgot Password",
+    "unit": "Confirm password",
+    "description": "Confirm a sensitive action with a wrong password",
+    "expected": "Confirmation is refused",
+    "testRef": "Tests.Feature.Auth.PasswordConfirmationTest::test_password_is_not_confirmed_with_invalid_password"
+  },
+  {
+    "id": "U14",
+    "module": "Reports and Analytics",
+    "unit": "Employability report",
+    "description": "Alumni Affairs Office opens the report",
+    "expected": "The report is displayed",
+    "testRef": "Tests.Feature.EmployabilityReportControllerTest::test_alumni_affairs_can_view_the_report"
+  },
+  {
+    "id": "U15",
+    "module": "Reports and Analytics",
+    "unit": "Employability report",
+    "description": "Filter the report by one college",
+    "expected": "The totals cover only that college",
+    "testRef": "Tests.Feature.EmployabilityReportControllerTest::test_college_filter_narrows_the_totals"
+  },
+  {
+    "id": "U16",
+    "module": "Reports and Analytics",
+    "unit": "Export",
+    "description": "Export the report",
+    "expected": "A CSV file is downloaded and the export is logged",
+    "testRef": "Tests.Feature.EmployabilityReportControllerTest::test_export_streams_a_csv_and_logs_a_report"
+  },
+  {
+    "id": "U17",
+    "module": "Reports and Analytics",
+    "unit": "Program outcomes",
+    "description": "Department Head opens Program Outcomes",
+    "expected": "Only their own college’s figures are shown",
+    "testRef": "Tests.Feature.ProgramOutcomesControllerTest::test_department_head_sees_totals_scoped_to_their_college"
+  },
+  {
+    "id": "U18",
+    "module": "User Management",
+    "unit": "View list",
+    "description": "Admin opens User Management",
+    "expected": "The User Management page is displayed",
+    "testRef": "Tests.Feature.Admin.UserControllerTest::test_admin_can_list_users"
+  },
+  {
+    "id": "U19",
+    "module": "User Management",
+    "unit": "Update",
+    "description": "Change an account’s status and roles",
+    "expected": "The new status and roles are saved",
+    "testRef": "Tests.Feature.Admin.UserControllerTest::test_admin_can_update_user_status_and_roles"
+  },
+  {
+    "id": "U20",
+    "module": "User Management",
+    "unit": "Delete",
+    "description": "Delete an account",
+    "expected": "The account is removed",
+    "testRef": "Tests.Feature.Admin.UserControllerTest::test_admin_can_delete_a_user"
+  },
+  {
+    "id": "U21",
+    "module": "User Management",
+    "unit": "Update",
+    "description": "A non-admin tries to change an account",
+    "expected": "The request is refused",
+    "testRef": "Tests.Feature.Admin.UserControllerTest::test_non_admin_cannot_update_a_user"
+  },
+  {
+    "id": "U22",
+    "module": "Roles and Permissions",
+    "unit": "Create",
+    "description": "Create a custom role",
+    "expected": "The role is created",
+    "testRef": "Tests.Feature.Admin.RolePermissionManagementTest::test_admin_can_create_a_custom_role"
+  },
+  {
+    "id": "U23",
+    "module": "Roles and Permissions",
+    "unit": "Update permissions",
+    "description": "Change a role’s permissions",
+    "expected": "The chosen permission is granted to the role",
+    "testRef": "Tests.Feature.Admin.RolePermissionManagementTest::test_admin_can_sync_permissions_on_a_role"
+  },
+  {
+    "id": "U24",
+    "module": "Roles and Permissions",
+    "unit": "Delete",
+    "description": "Delete one of the built-in roles",
+    "expected": "Deletion is refused",
+    "testRef": "Tests.Feature.Admin.RolePermissionManagementTest::test_protected_roles_cannot_be_deleted"
+  },
+  {
+    "id": "U25",
+    "module": "Roles and Permissions",
+    "unit": "View list",
+    "description": "A non-admin opens Roles and Permissions",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.RolePermissionManagementTest::test_non_admin_cannot_view_roles_page"
+  },
+  {
+    "id": "U26",
+    "module": "Job Moderation",
+    "unit": "View list",
+    "description": "Admin opens Job Management",
+    "expected": "Postings from every partner are listed",
+    "testRef": "Tests.Feature.Admin.JobModerationControllerTest::test_admin_can_list_postings_from_every_partner"
+  },
+  {
+    "id": "U27",
+    "module": "Job Moderation",
+    "unit": "Update",
+    "description": "Close, then reopen a posting",
+    "expected": "The posting’s status changes each time",
+    "testRef": "Tests.Feature.Admin.JobModerationControllerTest::test_admin_can_close_and_reopen_any_posting"
+  },
+  {
+    "id": "U28",
+    "module": "Job Moderation",
+    "unit": "Delete",
+    "description": "Remove a posting",
+    "expected": "The posting is deleted",
+    "testRef": "Tests.Feature.Admin.JobModerationControllerTest::test_admin_can_remove_any_posting"
+  },
+  {
+    "id": "U29",
+    "module": "Job Moderation",
+    "unit": "View list",
+    "description": "A partner opens the moderation page",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.JobModerationControllerTest::test_partner_owning_the_posting_still_cannot_reach_admin_moderation_routes"
+  },
+  {
+    "id": "U30",
+    "module": "Audit Logs",
+    "unit": "View list",
+    "description": "Sign in and sign out",
+    "expected": "Both events are recorded",
+    "testRef": "Tests.Feature.Admin.AuditLogControllerTest::test_login_and_logout_are_recorded"
+  },
+  {
+    "id": "U31",
+    "module": "Audit Logs",
+    "unit": "View list",
+    "description": "A sign-in attempt fails",
+    "expected": "The failed attempt is recorded",
+    "testRef": "Tests.Feature.Admin.AuditLogControllerTest::test_failed_login_is_recorded"
+  },
+  {
+    "id": "U32",
+    "module": "Audit Logs",
+    "unit": "View list",
+    "description": "Admin searches the audit log",
+    "expected": "Matching entries are shown",
+    "testRef": "Tests.Feature.Admin.AuditLogControllerTest::test_admin_can_view_and_search_logs"
+  },
+  {
+    "id": "U33",
+    "module": "Audit Logs",
+    "unit": "View list",
+    "description": "A non-admin opens the audit log",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.AuditLogControllerTest::test_non_admin_cannot_view_audit_logs"
+  },
+  {
+    "id": "U34",
+    "module": "Data and Backups",
+    "unit": "View list",
+    "description": "Open Data and Backups",
+    "expected": "Existing backup files are listed",
+    "testRef": "Tests.Feature.Admin.BackupControllerTest::test_index_lists_existing_backup_files"
+  },
+  {
+    "id": "U35",
+    "module": "Data and Backups",
+    "unit": "Download",
+    "description": "Download a backup file",
+    "expected": "The file is downloaded",
+    "testRef": "Tests.Feature.Admin.BackupControllerTest::test_admin_can_download_a_backup"
+  },
+  {
+    "id": "U36",
+    "module": "Data and Backups",
+    "unit": "Download",
+    "description": "Request a file outside the backups folder",
+    "expected": "The request is refused",
+    "testRef": "Tests.Feature.Admin.BackupControllerTest::test_download_rejects_a_path_outside_the_backups_directory"
+  },
+  {
+    "id": "U37",
+    "module": "Data and Backups",
+    "unit": "Create",
+    "description": "Create a backup when the backup tool fails",
+    "expected": "The failure is recorded instead of reported as success",
+    "testRef": "Tests.Feature.Admin.BackupControllerTest::test_store_logs_a_failure_when_the_backup_command_fails"
+  },
+  {
+    "id": "U38",
+    "module": "Platform Status",
+    "unit": "View page",
+    "description": "Admin opens Platform Status",
+    "expected": "Queue and failed-job counts are shown",
+    "testRef": "Tests.Feature.Admin.PlatformStatusControllerTest::test_admin_sees_queue_and_failed_job_counts"
+  },
+  {
+    "id": "U39",
+    "module": "Platform Status",
+    "unit": "View page",
+    "description": "View AI success rates",
+    "expected": "Embedding and scoring success rates are computed",
+    "testRef": "Tests.Feature.Admin.PlatformStatusControllerTest::test_embedding_and_scoring_success_rates_are_computed"
+  },
+  {
+    "id": "U40",
+    "module": "Platform Status",
+    "unit": "View page",
+    "description": "Jobs are queued but no worker runs",
+    "expected": "The queue is reported as stalled",
+    "testRef": "Tests.Feature.Admin.PlatformStatusControllerTest::test_a_backlog_with_no_consumer_is_reported_as_stalled"
+  },
+  {
+    "id": "U41",
+    "module": "Platform Status",
+    "unit": "View page",
+    "description": "A non-admin opens Platform Status",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.PlatformStatusControllerTest::test_non_admin_is_forbidden"
+  },
+  {
+    "id": "U42",
+    "module": "System Settings",
+    "unit": "Update",
+    "description": "Save new system settings",
+    "expected": "The settings are saved",
+    "testRef": "Tests.Feature.Admin.SystemSettingControllerTest::test_admin_can_update_settings"
+  },
+  {
+    "id": "U43",
+    "module": "System Settings",
+    "unit": "Update",
+    "description": "Save an invalid support email",
+    "expected": "The value is rejected with an error",
+    "testRef": "Tests.Feature.Admin.SystemSettingControllerTest::test_invalid_support_email_is_rejected"
+  },
+  {
+    "id": "U44",
+    "module": "System Settings",
+    "unit": "Update",
+    "description": "Set a match threshold outside 0–100",
+    "expected": "The value is rejected",
+    "testRef": "Tests.Feature.Admin.SystemSettingControllerTest::test_fit_score_threshold_must_be_between_0_and_100"
+  },
+  {
+    "id": "U45",
+    "module": "System Settings",
+    "unit": "View list",
+    "description": "A non-admin opens System Settings",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.SystemSettingControllerTest::test_non_admin_cannot_view_or_update_settings"
+  },
+  {
+    "id": "U46",
+    "module": "Skill Taxonomy",
+    "unit": "Add alias",
+    "description": "Add an alternative name to a skill",
+    "expected": "The alias is saved",
+    "testRef": "Tests.Feature.Admin.SkillTaxonomyControllerTest::test_admin_can_add_an_alias"
+  },
+  {
+    "id": "U47",
+    "module": "Skill Taxonomy",
+    "unit": "Add alias",
+    "description": "Add an alias equal to another skill’s name",
+    "expected": "The alias is rejected",
+    "testRef": "Tests.Feature.Admin.SkillTaxonomyControllerTest::test_alias_cannot_shadow_an_existing_skill"
+  },
+  {
+    "id": "U48",
+    "module": "Skill Taxonomy",
+    "unit": "Add alias",
+    "description": "Submit an alias the server rejects",
+    "expected": "The reason is shown under the field",
+    "testRef": "resources/js/Pages/Admin/Skills.test.tsx::Skill taxonomy alias form > shows why an alias was rejected instead of appearing to do nothing"
+  },
+  {
+    "id": "U49",
+    "module": "Skill Taxonomy",
+    "unit": "View list",
+    "description": "An alumnus opens the Skill Taxonomy",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.Admin.SkillTaxonomyControllerTest::test_alumni_cannot_view_the_skill_taxonomy"
+  },
+  {
+    "id": "U50",
+    "module": "User Profile Management",
+    "unit": "Update",
+    "description": "Choose a college and program and save",
+    "expected": "The program is saved with its name",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_profile_update_stores_the_program_and_syncs_its_name"
+  },
+  {
+    "id": "U51",
+    "module": "User Profile Management",
+    "unit": "Update",
+    "description": "Choose a program from a different college",
+    "expected": "The profile is not saved",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_profile_update_rejects_a_program_from_another_college"
+  },
+  {
+    "id": "U52",
+    "module": "User Profile Management",
+    "unit": "Update",
+    "description": "Submit fields the form does not offer",
+    "expected": "Those fields are ignored",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_profile_update_ignores_protected_fields"
+  },
+  {
+    "id": "U53",
+    "module": "User Profile Management",
+    "unit": "Skills",
+    "description": "Add a valid skill to the profile",
+    "expected": "The skill is added to the profile",
+    "testRef": "Tests.Feature.SkillSuggestionTest::test_store_valid_skill_creates_and_attaches"
+  },
+  {
+    "id": "U54",
+    "module": "User Profile Management",
+    "unit": "Skills",
+    "description": "Open and close every skill category twice",
+    "expected": "The page keeps working",
+    "testRef": "resources/js/Components/SkillCategoryPicker.test.tsx::SkillCategoryPicker > survives every category being toggled twice"
+  },
+  {
+    "id": "U55",
+    "module": "Resume Management",
+    "unit": "Upload",
+    "description": "Upload a résumé",
+    "expected": "The résumé is saved and queued for AI analysis",
+    "testRef": "Tests.Feature.ResumeControllerTest::test_uploading_a_resume_dispatches_the_embedding_job"
+  },
+  {
+    "id": "U56",
+    "module": "Resume Management",
+    "unit": "Upload",
+    "description": "Upload two résumés",
+    "expected": "Only the first becomes the primary résumé",
+    "testRef": "Tests.Feature.ResumeControllerTest::test_first_uploaded_resume_is_marked_primary_and_subsequent_are_not"
+  },
+  {
+    "id": "U57",
+    "module": "Resume Management",
+    "unit": "Upload",
+    "description": "Upload an image renamed to .pdf",
+    "expected": "The file is rejected",
+    "testRef": "Tests.Feature.ResumeUploadTest::test_an_image_renamed_as_pdf_is_rejected"
+  },
+  {
+    "id": "U58",
+    "module": "Resume Management",
+    "unit": "Résumé builder",
+    "description": "Build a résumé from a filled-in profile",
+    "expected": "A résumé is created from the profile",
+    "testRef": "Tests.Feature.ResumeBuilderControllerTest::test_building_from_a_populated_profile_creates_a_primary_built_resume"
+  },
+  {
+    "id": "U59",
+    "module": "Resume Management",
+    "unit": "Delete",
+    "description": "Delete someone else’s résumé",
+    "expected": "Deletion is refused",
+    "testRef": "Tests.Feature.ResumeControllerTest::test_a_user_cannot_delete_another_users_resume"
+  },
+  {
+    "id": "U60",
+    "module": "AI Resume Matching",
+    "unit": "Job recommendations",
+    "description": "Open Recommendations",
+    "expected": "Matches are listed, best fit first",
+    "testRef": "Tests.Feature.JobRecommendationControllerTest::test_alumni_sees_their_ranked_matches_ordered_by_fit_score"
+  },
+  {
+    "id": "U61",
+    "module": "AI Resume Matching",
+    "unit": "Job recommendations",
+    "description": "Matches score below the admin’s threshold",
+    "expected": "Those matches are hidden",
+    "testRef": "Tests.Feature.JobRecommendationControllerTest::test_matches_below_the_admin_configured_threshold_are_hidden"
+  },
+  {
+    "id": "U62",
+    "module": "AI Resume Matching",
+    "unit": "Résumé analysis",
+    "description": "A profile skill is absent from the résumé",
+    "expected": "The missing skill is flagged",
+    "testRef": "Tests.Feature.ResumeAnalysisTest::test_flags_profile_skill_missing_from_resume"
+  },
+  {
+    "id": "U63",
+    "module": "AI Resume Matching",
+    "unit": "Match feedback",
+    "description": "Rate a match as helpful",
+    "expected": "The rating is saved",
+    "testRef": "Tests.Feature.MatchFeedbackControllerTest::test_graduate_can_rate_their_own_match_as_helpful"
+  },
+  {
+    "id": "U64",
+    "module": "AI Resume Matching",
+    "unit": "Scoring",
+    "description": "The main AI provider gives no answer",
+    "expected": "The backup provider scores the match",
+    "testRef": "Tests.Unit.AI.AiManagerTest::test_scoring_falls_back_when_the_primary_provider_returns_null"
+  },
+  {
+    "id": "U65",
+    "module": "Job Application",
+    "unit": "Apply",
+    "description": "Apply for an open job",
+    "expected": "The application is submitted",
+    "testRef": "Tests.Feature.JobPostingControllerTest::test_alumni_can_apply_for_a_job"
+  },
+  {
+    "id": "U66",
+    "module": "Job Application",
+    "unit": "Apply",
+    "description": "Apply for the same job again",
+    "expected": "The second application is refused",
+    "testRef": "Tests.Feature.JobPostingControllerTest::test_alumni_cannot_apply_twice"
+  },
+  {
+    "id": "U67",
+    "module": "Job Application",
+    "unit": "Apply",
+    "description": "Apply for a closed job",
+    "expected": "The application is refused",
+    "testRef": "Tests.Feature.AccessControlHardeningTest::test_a_closed_posting_cannot_collect_new_applications"
+  },
+  {
+    "id": "U68",
+    "module": "Job Application",
+    "unit": "Withdraw",
+    "description": "Withdraw a pending application",
+    "expected": "The application is withdrawn",
+    "testRef": "Tests.Feature.ApplicationsIndexTest::test_applicant_can_withdraw_a_pending_application"
+  },
+  {
+    "id": "U69",
+    "module": "Career Readiness Assessment",
+    "unit": "View page",
+    "description": "Open Career Readiness after answering",
+    "expected": "The score and readiness band are shown",
+    "testRef": "Tests.Feature.CareerReadinessControllerTest::test_student_sees_their_score_and_band_after_submitting"
+  },
+  {
+    "id": "U70",
+    "module": "Career Readiness Assessment",
+    "unit": "View page",
+    "description": "Answer with low ratings",
+    "expected": "The band reads \"Needs Improvement\"",
+    "testRef": "Tests.Feature.CareerReadinessControllerTest::test_low_ratings_produce_needs_improvement_band"
+  },
+  {
+    "id": "U71",
+    "module": "Career Readiness Assessment",
+    "unit": "View page",
+    "description": "Student Affairs Office opens the page",
+    "expected": "The distribution across all respondents is shown",
+    "testRef": "Tests.Feature.CareerReadinessControllerTest::test_sao_sees_aggregate_distribution_across_respondents"
+  },
+  {
+    "id": "U72",
+    "module": "Career Readiness Assessment",
+    "unit": "View page",
+    "description": "An industry partner opens the page",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.CareerReadinessControllerTest::test_industry_partner_cannot_access_career_readiness"
+  },
+  {
+    "id": "U73",
+    "module": "Alumni Profile Management",
+    "unit": "Update",
+    "description": "Change employment status and relocation",
+    "expected": "Both are saved",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_alumni_can_update_employment_status_and_relocation"
+  },
+  {
+    "id": "U74",
+    "module": "Alumni Profile Management",
+    "unit": "Update",
+    "description": "Save a profile linked to a program",
+    "expected": "The profile is saved",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_a_graduate_attached_to_a_program_can_save_their_profile"
+  },
+  {
+    "id": "U75",
+    "module": "Alumni Profile Management",
+    "unit": "Update",
+    "description": "Choose a college without a program",
+    "expected": "The college is saved",
+    "testRef": "Tests.Feature.GraduateProfileUpdateTest::test_profile_update_persists_a_college_on_its_own"
+  },
+  {
+    "id": "U76",
+    "module": "Tracer Survey Management",
+    "unit": "Create",
+    "description": "Alumni Affairs Office creates a survey",
+    "expected": "The survey is created",
+    "testRef": "Tests.Feature.SurveyControllerTest::test_alumni_affairs_can_create_a_survey"
+  },
+  {
+    "id": "U77",
+    "module": "Tracer Survey Management",
+    "unit": "Create",
+    "description": "An alumnus tries to create a survey",
+    "expected": "Creation is refused",
+    "testRef": "Tests.Feature.SurveyControllerTest::test_alumni_cannot_create_a_survey"
+  },
+  {
+    "id": "U78",
+    "module": "Tracer Survey Management",
+    "unit": "Respond",
+    "description": "An alumnus answers an open survey",
+    "expected": "The response is saved",
+    "testRef": "Tests.Feature.SurveyControllerTest::test_alumni_can_submit_a_survey_response"
+  },
+  {
+    "id": "U79",
+    "module": "Tracer Survey Management",
+    "unit": "Respond",
+    "description": "Answer a closed survey",
+    "expected": "The response is refused",
+    "testRef": "Tests.Feature.SurveyControllerTest::test_closed_survey_returns_error"
+  },
+  {
+    "id": "U80",
+    "module": "Tracer Survey Management",
+    "unit": "View list",
+    "description": "A survey targets one role",
+    "expected": "Other roles do not see it",
+    "testRef": "Tests.Feature.SurveyDistributionTest::test_role_targeted_survey_is_hidden_from_other_roles"
+  },
+  {
+    "id": "U81",
+    "module": "Employment Tracking",
+    "unit": "View page",
+    "description": "Open Career Progression",
+    "expected": "Jobs are listed, current and most recent first",
+    "testRef": "Tests.Feature.CareerProgressionControllerTest::test_employment_records_are_returned_current_and_most_recent_first"
+  },
+  {
+    "id": "U82",
+    "module": "Employment Tracking",
+    "unit": "View page",
+    "description": "Two graduates have job histories",
+    "expected": "Each sees only their own",
+    "testRef": "Tests.Feature.CareerProgressionControllerTest::test_graduate_does_not_see_another_graduates_employment_records"
+  },
+  {
+    "id": "U83",
+    "module": "Employment Tracking",
+    "unit": "View page",
+    "description": "An industry partner opens the page",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.CareerProgressionControllerTest::test_industry_partner_is_forbidden"
+  },
+  {
+    "id": "U84",
+    "module": "Notification Management",
+    "unit": "View list",
+    "description": "Open notifications, then choose Mark all as read",
+    "expected": "Notifications are listed, then none remain unread",
+    "testRef": "Tests.Feature.NotificationTest::test_notifications_page_loads_and_marks_all_read"
+  },
+  {
+    "id": "U85",
+    "module": "Notification Management",
+    "unit": "Preferences",
+    "description": "Turn off a notification type",
+    "expected": "That type is no longer sent",
+    "testRef": "Tests.Feature.SettingsControllerTest::test_disabling_a_category_suppresses_that_notification"
+  },
+  {
+    "id": "U86",
+    "module": "Notification Management",
+    "unit": "Email",
+    "description": "An employer is emailed about an application",
+    "expected": "The email does not name the applicant",
+    "testRef": "Tests.Feature.EmailPrivacyTest::test_application_received_email_does_not_name_the_applicant"
+  },
+  {
+    "id": "U87",
+    "module": "Employment History",
+    "unit": "Create, update, delete",
+    "description": "Add, edit and remove an own job record",
+    "expected": "Each change is saved",
+    "testRef": "Tests.Feature.GraduateRecordOwnershipTest::test_a_graduate_can_add_update_and_remove_their_own_employment"
+  },
+  {
+    "id": "U88",
+    "module": "Employment History",
+    "unit": "Update",
+    "description": "Edit another graduate’s job record",
+    "expected": "The change is refused",
+    "testRef": "Tests.Feature.GraduateRecordOwnershipTest::test_a_graduate_cannot_update_another_graduates_employment"
+  },
+  {
+    "id": "U89",
+    "module": "Employment History",
+    "unit": "Create",
+    "description": "Save a job record without company or title",
+    "expected": "The record is rejected",
+    "testRef": "Tests.Feature.GraduateRecordOwnershipTest::test_employment_requires_a_company_and_job_title"
+  },
+  {
+    "id": "U90",
+    "module": "Employment History",
+    "unit": "Create",
+    "description": "Submit a job record the server rejects",
+    "expected": "The reason is shown on the form",
+    "testRef": "resources/js/Pages/Graduate/ProfileEditRecords.test.tsx::Profile education and employment records > shows why an employment record was rejected"
+  },
+  {
+    "id": "U91",
+    "module": "Job Opportunity Management",
+    "unit": "Create",
+    "description": "An industry partner posts a job",
+    "expected": "The posting is created",
+    "testRef": "Tests.Feature.JobPostingControllerTest::test_industry_partner_can_create_a_posting"
+  },
+  {
+    "id": "U92",
+    "module": "Job Opportunity Management",
+    "unit": "Update",
+    "description": "Edit another partner’s posting",
+    "expected": "The change is refused",
+    "testRef": "Tests.Feature.JobPostingControllerTest::test_industry_partner_cannot_update_another_partners_posting"
+  },
+  {
+    "id": "U93",
+    "module": "Job Opportunity Management",
+    "unit": "Browse jobs",
+    "description": "Open the job board",
+    "expected": "Closed postings are not shown",
+    "testRef": "Tests.Feature.JobPostingControllerTest::test_closed_postings_do_not_appear_on_job_board"
+  },
+  {
+    "id": "U94",
+    "module": "Job Opportunity Management",
+    "unit": "Suggest job titles (AI)",
+    "description": "Type part of a job title",
+    "expected": "Title suggestions are offered",
+    "testRef": "Tests.Feature.JobAssistTest::test_title_suggestions"
+  },
+  {
+    "id": "U95",
+    "module": "Job Opportunity Management",
+    "unit": "Draft job description (AI)",
+    "description": "Ask for a draft with no AI service configured",
+    "expected": "The page reports the feature is unavailable instead of failing",
+    "testRef": "Tests.Feature.JobAssistTest::test_generation_unavailable_without_ai_key"
+  },
+  {
+    "id": "U96",
+    "module": "Applicant Management",
+    "unit": "View details",
+    "description": "A partner opens a candidate’s profile",
+    "expected": "The profile is shown",
+    "testRef": "Tests.Feature.CandidateViewTest::test_partner_can_view_a_candidate_profile"
+  },
+  {
+    "id": "U97",
+    "module": "Applicant Management",
+    "unit": "Download candidate résumé",
+    "description": "Download the résumé of someone who did not apply",
+    "expected": "The download is refused",
+    "testRef": "Tests.Feature.CandidateViewTest::test_partner_cannot_stream_the_resume_of_a_non_applicant"
+  },
+  {
+    "id": "U98",
+    "module": "Applicant Management",
+    "unit": "Candidate matches",
+    "description": "Open a posting’s matches",
+    "expected": "Candidates are listed, best fit first",
+    "testRef": "Tests.Feature.CandidateMatchControllerTest::test_the_owning_partner_sees_ranked_candidates"
+  },
+  {
+    "id": "U99",
+    "module": "Applicant Management",
+    "unit": "Employer feedback",
+    "description": "Rate a candidate before deciding on them",
+    "expected": "The feedback is refused",
+    "testRef": "Tests.Feature.EmployerFeedbackControllerTest::test_feedback_is_rejected_before_a_hiring_decision"
+  },
+  {
+    "id": "U100",
+    "module": "Student Affairs Module",
+    "unit": "Clearance: Update office",
+    "description": "Mark one office as cleared for a graduate",
+    "expected": "The office shows as cleared",
+    "testRef": "Tests.Feature.ClearanceControllerTest::test_sao_can_mark_an_office_cleared_for_a_specific_graduate"
+  },
+  {
+    "id": "U101",
+    "module": "Student Affairs Module",
+    "unit": "Clearance: Update office",
+    "description": "An alumnus tries to change clearance",
+    "expected": "The change is refused",
+    "testRef": "Tests.Feature.ClearanceControllerTest::test_alumni_cannot_update_clearance"
+  },
+  {
+    "id": "U102",
+    "module": "Student Affairs Module",
+    "unit": "Student concern: Create",
+    "description": "A student files a concern",
+    "expected": "The concern is recorded",
+    "testRef": "Tests.Feature.StudentCaseControllerTest::test_student_can_file_a_concern"
+  },
+  {
+    "id": "U103",
+    "module": "Student Affairs Module",
+    "unit": "Scholarship: Add recipient",
+    "description": "Add, then remove a scholarship recipient",
+    "expected": "The recipient list updates each time",
+    "testRef": "Tests.Feature.ScholarshipControllerTest::test_sao_can_add_and_remove_a_recipient"
+  },
+  {
+    "id": "U104",
+    "module": "Department Head Module",
+    "unit": "Update college",
+    "description": "A Department Head chooses their college",
+    "expected": "The college is saved",
+    "testRef": "Tests.Feature.DepartmentAssignmentTest::test_department_head_can_set_their_college"
+  },
+  {
+    "id": "U105",
+    "module": "Department Head Module",
+    "unit": "Update college",
+    "description": "Choose a program instead of a college",
+    "expected": "The choice is refused",
+    "testRef": "Tests.Feature.DepartmentAssignmentTest::test_department_head_cannot_pick_a_program"
+  },
+  {
+    "id": "U106",
+    "module": "Department Head Module",
+    "unit": "Update college",
+    "description": "Admin assigns a user’s college",
+    "expected": "The college is saved",
+    "testRef": "Tests.Feature.DepartmentAssignmentTest::test_admin_can_assign_a_users_college"
+  },
+  {
+    "id": "U107",
+    "module": "Dashboard Management",
+    "unit": "View page",
+    "description": "Admin opens the dashboard",
+    "expected": "The admin dashboard is shown",
+    "testRef": "Tests.Feature.DashboardRoutingTest::test_admin_sees_admin_dashboard"
+  },
+  {
+    "id": "U108",
+    "module": "Dashboard Management",
+    "unit": "View page",
+    "description": "A student opens the dashboard",
+    "expected": "The student dashboard is shown",
+    "testRef": "Tests.Feature.DashboardRoutingTest::test_student_sees_student_dashboard"
+  },
+  {
+    "id": "U109",
+    "module": "Dashboard Management",
+    "unit": "View page",
+    "description": "A partner opens the dashboard",
+    "expected": "Their own open postings are counted",
+    "testRef": "Tests.Feature.DashboardStatsTest::test_industry_partner_dashboard_counts_their_open_postings"
+  },
+  {
+    "id": "U110",
+    "module": "Talent Search",
+    "unit": "View list",
+    "description": "A partner opens Talent Search",
+    "expected": "The search page is shown",
+    "testRef": "Tests.Feature.TalentSearchTest::test_partner_can_open_talent_search"
+  },
+  {
+    "id": "U111",
+    "module": "Talent Search",
+    "unit": "View list",
+    "description": "Search by a skill",
+    "expected": "Only graduates with that skill are listed",
+    "testRef": "Tests.Feature.TalentSearchTest::test_search_filters_by_skill"
+  },
+  {
+    "id": "U112",
+    "module": "Talent Search",
+    "unit": "View list",
+    "description": "Filter to graduates with a résumé",
+    "expected": "Graduates without one are excluded",
+    "testRef": "Tests.Feature.TalentSearchTest::test_with_resume_filter_excludes_candidates_without_one"
+  },
+  {
+    "id": "U113",
+    "module": "Talent Search",
+    "unit": "View list",
+    "description": "A graduate opens Talent Search",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.TalentSearchTest::test_graduate_without_permission_is_forbidden"
+  },
+  {
+    "id": "U114",
+    "module": "Skill Gap Analysis",
+    "unit": "View page",
+    "description": "Open Skill Gap Analysis",
+    "expected": "Gaps and strengths are ranked by how often they appear",
+    "testRef": "Tests.Feature.SkillGapControllerTest::test_gaps_and_strengths_are_ranked_by_frequency_across_matches"
+  },
+  {
+    "id": "U115",
+    "module": "Skill Gap Analysis",
+    "unit": "View page",
+    "description": "Some matched postings are closed",
+    "expected": "Only open postings are counted",
+    "testRef": "Tests.Feature.SkillGapControllerTest::test_only_open_postings_count_toward_the_analysis"
+  },
+  {
+    "id": "U116",
+    "module": "Skill Gap Analysis",
+    "unit": "View page",
+    "description": "A gap has a related learning resource",
+    "expected": "The resource is recommended",
+    "testRef": "Tests.Feature.SkillGapControllerTest::test_gaps_include_recommended_learning_resources"
+  },
+  {
+    "id": "U117",
+    "module": "Skill Gap Analysis",
+    "unit": "View page",
+    "description": "An industry partner opens the page",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.SkillGapControllerTest::test_industry_partner_is_forbidden"
+  },
+  {
+    "id": "U118",
+    "module": "Learning Resources",
+    "unit": "Create",
+    "description": "Add a resource linked to skills",
+    "expected": "The resource is saved with its skills",
+    "testRef": "Tests.Feature.LearningResourceControllerTest::test_manager_can_create_a_resource_with_skills"
+  },
+  {
+    "id": "U119",
+    "module": "Learning Resources",
+    "unit": "View list",
+    "description": "A student opens Guidance Resources",
+    "expected": "Only general and own-college resources are listed",
+    "testRef": "Tests.Feature.LearningResourceControllerTest::test_student_sees_general_and_own_department_resources_only"
+  },
+  {
+    "id": "U120",
+    "module": "Learning Resources",
+    "unit": "Create",
+    "description": "A student tries to add a resource",
+    "expected": "Creation is refused",
+    "testRef": "Tests.Feature.LearningResourceControllerTest::test_student_cannot_create_a_resource"
+  },
+  {
+    "id": "U121",
+    "module": "Learning Resources",
+    "unit": "Delete",
+    "description": "Delete a resource",
+    "expected": "The resource is removed",
+    "testRef": "Tests.Feature.LearningResourceControllerTest::test_manager_can_delete_a_resource"
+  },
+  {
+    "id": "U122",
+    "module": "Announcements",
+    "unit": "Create",
+    "description": "Publish an announcement to one role",
+    "expected": "Only that role is notified",
+    "testRef": "Tests.Feature.AnnouncementControllerTest::test_publishing_notifies_the_targeted_audience_only"
+  },
+  {
+    "id": "U123",
+    "module": "Announcements",
+    "unit": "Create",
+    "description": "Save an announcement as a draft",
+    "expected": "Nobody is notified",
+    "testRef": "Tests.Feature.AnnouncementControllerTest::test_draft_does_not_notify_anyone"
+  },
+  {
+    "id": "U124",
+    "module": "Announcements",
+    "unit": "Create",
+    "description": "An alumnus tries to post an announcement",
+    "expected": "The request is refused",
+    "testRef": "Tests.Feature.AnnouncementControllerTest::test_alumni_cannot_manage_announcements"
+  },
+  {
+    "id": "U125",
+    "module": "Announcements",
+    "unit": "Delete",
+    "description": "Delete an announcement",
+    "expected": "The announcement is removed",
+    "testRef": "Tests.Feature.AnnouncementControllerTest::test_admin_can_delete_an_announcement"
+  },
+  {
+    "id": "U126",
+    "module": "Events",
+    "unit": "Create",
+    "description": "Alumni Affairs Office creates an event",
+    "expected": "The event is created",
+    "testRef": "Tests.Feature.EventControllerTest::test_alumni_affairs_can_create_an_event"
+  },
+  {
+    "id": "U127",
+    "module": "Events",
+    "unit": "Create",
+    "description": "An alumnus tries to create an event",
+    "expected": "Creation is refused",
+    "testRef": "Tests.Feature.EventControllerTest::test_alumni_cannot_create_an_event"
+  },
+  {
+    "id": "U128",
+    "module": "Events",
+    "unit": "RSVP to an event",
+    "description": "RSVP to a full event",
+    "expected": "The RSVP is refused",
+    "testRef": "Tests.Feature.EventControllerTest::test_rsvp_is_rejected_once_event_is_at_capacity"
+  },
+  {
+    "id": "U129",
+    "module": "Events",
+    "unit": "RSVP to an event",
+    "description": "RSVP to an unpublished event",
+    "expected": "The RSVP is refused",
+    "testRef": "Tests.Feature.AccessControlHardeningTest::test_a_draft_event_cannot_collect_rsvps"
+  },
+  {
+    "id": "U130",
+    "module": "Alumni Community",
+    "unit": "Create",
+    "description": "An alumnus posts and comments",
+    "expected": "Both are published",
+    "testRef": "Tests.Feature.CommunityControllerTest::test_alumni_can_post_and_comment"
+  },
+  {
+    "id": "U131",
+    "module": "Alumni Community",
+    "unit": "Create",
+    "description": "A student tries to post",
+    "expected": "The post is refused",
+    "testRef": "Tests.Feature.CommunityControllerTest::test_student_cannot_participate_in_the_community"
+  },
+  {
+    "id": "U132",
+    "module": "Alumni Community",
+    "unit": "Delete",
+    "description": "Delete an own post, then another’s",
+    "expected": "Only the own post is deleted",
+    "testRef": "Tests.Feature.CommunityControllerTest::test_author_can_delete_their_own_post_but_not_someone_elses"
+  },
+  {
+    "id": "U133",
+    "module": "Alumni Community",
+    "unit": "Delete",
+    "description": "Alumni Affairs Office removes a post and comment",
+    "expected": "Both are removed",
+    "testRef": "Tests.Feature.CommunityControllerTest::test_aao_can_moderate_delete_anyones_post_and_comment"
+  },
+  {
+    "id": "U134",
+    "module": "Messaging",
+    "unit": "Start a conversation",
+    "description": "A graduate messages a staff member",
+    "expected": "The conversation starts",
+    "testRef": "Tests.Feature.MessageControllerTest::test_graduate_can_start_a_conversation_with_staff"
+  },
+  {
+    "id": "U135",
+    "module": "Messaging",
+    "unit": "Start a conversation",
+    "description": "Message a partner never applied to",
+    "expected": "The message is refused",
+    "testRef": "Tests.Feature.MessageControllerTest::test_graduate_cannot_message_a_partner_they_never_applied_to"
+  },
+  {
+    "id": "U136",
+    "module": "Messaging",
+    "unit": "View details",
+    "description": "Open someone else’s conversation",
+    "expected": "Access is refused",
+    "testRef": "Tests.Feature.MessageControllerTest::test_non_participant_cannot_view_or_send_to_a_conversation"
+  },
+  {
+    "id": "U137",
+    "module": "Messaging",
+    "unit": "View list",
+    "description": "Receive a message, then open it",
+    "expected": "It shows as unread until opened",
+    "testRef": "Tests.Feature.MessageControllerTest::test_unread_is_true_until_the_recipient_opens_the_conversation"
+  },
+  {
+    "id": "U138",
+    "module": "Global Search",
+    "unit": "View page",
+    "description": "Search with one character",
+    "expected": "No results are returned",
+    "testRef": "Tests.Feature.GlobalSearchTest::test_short_queries_return_no_results"
+  },
+  {
+    "id": "U139",
+    "module": "Global Search",
+    "unit": "View page",
+    "description": "Admin searches for an account",
+    "expected": "The account is found",
+    "testRef": "Tests.Feature.GlobalSearchTest::test_admin_can_find_user_accounts"
+  },
+  {
+    "id": "U140",
+    "module": "Global Search",
+    "unit": "View page",
+    "description": "A graduate searches for an account",
+    "expected": "No accounts are returned",
+    "testRef": "Tests.Feature.GlobalSearchTest::test_graduate_cannot_search_user_accounts"
+  },
+  {
+    "id": "U141",
+    "module": "Global Search",
+    "unit": "View page",
+    "description": "Type a query quickly",
+    "expected": "Results match the final query",
+    "testRef": "resources/js/Components/GlobalSearch.test.tsx::Global search > shows results for the query the user ended on, not an earlier one"
+  },
+  {
+    "id": "U142",
+    "module": "Account Settings and Data Export",
+    "unit": "Data export",
+    "description": "Export own account data",
+    "expected": "A file with the user’s data is downloaded",
+    "testRef": "Tests.Feature.AccountDataExportControllerTest::test_authenticated_user_can_export_their_own_data"
+  },
+  {
+    "id": "U143",
+    "module": "Account Settings and Data Export",
+    "unit": "Data export",
+    "description": "Export while other accounts exist",
+    "expected": "Only the user’s own data is included",
+    "testRef": "Tests.Feature.AccountDataExportControllerTest::test_export_does_not_include_another_users_data"
+  },
+  {
+    "id": "U144",
+    "module": "Account Settings and Data Export",
+    "unit": "Settings",
+    "description": "Save notification preferences",
+    "expected": "The preferences are saved",
+    "testRef": "Tests.Feature.SettingsControllerTest::test_user_can_save_notification_preferences"
+  },
+  {
+    "id": "U145",
+    "module": "Account Settings and Data Export",
+    "unit": "Password",
+    "description": "Change password with a wrong current password",
+    "expected": "The change is refused",
+    "testRef": "Tests.Feature.Auth.PasswordUpdateTest::test_correct_password_must_be_provided_to_update_password"
+  }
+]

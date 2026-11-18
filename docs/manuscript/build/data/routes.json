@@ -1,0 +1,2570 @@
+[
+  {
+    "uri": "/",
+    "method": "GET|HEAD",
+    "name": null,
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "about",
+    "method": "GET|HEAD",
+    "name": "about",
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "account/export",
+    "method": "GET|HEAD",
+    "name": "account.export",
+    "controller": "AccountDataExport",
+    "action": "export",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/audit-logs",
+    "method": "GET|HEAD",
+    "name": "admin.audit-logs",
+    "controller": "Admin/AuditLog",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "reports.system.view"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/backups",
+    "method": "GET|HEAD",
+    "name": "admin.backups.index",
+    "controller": "Admin/Backup",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/backups",
+    "method": "POST",
+    "name": "admin.backups.store",
+    "controller": "Admin/Backup",
+    "action": "store",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/backups/{filename}/download",
+    "method": "GET|HEAD",
+    "name": "admin.backups.download",
+    "controller": "Admin/Backup",
+    "action": "download",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/colleges",
+    "method": "GET|HEAD",
+    "name": "admin.colleges.index",
+    "controller": "Admin/Department",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/departments",
+    "method": "POST",
+    "name": "admin.departments.store",
+    "controller": "Admin/Department",
+    "action": "store",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/departments/{department}",
+    "method": "PATCH",
+    "name": "admin.departments.update",
+    "controller": "Admin/Department",
+    "action": "update",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/departments/{department}",
+    "method": "DELETE",
+    "name": "admin.departments.destroy",
+    "controller": "Admin/Department",
+    "action": "destroy",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/jobs",
+    "method": "GET|HEAD",
+    "name": "admin.jobs",
+    "controller": "Admin/JobModeration",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "job_postings.moderate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/jobs/{posting}",
+    "method": "DELETE",
+    "name": "admin.jobs.destroy",
+    "controller": "Admin/JobModeration",
+    "action": "destroy",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/jobs/{posting}/status",
+    "method": "PATCH",
+    "name": "admin.jobs.update-status",
+    "controller": "Admin/JobModeration",
+    "action": "updateStatus",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/platform-status",
+    "method": "GET|HEAD",
+    "name": "admin.platform-status",
+    "controller": "Admin/PlatformStatus",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/roles",
+    "method": "GET|HEAD",
+    "name": "admin.roles.index",
+    "controller": "Admin/RolePermission",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/roles",
+    "method": "POST",
+    "name": "admin.roles.store",
+    "controller": "Admin/RolePermission",
+    "action": "store",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/roles/{role}",
+    "method": "DELETE",
+    "name": "admin.roles.destroy",
+    "controller": "Admin/RolePermission",
+    "action": "destroy",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/roles/{role}/permissions",
+    "method": "PATCH",
+    "name": "admin.roles.permissions.update",
+    "controller": "Admin/RolePermission",
+    "action": "updatePermissions",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/settings",
+    "method": "GET|HEAD",
+    "name": "admin.settings.index",
+    "controller": "Admin/SystemSetting",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/settings",
+    "method": "PATCH",
+    "name": "admin.settings.update",
+    "controller": "Admin/SystemSetting",
+    "action": "update",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "system.settings"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "admin/users",
+    "method": "GET|HEAD",
+    "name": "admin.users.index",
+    "controller": "Admin/User",
+    "action": "index",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/users/{user}",
+    "method": "PATCH",
+    "name": "admin.users.update",
+    "controller": "Admin/User",
+    "action": "update",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/users/{user}",
+    "method": "DELETE",
+    "name": "admin.users.destroy",
+    "controller": "Admin/User",
+    "action": "destroy",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "admin/users/{user}/edit",
+    "method": "GET|HEAD",
+    "name": "admin.users.edit",
+    "controller": "Admin/User",
+    "action": "edit",
+    "roleArg": "admin",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "announcements",
+    "method": "GET|HEAD",
+    "name": "announcements.index",
+    "controller": "Announcement",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "announcements",
+    "method": "POST",
+    "name": "announcements.store",
+    "controller": "Announcement",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "announcements/create",
+    "method": "GET|HEAD",
+    "name": "announcements.create",
+    "controller": "Announcement",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "announcements/{announcement}",
+    "method": "PATCH",
+    "name": "announcements.update",
+    "controller": "Announcement",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "announcements/{announcement}",
+    "method": "DELETE",
+    "name": "announcements.destroy",
+    "controller": "Announcement",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "announcements/{announcement}/edit",
+    "method": "GET|HEAD",
+    "name": "announcements.edit",
+    "controller": "Announcement",
+    "action": "edit",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "announcements.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "api/jobs/{posting}/rematch",
+    "method": "POST",
+    "name": "api.jobs.rematch.store",
+    "controller": "Api/JobMatch",
+    "action": "rematchJob",
+    "roleArg": null,
+    "permissionArg": "matching.trigger",
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "api/jobs/{posting}/rematch",
+    "method": "GET|HEAD",
+    "name": "api.jobs.rematch.show",
+    "controller": "Api/JobMatch",
+    "action": "jobStatus",
+    "roleArg": null,
+    "permissionArg": "matching.trigger",
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "api/me/rematch",
+    "method": "POST",
+    "name": "api.me.rematch.store",
+    "controller": "Api/JobMatch",
+    "action": "rematchProfile",
+    "roleArg": null,
+    "permissionArg": "matching.trigger",
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "api/me/rematch",
+    "method": "GET|HEAD",
+    "name": "api.me.rematch.show",
+    "controller": "Api/JobMatch",
+    "action": "profileStatus",
+    "roleArg": null,
+    "permissionArg": "matching.trigger",
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "applications",
+    "method": "GET|HEAD",
+    "name": "applications.index",
+    "controller": "JobApplication",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "applications/{application}/feedback",
+    "method": "POST",
+    "name": "applications.feedback.store",
+    "controller": "EmployerFeedback",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "employer_feedback.submit"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "applications/{application}/status",
+    "method": "PATCH",
+    "name": "applications.update-status",
+    "controller": "JobApplication",
+    "action": "updateStatus",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "job_postings.moderate"
+          ],
+          "roles": [
+            "industry_partner"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "applications/{application}/withdraw",
+    "method": "PATCH",
+    "name": "applications.withdraw",
+    "controller": "JobApplication",
+    "action": "withdraw",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "candidates/resume/{resume}",
+    "method": "GET|HEAD",
+    "name": "candidates.resume",
+    "controller": "Candidate",
+    "action": "resume",
+    "roleArg": null,
+    "permissionArg": "candidates.view_resumes",
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "candidates.view_resumes"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "candidates/{graduateProfile}",
+    "method": "GET|HEAD",
+    "name": "candidates.show",
+    "controller": "Candidate",
+    "action": "show",
+    "roleArg": null,
+    "permissionArg": "candidates.view_resumes",
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "candidates.view_resumes"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "candidates/{graduateProfile}/data",
+    "method": "GET|HEAD",
+    "name": "candidates.data",
+    "controller": "Candidate",
+    "action": "data",
+    "roleArg": null,
+    "permissionArg": "candidates.view_resumes",
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "candidates.view_resumes"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "career-progression",
+    "method": "GET|HEAD",
+    "name": "career-progression",
+    "controller": "CareerProgression",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "career-readiness",
+    "method": "GET|HEAD",
+    "name": "career-readiness",
+    "controller": "CareerReadiness",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "student_analytics.view",
+            "surveys.manage",
+            "assessments.participate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "clearance",
+    "method": "GET|HEAD",
+    "name": "clearance",
+    "controller": "Clearance",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "clearance/{graduateProfile}",
+    "method": "PATCH",
+    "name": "clearance.update",
+    "controller": "Clearance",
+    "action": "updateOffice",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "clearance.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "community",
+    "method": "GET|HEAD",
+    "name": "community.index",
+    "controller": "Community",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "community.participate",
+            "community.moderate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "community",
+    "method": "POST",
+    "name": "community.store",
+    "controller": "Community",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "community.participate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "community/comments/{communityComment}",
+    "method": "DELETE",
+    "name": "community.comments.destroy",
+    "controller": "Community",
+    "action": "destroyComment",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "community.moderate",
+            "community.participate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "community/{communityPost}",
+    "method": "DELETE",
+    "name": "community.destroy",
+    "controller": "Community",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "community.moderate",
+            "community.participate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "community/{communityPost}/comments",
+    "method": "POST",
+    "name": "community.comments.store",
+    "controller": "Community",
+    "action": "storeComment",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "community.participate"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "company",
+    "method": "POST",
+    "name": "company.store",
+    "controller": "Company",
+    "action": "store",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "company",
+    "method": "PATCH",
+    "name": "company.update",
+    "controller": "Company",
+    "action": "update",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "company/edit",
+    "method": "GET|HEAD",
+    "name": "company.edit",
+    "controller": "Company",
+    "action": "edit",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "confirm-password",
+    "method": "GET|HEAD",
+    "name": "password.confirm",
+    "controller": "Auth/ConfirmablePassword",
+    "action": "show",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "confirm-password",
+    "method": "POST",
+    "name": null,
+    "controller": "Auth/ConfirmablePassword",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "dashboard",
+    "method": "GET|HEAD",
+    "name": "dashboard",
+    "controller": "Dashboard",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "department-head/college",
+    "method": "PATCH",
+    "name": "department-head.college.update",
+    "controller": "DepartmentHead",
+    "action": "updateCollege",
+    "roleArg": "department_head",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "email/verification-notification",
+    "method": "POST",
+    "name": "verification.send",
+    "controller": "Auth/EmailVerificationNotification",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "events",
+    "method": "GET|HEAD",
+    "name": "events",
+    "controller": "Event",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "events",
+    "method": "POST",
+    "name": "events.store",
+    "controller": "Event",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "career_activities.manage",
+            "student_events.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "events/{event}",
+    "method": "PATCH",
+    "name": "events.update",
+    "controller": "Event",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "career_activities.manage",
+            "student_events.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "events/{event}",
+    "method": "DELETE",
+    "name": "events.destroy",
+    "controller": "Event",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "career_activities.manage",
+            "student_events.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "events/{event}/rsvp",
+    "method": "POST",
+    "name": "events.rsvp",
+    "controller": "Event",
+    "action": "rsvp",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "forgot-password",
+    "method": "GET|HEAD",
+    "name": "password.request",
+    "controller": "Auth/PasswordResetLink",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "forgot-password",
+    "method": "POST",
+    "name": "password.email",
+    "controller": "Auth/PasswordResetLink",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "graduate/education",
+    "method": "POST",
+    "name": "education.store",
+    "controller": "EducationRecord",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/education/{education}",
+    "method": "PATCH",
+    "name": "education.update",
+    "controller": "EducationRecord",
+    "action": "update",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/education/{education}",
+    "method": "DELETE",
+    "name": "education.destroy",
+    "controller": "EducationRecord",
+    "action": "destroy",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/employment",
+    "method": "POST",
+    "name": "employment.store",
+    "controller": "EmploymentRecord",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/employment/{employment}",
+    "method": "PATCH",
+    "name": "employment.update",
+    "controller": "EmploymentRecord",
+    "action": "update",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/employment/{employment}",
+    "method": "DELETE",
+    "name": "employment.destroy",
+    "controller": "EmploymentRecord",
+    "action": "destroy",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/profile",
+    "method": "PATCH",
+    "name": "graduate.profile.update",
+    "controller": "GraduateProfile",
+    "action": "update",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/profile/edit",
+    "method": "GET|HEAD",
+    "name": "graduate.profile.edit",
+    "controller": "GraduateProfile",
+    "action": "edit",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resume-builder",
+    "method": "GET|HEAD",
+    "name": "resume-builder.index",
+    "controller": "ResumeBuilder",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resume-builder",
+    "method": "POST",
+    "name": "resume-builder.store",
+    "controller": "ResumeBuilder",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resumes",
+    "method": "GET|HEAD",
+    "name": "resumes.index",
+    "controller": "Resume",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resumes",
+    "method": "POST",
+    "name": "resumes.store",
+    "controller": "Resume",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resumes/{resume}",
+    "method": "DELETE",
+    "name": "resumes.destroy",
+    "controller": "Resume",
+    "action": "destroy",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/resumes/{resume}/primary",
+    "method": "PATCH",
+    "name": "resumes.set-primary",
+    "controller": "Resume",
+    "action": "setPrimary",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "graduate/skills",
+    "method": "POST",
+    "name": "skills.store",
+    "controller": "Skill",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "jobs",
+    "method": "GET|HEAD",
+    "name": "jobs.index",
+    "controller": "JobPosting",
+    "action": "publicIndex",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "jobs/{job}/apply",
+    "method": "POST",
+    "name": "applications.store",
+    "controller": "JobApplication",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "jobs.apply"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "jobs/{posting}",
+    "method": "GET|HEAD",
+    "name": "jobs.show",
+    "controller": "JobPosting",
+    "action": "show",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "learning-resources",
+    "method": "GET|HEAD",
+    "name": "learning-resources.index",
+    "controller": "LearningResource",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "career.resources.view",
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "learning-resources",
+    "method": "POST",
+    "name": "learning-resources.store",
+    "controller": "LearningResource",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "learning-resources/create",
+    "method": "GET|HEAD",
+    "name": "learning-resources.create",
+    "controller": "LearningResource",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "learning-resources/{learningResource}",
+    "method": "PATCH",
+    "name": "learning-resources.update",
+    "controller": "LearningResource",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "learning-resources/{learningResource}",
+    "method": "DELETE",
+    "name": "learning-resources.destroy",
+    "controller": "LearningResource",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "learning-resources/{learningResource}/edit",
+    "method": "GET|HEAD",
+    "name": "learning-resources.edit",
+    "controller": "LearningResource",
+    "action": "edit",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "login",
+    "method": "GET|HEAD",
+    "name": "login",
+    "controller": "Auth/AuthenticatedSession",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "login",
+    "method": "POST",
+    "name": null,
+    "controller": "Auth/AuthenticatedSession",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "logout",
+    "method": "POST",
+    "name": "logout",
+    "controller": "Auth/AuthenticatedSession",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "messages",
+    "method": "GET|HEAD",
+    "name": "messages",
+    "controller": "Message",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "messages/start",
+    "method": "POST",
+    "name": "messages.start",
+    "controller": "Message",
+    "action": "start",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [],
+          "roles": [
+            "industry_partner"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "messages/{conversation}",
+    "method": "GET|HEAD",
+    "name": "messages.show",
+    "controller": "Message",
+    "action": "show",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "messages/{conversation}",
+    "method": "POST",
+    "name": "messages.send",
+    "controller": "Message",
+    "action": "sendMessage",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "notifications",
+    "method": "GET|HEAD",
+    "name": "notifications",
+    "controller": "Notification",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "notifications/read-all",
+    "method": "PATCH",
+    "name": "notifications.read-all",
+    "controller": "Notification",
+    "action": "markAllRead",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "notifications/{notification}/read",
+    "method": "PATCH",
+    "name": "notifications.read",
+    "controller": "Notification",
+    "action": "markAsRead",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "password",
+    "method": "PUT",
+    "name": "password.update",
+    "controller": "Auth/Password",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings",
+    "method": "GET|HEAD",
+    "name": "postings.index",
+    "controller": "JobPosting",
+    "action": "index",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings",
+    "method": "POST",
+    "name": "postings.store",
+    "controller": "JobPosting",
+    "action": "store",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [],
+          "roles": [
+            "industry_partner"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "postings/assist/description",
+    "method": "POST",
+    "name": "postings.assist.description",
+    "controller": "JobAssist",
+    "action": "description",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/assist/qualifications",
+    "method": "POST",
+    "name": "postings.assist.qualifications",
+    "controller": "JobAssist",
+    "action": "qualifications",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/assist/titles",
+    "method": "GET|HEAD",
+    "name": "postings.assist.titles",
+    "controller": "JobAssist",
+    "action": "titles",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/create",
+    "method": "GET|HEAD",
+    "name": "postings.create",
+    "controller": "JobPosting",
+    "action": "create",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [],
+          "roles": [
+            "industry_partner"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "postings/{posting}",
+    "method": "PATCH",
+    "name": "postings.update",
+    "controller": "JobPosting",
+    "action": "update",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/{posting}",
+    "method": "DELETE",
+    "name": "postings.destroy",
+    "controller": "JobPosting",
+    "action": "destroy",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/{posting}/candidates",
+    "method": "GET|HEAD",
+    "name": "postings.candidates",
+    "controller": "JobPosting",
+    "action": "candidates",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/{posting}/edit",
+    "method": "GET|HEAD",
+    "name": "postings.edit",
+    "controller": "JobPosting",
+    "action": "edit",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "postings/{posting}/matches",
+    "method": "GET|HEAD",
+    "name": "postings.matches",
+    "controller": "CandidateMatch",
+    "action": "index",
+    "roleArg": "industry_partner",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "privacy",
+    "method": "GET|HEAD",
+    "name": "privacy",
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "profile",
+    "method": "GET|HEAD",
+    "name": "profile.edit",
+    "controller": "Profile",
+    "action": "edit",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "profile",
+    "method": "PATCH",
+    "name": "profile.update",
+    "controller": "Profile",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "profile",
+    "method": "DELETE",
+    "name": "profile.destroy",
+    "controller": "Profile",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "recommendations",
+    "method": "GET|HEAD",
+    "name": "recommendations.index",
+    "controller": "JobRecommendation",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "recommendations/{jobMatchResult}/feedback",
+    "method": "POST",
+    "name": "recommendations.feedback",
+    "controller": "MatchFeedback",
+    "action": "store",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "register",
+    "method": "GET|HEAD",
+    "name": "register",
+    "controller": "Auth/RegisteredUser",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "register",
+    "method": "POST",
+    "name": null,
+    "controller": "Auth/RegisteredUser",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "reports",
+    "method": "GET|HEAD",
+    "name": "reports.index",
+    "controller": "Reports",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "reports/employability",
+    "method": "GET|HEAD",
+    "name": "reports.employability",
+    "controller": "EmployabilityReport",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "reports.employability.view"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "reports/employability/export",
+    "method": "GET|HEAD",
+    "name": "reports.employability.export",
+    "controller": "EmployabilityReport",
+    "action": "export",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "reports.employability.view"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "reports/program-outcomes",
+    "method": "GET|HEAD",
+    "name": "reports.program-outcomes",
+    "controller": "ProgramOutcomes",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "program_outcomes.view"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "reports/program-outcomes/export",
+    "method": "GET|HEAD",
+    "name": "reports.program-outcomes.export",
+    "controller": "ProgramOutcomes",
+    "action": "export",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "program_outcomes.view"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "reset-password",
+    "method": "POST",
+    "name": "password.store",
+    "controller": "Auth/NewPassword",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "reset-password/{token}",
+    "method": "GET|HEAD",
+    "name": "password.reset",
+    "controller": "Auth/NewPassword",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": true,
+    "gate": null
+  },
+  {
+    "uri": "resume-analysis",
+    "method": "GET|HEAD",
+    "name": "resume-analysis",
+    "controller": "ResumeAnalysis",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "sanctum/csrf-cookie",
+    "method": "GET|HEAD",
+    "name": "sanctum.csrf-cookie",
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "scholarship-recipients/{recipient}",
+    "method": "DELETE",
+    "name": "scholarships.recipients.destroy",
+    "controller": "Scholarship",
+    "action": "removeRecipient",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "scholarships",
+    "method": "GET|HEAD",
+    "name": "scholarships",
+    "controller": "Scholarship",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "scholarships",
+    "method": "POST",
+    "name": "scholarships.store",
+    "controller": "Scholarship",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "scholarships/{scholarship}",
+    "method": "PATCH",
+    "name": "scholarships.update",
+    "controller": "Scholarship",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "scholarships/{scholarship}",
+    "method": "DELETE",
+    "name": "scholarships.destroy",
+    "controller": "Scholarship",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "scholarships/{scholarship}/recipients",
+    "method": "POST",
+    "name": "scholarships.recipients.store",
+    "controller": "Scholarship",
+    "action": "addRecipient",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "scholarships.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "search",
+    "method": "GET|HEAD",
+    "name": "search",
+    "controller": "GlobalSearch",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "settings",
+    "method": "GET|HEAD",
+    "name": "settings",
+    "controller": "Settings",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "settings/notifications",
+    "method": "PATCH",
+    "name": "settings.notifications.update",
+    "controller": "Settings",
+    "action": "updateNotifications",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "skill-gap",
+    "method": "GET|HEAD",
+    "name": "skill-gap",
+    "controller": "SkillGap",
+    "action": "index",
+    "roleArg": "alumni|student",
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "skill-taxonomy",
+    "method": "GET|HEAD",
+    "name": "skill-taxonomy.index",
+    "controller": "Admin/SkillTaxonomy",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "skill-taxonomy/aliases/{skillAlias}",
+    "method": "DELETE",
+    "name": "skill-taxonomy.aliases.destroy",
+    "controller": "Admin/SkillTaxonomy",
+    "action": "destroyAlias",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "skill-taxonomy/{skill}/aliases",
+    "method": "POST",
+    "name": "skill-taxonomy.aliases.store",
+    "controller": "Admin/SkillTaxonomy",
+    "action": "storeAlias",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "learning_resources.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "skills/resolve",
+    "method": "POST",
+    "name": "skills.resolve",
+    "controller": "Skill",
+    "action": "resolve",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "skills/suggest",
+    "method": "GET|HEAD",
+    "name": "skills.suggest",
+    "controller": "Skill",
+    "action": "suggest",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "storage/{path}",
+    "method": "GET|HEAD",
+    "name": "storage.local",
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "storage/{path}",
+    "method": "PUT",
+    "name": "storage.local.upload",
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "student-cases",
+    "method": "GET|HEAD",
+    "name": "student-cases.index",
+    "controller": "StudentCase",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "students.cases.manage"
+          ],
+          "roles": [
+            "student"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "student-cases",
+    "method": "POST",
+    "name": "student-cases.store",
+    "controller": "StudentCase",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [],
+          "roles": [
+            "student"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "student-cases/{studentCase}",
+    "method": "PATCH",
+    "name": "student-cases.update",
+    "controller": "StudentCase",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "students.cases.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys",
+    "method": "GET|HEAD",
+    "name": "surveys.index",
+    "controller": "Survey",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "surveys",
+    "method": "POST",
+    "name": "surveys.store",
+    "controller": "Survey",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/create",
+    "method": "GET|HEAD",
+    "name": "surveys.create",
+    "controller": "Survey",
+    "action": "create",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}",
+    "method": "PATCH",
+    "name": "surveys.update",
+    "controller": "Survey",
+    "action": "update",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}",
+    "method": "DELETE",
+    "name": "surveys.destroy",
+    "controller": "Survey",
+    "action": "destroy",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}/edit",
+    "method": "GET|HEAD",
+    "name": "surveys.edit",
+    "controller": "Survey",
+    "action": "edit",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}/remind",
+    "method": "POST",
+    "name": "surveys.remind",
+    "controller": "Survey",
+    "action": "remind",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}/respond",
+    "method": "GET|HEAD",
+    "name": "surveys.respond",
+    "controller": "SurveyResponse",
+    "action": "show",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.respond"
+          ],
+          "roles": []
+        },
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}/respond",
+    "method": "POST",
+    "name": "surveys.respond.store",
+    "controller": "SurveyResponse",
+    "action": "store",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.respond"
+          ],
+          "roles": []
+        },
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "surveys/{survey}/results",
+    "method": "GET|HEAD",
+    "name": "surveys.results",
+    "controller": "Survey",
+    "action": "results",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "surveys.manage"
+          ],
+          "roles": [
+            "department_head"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "uri": "talent-search",
+    "method": "GET|HEAD",
+    "name": "talent-search",
+    "controller": "TalentSearch",
+    "action": "index",
+    "roleArg": null,
+    "permissionArg": "candidates.search",
+    "auth": true,
+    "guestOnly": false,
+    "gate": {
+      "clauses": [
+        {
+          "permissions": [
+            "candidates.search"
+          ],
+          "roles": []
+        }
+      ]
+    }
+  },
+  {
+    "uri": "up",
+    "method": "GET|HEAD",
+    "name": null,
+    "controller": null,
+    "action": null,
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": false,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "verify-email",
+    "method": "GET|HEAD",
+    "name": "verification.notice",
+    "controller": "Auth/EmailVerificationPrompt",
+    "action": "__invoke",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  },
+  {
+    "uri": "verify-email/{id}/{hash}",
+    "method": "GET|HEAD",
+    "name": "verification.verify",
+    "controller": "Auth/VerifyEmail",
+    "action": "__invoke",
+    "roleArg": null,
+    "permissionArg": null,
+    "auth": true,
+    "guestOnly": false,
+    "gate": null
+  }
+]

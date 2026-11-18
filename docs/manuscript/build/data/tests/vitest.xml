@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="151" failures="0" errors="0" time="8.5800457">
+    <testsuite name="resources/js/Components/FitScoreBar.test.tsx" timestamp="2026-11-12T19:37:30.573Z" hostname="Carlie" tests="7" failures="0" errors="0" skipped="0" time="0.0435028">
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; draws a scored match proportionally" time="0.0234088">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; never draws past a full bar" time="0.0031526">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; draws an unscored match from its similarity" time="0.003147">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; draws the weakest possible match as an empty bar, not a full one" time="0.0029998">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; treats a missing similarity as an empty bar" time="0.0029515">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; colours the bar by recommendation, falling back for an unknown one" time="0.0050469">
+        </testcase>
+        <testcase classname="resources/js/Components/FitScoreBar.test.tsx" name="FitScoreBar &gt; still reports the real score in the label when it is out of range" time="0.0014702">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/GlobalSearch.test.tsx" timestamp="2026-11-12T19:37:30.575Z" hostname="Carlie" tests="3" failures="0" errors="0" skipped="0" time="0.5789812">
+        <testcase classname="resources/js/Components/GlobalSearch.test.tsx" name="Global search &gt; shows results for the query the user ended on, not an earlier one" time="0.083904">
+        </testcase>
+        <testcase classname="resources/js/Components/GlobalSearch.test.tsx" name="Mobile search sheet &gt; reopens empty after being dismissed with Escape" time="0.3664114">
+        </testcase>
+        <testcase classname="resources/js/Components/GlobalSearch.test.tsx" name="Mobile search sheet &gt; reopens empty after being dismissed with a tap outside" time="0.1254583">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/Pagination.test.tsx" timestamp="2026-11-12T19:37:30.576Z" hostname="Carlie" tests="6" failures="0" errors="0" skipped="0" time="0.2332083">
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; renders nothing for a single page" time="0.0138724">
+        </testcase>
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; links every reachable page" time="0.0354239">
+            <system-err>
+Warning: React does not recognize the `preserveScroll` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `preservescroll` instead. If you accidentally passed it from a parent component, remove it from the DOM element.
+    at a
+    at Link (D:\Coding\Projects\gradconnect\resources\js\Components\Pagination.test.tsx:3:12)
+    at nav
+    at Pagination (D:\Coding\Projects\gradconnect\resources\js\Components\Pagination.tsx:7:3)
+
+            </system-err>
+        </testcase>
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; marks the current page for assistive technology" time="0.0055755">
+        </testcase>
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; renders an unavailable page as disabled text, not a link" time="0.0040581">
+        </testcase>
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; gives every target a comfortable tap area" time="0.0070623">
+        </testcase>
+        <testcase classname="resources/js/Components/Pagination.test.tsx" name="Pagination &gt; wraps instead of overflowing a narrow screen" time="0.1654731">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/PublicNav.test.tsx" timestamp="2026-11-12T19:37:30.578Z" hostname="Carlie" tests="7" failures="0" errors="0" skipped="0" time="0.4378921">
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; keeps the menu closed until it is opened" time="0.2465985">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; opens a menu holding every destination" time="0.0550769">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; sends &quot;For Employers&quot; to the partner sign-up" time="0.036434">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; offers sign in and sign up inside the menu for a guest" time="0.0206388">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; shows a dashboard link instead once signed in" time="0.0064734">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; closes the menu after a destination is chosen" time="0.0509399">
+        </testcase>
+        <testcase classname="resources/js/Components/PublicNav.test.tsx" name="PublicNav &gt; closes the menu on Escape" time="0.0199105">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/ScrollTabs.test.tsx" timestamp="2026-11-12T19:37:30.579Z" hostname="Carlie" tests="4" failures="0" errors="0" skipped="0" time="0.2565773">
+        <testcase classname="resources/js/Components/ScrollTabs.test.tsx" name="ScrollTabs &gt; marks only the active tab as selected" time="0.1950456">
+        </testcase>
+        <testcase classname="resources/js/Components/ScrollTabs.test.tsx" name="ScrollTabs &gt; reports the tab that was chosen" time="0.0252663">
+        </testcase>
+        <testcase classname="resources/js/Components/ScrollTabs.test.tsx" name="ScrollTabs &gt; scrolls sideways rather than widening the page" time="0.0078506">
+        </testcase>
+        <testcase classname="resources/js/Components/ScrollTabs.test.tsx" name="ScrollTabs &gt; keeps every label on one line" time="0.0269652">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/SkillCategoryPicker.test.tsx" timestamp="2026-11-12T19:37:30.579Z" hostname="Carlie" tests="10" failures="0" errors="0" skipped="0" time="0.2724721">
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; survives a category being opened" time="0.1090051">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; survives every category being toggled twice" time="0.0362157">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; opens the viewer’s own college category and the shared soft skills" time="0.0095488">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; opens a category that already holds a selected skill" time="0.0093979">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; groups skills with no category under Other" time="0.0080012">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; reports the skill that was clicked" time="0.0177497">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; marks a selected skill as pressed" time="0.0095427">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; shows only matching groups while filtering, and opens them" time="0.0210119">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; restores the original open groups when the filter is cleared" time="0.035103">
+        </testcase>
+        <testcase classname="resources/js/Components/SkillCategoryPicker.test.tsx" name="SkillCategoryPicker &gt; says so when nothing matches" time="0.0150646">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/TableCard.test.tsx" timestamp="2026-11-12T19:37:30.581Z" hostname="Carlie" tests="3" failures="0" errors="0" skipped="0" time="0.0194583">
+        <testcase classname="resources/js/Components/TableCard.test.tsx" name="TableCard &gt; scrolls the table instead of clipping it" time="0.013859">
+        </testcase>
+        <testcase classname="resources/js/Components/TableCard.test.tsx" name="TableCard &gt; keeps the table wide enough for its columns to stay legible" time="0.0024957">
+        </testcase>
+        <testcase classname="resources/js/Components/TableCard.test.tsx" name="TableCard &gt; gives a column-heavy table more room" time="0.0019515">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/hooks/useBodyScrollLock.test.tsx" timestamp="2026-11-12T19:37:30.582Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.0207893">
+        <testcase classname="resources/js/hooks/useBodyScrollLock.test.tsx" name="useBodyScrollLock &gt; locks while active and restores on unmount" time="0.0131142">
+        </testcase>
+        <testcase classname="resources/js/hooks/useBodyScrollLock.test.tsx" name="useBodyScrollLock &gt; does nothing while inactive" time="0.0012689">
+        </testcase>
+        <testcase classname="resources/js/hooks/useBodyScrollLock.test.tsx" name="useBodyScrollLock &gt; leaves the page scrollable after two overlays close in either order" time="0.0024583">
+        </testcase>
+        <testcase classname="resources/js/hooks/useBodyScrollLock.test.tsx" name="useBodyScrollLock &gt; keeps the page locked while the second overlay is still open" time="0.0017736">
+        </testcase>
+        <testcase classname="resources/js/hooks/useBodyScrollLock.test.tsx" name="useBodyScrollLock &gt; restores a page that was already unscrollable for another reason" time="0.0010929">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/hooks/useDismiss.test.tsx" timestamp="2026-11-12T19:37:30.583Z" hostname="Carlie" tests="8" failures="0" errors="0" skipped="0" time="0.0529588">
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; closes on a pointer down outside the element" time="0.0317515">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; stays open when the pointer goes down inside" time="0.0042867">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; closes on Escape" time="0.0029253">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; ignores other keys" time="0.0022298">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; listens for nothing while closed" time="0.0031883">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; can take Escape only, for a drawer with its own backdrop" time="0.0024114">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; detaches its listeners when it closes" time="0.0025996">
+        </testcase>
+        <testcase classname="resources/js/hooks/useDismiss.test.tsx" name="useDismiss &gt; calls the latest callback without rebinding" time="0.0018756">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/lib/roles.test.ts" timestamp="2026-11-12T19:37:30.584Z" hostname="Carlie" tests="9" failures="0" errors="0" skipped="0" time="0.0062855">
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; offers exactly the seven roles the institution registers" time="0.0021532">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; labels every registrable and audience role" time="0.0007206">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; lets only graduates in without approval" time="0.0003677">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; holds every staff role, and admin, for approval" time="0.0002125">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; reads a student as a graduate student, not a student" time="0.0001519">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; spells out the offices rather than their abbreviations" time="0.0002028">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; pluralises an audience" time="0.0001319">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; humanises a role an administrator invented" time="0.0000881">
+        </testcase>
+        <testcase classname="resources/js/lib/roles.test.ts" name="role vocabulary &gt; returns nothing for a missing role rather than &quot;undefined&quot;" time="0.0002832">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Community.test.tsx" timestamp="2026-11-12T19:37:30.585Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.3512332">
+        <testcase classname="resources/js/Pages/Community.test.tsx" name="Community &gt; explains why a post was rejected instead of silently dropping it" time="0.2370139">
+        </testcase>
+        <testcase classname="resources/js/Pages/Community.test.tsx" name="Community &gt; keeps the text so a rejected post is not lost" time="0.0325243">
+        </testcase>
+        <testcase classname="resources/js/Pages/Community.test.tsx" name="Community &gt; clears the box and the error once the post lands" time="0.0315812">
+        </testcase>
+        <testcase classname="resources/js/Pages/Community.test.tsx" name="Community &gt; locks the Post button while the update is in flight" time="0.0390142">
+        </testcase>
+        <testcase classname="resources/js/Pages/Community.test.tsx" name="Community &gt; stops the author exceeding the server limit in the first place" time="0.0092663">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/StatusBadgeFallback.test.tsx" timestamp="2026-11-12T19:37:30.586Z" hostname="Carlie" tests="4" failures="0" errors="0" skipped="0" time="0.1017812">
+        <testcase classname="resources/js/Pages/StatusBadgeFallback.test.tsx" name="Unmapped status badges &gt; styles a survey status the list has not learned yet" time="0.0346195">
+        </testcase>
+        <testcase classname="resources/js/Pages/StatusBadgeFallback.test.tsx" name="Unmapped status badges &gt; styles a scholarship status the page has not learned yet" time="0.0358192">
+        </testcase>
+        <testcase classname="resources/js/Pages/StatusBadgeFallback.test.tsx" name="Unmapped status badges &gt; styles a case status the page has not learned yet" time="0.0044426">
+        </testcase>
+        <testcase classname="resources/js/Pages/StatusBadgeFallback.test.tsx" name="Unmapped status badges &gt; labels and styles an application status the dashboard has not learned yet" time="0.0255161">
+            <system-err>
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Components/Landing/AiMatchShowcase.test.tsx" timestamp="2026-11-12T19:37:30.587Z" hostname="Carlie" tests="10" failures="0" errors="0" skipped="0" time="0.4546318">
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; shows the first college and a chip for each one" time="0.237727">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; rotates to the next college on its own" time="0.0388626">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; shows the college a visitor picks" time="0.0517678">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; stops rotating once paused" time="0.0329971">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; pauses while the pointer is over the card" time="0.0399115">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; does not rotate when the visitor prefers reduced motion" time="0.0163176">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; formats the salary the way local job ads do" time="0.0075572">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; says the example is illustrative rather than a live posting" time="0.0131115">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; renders nothing when there is no showcase data" time="0.002075">
+        </testcase>
+        <testcase classname="resources/js/Components/Landing/AiMatchShowcase.test.tsx" name="AiMatchShowcase &gt; does not rotate a single college" time="0.0124609">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Admin/Skills.test.tsx" timestamp="2026-11-12T19:37:30.588Z" hostname="Carlie" tests="2" failures="0" errors="0" skipped="0" time="0.4004564">
+        <testcase classname="resources/js/Pages/Admin/Skills.test.tsx" name="Skill taxonomy alias form &gt; shows why an alias was rejected instead of appearing to do nothing" time="0.0757063">
+        </testcase>
+        <testcase classname="resources/js/Pages/Admin/Skills.test.tsx" name="Skill taxonomy alias form &gt; posts the alias for the skill it was typed against" time="0.3220564">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Admin/UserEditRoles.test.tsx" timestamp="2026-11-12T19:37:30.588Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.5256907">
+        <testcase classname="resources/js/Pages/Admin/UserEditRoles.test.tsx" name="Admin user roles &gt; keeps both roles when two are ticked before the next render" time="0.3443278">
+        </testcase>
+        <testcase classname="resources/js/Pages/Admin/UserEditRoles.test.tsx" name="Admin user roles &gt; sends every ticked role when saved" time="0.0746276">
+        </testcase>
+        <testcase classname="resources/js/Pages/Admin/UserEditRoles.test.tsx" name="Admin user roles &gt; unticks a role that was already held" time="0.056544">
+        </testcase>
+        <testcase classname="resources/js/Pages/Admin/UserEditRoles.test.tsx" name="Admin user roles &gt; labels a role by its display name rather than its raw key" time="0.0363295">
+        </testcase>
+        <testcase classname="resources/js/Pages/Admin/UserEditRoles.test.tsx" name="Admin user roles &gt; submits once per save" time="0.0123146">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Company/Edit.test.tsx" timestamp="2026-11-12T19:37:30.589Z" hostname="Carlie" tests="6" failures="0" errors="0" skipped="0" time="0.0879662">
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows the server error for name" time="0.0421844">
+        </testcase>
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows the server error for website" time="0.0063965">
+        </testcase>
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows the server error for industry" time="0.0082297">
+        </testcase>
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows the server error for location" time="0.0090743">
+        </testcase>
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows the server error for description" time="0.0075899">
+        </testcase>
+        <testcase classname="resources/js/Pages/Company/Edit.test.tsx" name="Company profile form &gt; shows nothing when the save succeeded" time="0.0128119">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Jobs/formatSalary.test.ts" timestamp="2026-11-12T19:37:30.590Z" hostname="Carlie" tests="6" failures="0" errors="0" skipped="0" time="0.0127272">
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; keeps a comma-grouped range intact" time="0.0109102">
+        </testcase>
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; formats a plain unseparated range" time="0.0002627">
+        </testcase>
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; keeps the plus on an open-ended figure" time="0.0001426">
+        </testcase>
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; formats a single figure" time="0.0001243">
+        </testcase>
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; leaves text with no figures alone" time="0.0000901">
+        </testcase>
+        <testcase classname="resources/js/Pages/Jobs/formatSalary.test.ts" name="formatSalary &gt; never renders a lone thousands group as if it were the upper bound" time="0.0003352">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" timestamp="2026-11-12T19:37:30.591Z" hostname="Carlie" tests="6" failures="0" errors="0" skipped="0" time="0.4709759">
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; renders the create page from the payload the controller actually sends" time="0.2616146">
+        </testcase>
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; renders the edit page from the same payload" time="0.0218245">
+        </testcase>
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; groups every program under its college" time="0.0142832">
+        </testcase>
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; keeps a program whose college was removed selectable" time="0.0626912">
+        </testcase>
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; offers &quot;Everyone&quot; so a resource need not be restricted" time="0.0405101">
+        </testcase>
+        <testcase classname="resources/js/Pages/LearningResources/LearningResourceForm.test.tsx" name="Learning resource form &gt; preselects the program an existing resource is restricted to" time="0.0683001">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Postings/Candidates.test.tsx" timestamp="2026-11-12T19:37:30.591Z" hostname="Carlie" tests="3" failures="0" errors="0" skipped="0" time="0.5357681">
+        <testcase classname="resources/js/Pages/Postings/Candidates.test.tsx" name="Posting applicant list &gt; offers the résumé the employer is entitled to read" time="0.4605659">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/Candidates.test.tsx" name="Posting applicant list &gt; offers no link when the applicant attached no résumé" time="0.0363326">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/Candidates.test.tsx" name="Posting applicant list &gt; offers no link when the viewer may not download the file" time="0.0369236">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Postings/Matches.test.tsx" timestamp="2026-11-12T19:37:30.593Z" hostname="Carlie" tests="4" failures="0" errors="0" skipped="0" time="0.3260234">
+        <testcase classname="resources/js/Pages/Postings/Matches.test.tsx" name="Employer rematch &gt; does not reload a page the employer has already left" time="0.2019146">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/Matches.test.tsx" name="Employer rematch &gt; queues one matching run however fast the button is clicked" time="0.0570511">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/Matches.test.tsx" name="Employer rematch &gt; reloads once the wait is over and re-enables the button" time="0.0272963">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/Matches.test.tsx" name="Employer rematch &gt; re-enables the button when matching could not be started" time="0.0382927">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Postings/PostingFormFields.test.tsx" timestamp="2026-11-12T19:37:30.594Z" hostname="Carlie" tests="7" failures="0" errors="0" skipped="0" time="0.5451544">
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Job title autocomplete &gt; shows suggestions for the query the user ended on, not an earlier one" time="0.1153738">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Skill autocomplete &gt; shows suggestions for the query the user ended on, not an earlier one" time="0.0307067">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Skill autocomplete &gt; keeps the spinner up when an abandoned lookup settles under a newer one" time="0.0306116">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Skill autocomplete &gt; takes down the dropdown when the query falls below the minimum length" time="0.0325438">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Skill selection &gt; keeps both skills when two chips are clicked before a re-render" time="0.3044007">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Server validation errors &gt; shows the error for a field the form renders but never reported on" time="0.0189004">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingFormFields.test.tsx" name="Server validation errors &gt; shows a rejected skill row, which comes back keyed per index" time="0.0105017">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Postings/PostingsPagination.test.tsx" timestamp="2026-11-12T19:37:30.595Z" hostname="Carlie" tests="2" failures="0" errors="0" skipped="0" time="0.2426148">
+        <testcase classname="resources/js/Pages/Postings/PostingsPagination.test.tsx" name="Employer posting list &gt; offers a way to reach the postings past the first page" time="0.2328354">
+        </testcase>
+        <testcase classname="resources/js/Pages/Postings/PostingsPagination.test.tsx" name="Employer posting list &gt; shows no pagination when everything fits on one page" time="0.008234">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Graduate/ProfileEditRecords.test.tsx" timestamp="2026-11-12T19:37:30.595Z" hostname="Carlie" tests="4" failures="0" errors="0" skipped="0" time="0.5104145">
+        <testcase classname="resources/js/Pages/Graduate/ProfileEditRecords.test.tsx" name="Profile education and employment records &gt; shows why an education record was rejected" time="0.319961">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ProfileEditRecords.test.tsx" name="Profile education and employment records &gt; shows why an employment record was rejected" time="0.0655638">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ProfileEditRecords.test.tsx" name="Profile education and employment records &gt; clears the message once the record is accepted" time="0.0513048">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ProfileEditRecords.test.tsx" name="Profile education and employment records &gt; locks Add while the record is in flight" time="0.0720186">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" timestamp="2026-11-12T19:37:30.596Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.3982885">
+        <testcase classname="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" name="Resume builder &gt; renders a profile that has no relations loaded yet" time="0.0279135">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" name="Resume builder &gt; offers to build once the profile has only a program" time="0.1969781">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" name="Resume builder &gt; refuses to build a genuinely empty profile" time="0.0348601">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" name="Resume builder &gt; does not claim a finished job is still current" time="0.1308846">
+        </testcase>
+        <testcase classname="resources/js/Pages/Graduate/ResumeBuilder.test.tsx" name="Resume builder &gt; still says Present for a role the graduate holds now" time="0.0058221">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Recommendations/Index.test.tsx" timestamp="2026-11-12T19:37:30.596Z" hostname="Carlie" tests="4" failures="0" errors="0" skipped="0" time="0.4674102">
+        <testcase classname="resources/js/Pages/Recommendations/Index.test.tsx" name="Graduate rematch &gt; does not reload a page the graduate has already left" time="0.2827737">
+        </testcase>
+        <testcase classname="resources/js/Pages/Recommendations/Index.test.tsx" name="Graduate rematch &gt; queues one matching run however fast the button is clicked" time="0.0787495">
+        </testcase>
+        <testcase classname="resources/js/Pages/Recommendations/Index.test.tsx" name="Graduate rematch &gt; reloads once the wait is over and re-enables the button" time="0.0340381">
+        </testcase>
+        <testcase classname="resources/js/Pages/Recommendations/Index.test.tsx" name="Graduate rematch &gt; re-enables the button when matching could not be started" time="0.0700947">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Reports/Employability.test.tsx" timestamp="2026-11-12T19:37:30.597Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.3253296">
+        <testcase classname="resources/js/Pages/Reports/Employability.test.tsx" name="Employability report survey response rates &gt; tells two surveys of the same title apart" time="0.0761868">
+        </testcase>
+        <testcase classname="resources/js/Pages/Reports/Employability.test.tsx" name="Employability report graduation year filter &gt; recomputes the report once for a year that was typed a digit at a time" time="0.0372586">
+        </testcase>
+        <testcase classname="resources/js/Pages/Reports/Employability.test.tsx" name="Employability report graduation year filter &gt; shows every digit as it is typed" time="0.0157119">
+        </testcase>
+        <testcase classname="resources/js/Pages/Reports/Employability.test.tsx" name="Employability report graduation year filter &gt; still lets a college be filtered in one go" time="0.169862">
+        </testcase>
+        <testcase classname="resources/js/Pages/Reports/Employability.test.tsx" name="Employability report graduation year filter &gt; takes the server&apos;s year back when a new report arrives" time="0.024707">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Surveys/Results.test.tsx" timestamp="2026-11-12T19:37:30.598Z" hostname="Carlie" tests="5" failures="0" errors="0" skipped="0" time="0.0716702">
+        <testcase classname="resources/js/Pages/Surveys/Results.test.tsx" name="Survey results &gt; charts a choice question that has answers" time="0.0467989">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/Results.test.tsx" name="Survey results &gt; says there are no answers yet for an unanswered choice question" time="0.0044615">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/Results.test.tsx" name="Survey results &gt; lists free-text answers when there is no distribution" time="0.0037565">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/Results.test.tsx" name="Survey results &gt; does not reorder the results array it was given" time="0.0084734">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/Results.test.tsx" name="Survey results &gt; still displays the questions in their intended order" time="0.006493">
+        </testcase>
+    </testsuite>
+    <testsuite name="resources/js/Pages/Surveys/SurveyForm.test.tsx" timestamp="2026-11-12T19:37:30.599Z" hostname="Carlie" tests="6" failures="0" errors="0" skipped="0" time="0.8297837">
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey builder question rows &gt; keeps a per-question error on its own question after an earlier one is removed" time="0.4764009">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey builder question rows &gt; does not hand a newly added question somebody else&apos;s error" time="0.1754512">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey builder question rows &gt; keeps each question in its own row when an earlier one is removed" time="0.0571639">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey schedule fields &gt; shows a UTC instant as the browser&apos;s own wall clock" time="0.0345306">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey schedule fields &gt; saves an untouched schedule back as the same instant" time="0.0496553">
+        </testcase>
+        <testcase classname="resources/js/Pages/Surveys/SurveyForm.test.tsx" name="Survey schedule fields &gt; sends the instant the admin meant when the local time is edited" time="0.0344544">
+        </testcase>
+    </testsuite>
+</testsuites>

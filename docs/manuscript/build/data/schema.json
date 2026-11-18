@@ -1,0 +1,3587 @@
+[
+  {
+    "name": "announcements",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('announcements_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "audience",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'published'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "published_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "audit_logs",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('audit_logs_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "action",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "ip_address",
+        "type": "character varying(45)",
+        "size": "45",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "clearance_records",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('clearance_records_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "UNIQUE (with office)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "office",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with graduate_profile_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'pending'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "cleared_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "cleared_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "community_comments",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('community_comments_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "community_post_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → community_posts.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "community_posts",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('community_posts_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "companies",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('companies_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "owner_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "industry",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "website",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "location",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "logo_path",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "is_verified",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "false",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "conversation_participants",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('conversation_participants_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "conversation_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → conversations.id",
+          "UNIQUE (with user_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE (with conversation_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "last_read_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "conversations",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('conversations_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "subject",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "departments",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('departments_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "code",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'program'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "parent_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → departments.id"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "education_records",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('education_records_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "institution",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "degree",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "field_of_study",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "start_year",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "end_year",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "honors",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "employer_feedbacks",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('employer_feedbacks_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "company_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → companies.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "job_application_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → job_applications.id"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "submitted_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "competency_ratings",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "overall_rating",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "comments",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "employment_records",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('employment_records_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "company_name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "industry",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "job_title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "employment_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'full_time'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "is_current",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "false",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "start_date",
+        "type": "date",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "end_date",
+        "type": "date",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "monthly_salary_range",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "location",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "is_related_to_course",
+        "type": "boolean",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "how_obtained",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "event_rsvps",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('event_rsvps_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "event_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → events.id",
+          "UNIQUE (with user_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE (with event_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'going'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "events",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('events_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'other'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "location",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "starts_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "ends_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "capacity",
+        "type": "integer",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'published'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "graduate_profiles",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('graduate_profiles_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "department_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → departments.id"
+        ]
+      },
+      {
+        "name": "program",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "student_number",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "graduation_year",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "expected_graduation_year",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "gender",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "birthdate",
+        "type": "date",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "phone",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "address",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "city",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "linkedin_url",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "headline",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "summary",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "current_employment_status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'unemployed'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "willing_to_relocate",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "false",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "profile_completion",
+        "type": "smallint",
+        "size": "—",
+        "nullable": false,
+        "default": "'0'::smallint",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "graduate_skill",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('graduate_skill_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "UNIQUE (with skill_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "skill_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → skills.id",
+          "UNIQUE (with graduate_profile_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "proficiency",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "source",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'self'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "job_applications",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('job_applications_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "job_posting_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → job_postings.id",
+          "UNIQUE (with graduate_profile_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "UNIQUE (with job_posting_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "resume_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → resumes.id"
+        ]
+      },
+      {
+        "name": "cover_letter",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'submitted'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "applied_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "job_match_results",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('job_match_results_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "job_posting_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → job_postings.id",
+          "UNIQUE (with graduate_profile_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "UNIQUE (with job_posting_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "resume_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → resumes.id"
+        ]
+      },
+      {
+        "name": "similarity",
+        "type": "double precision",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "fit_score",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "explanation",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "skill_gaps",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "matched_skills",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "recommendation",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "scored_by",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "scored_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "job_posting_skill",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('job_posting_skill_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "job_posting_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → job_postings.id",
+          "UNIQUE (with skill_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "skill_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → skills.id",
+          "UNIQUE (with job_posting_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "is_required",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "true",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "weight",
+        "type": "smallint",
+        "size": "—",
+        "nullable": false,
+        "default": "'1'::smallint",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "job_postings",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('job_postings_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "company_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → companies.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "posted_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "responsibilities",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "qualifications",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "employment_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'full_time'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "location",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "is_remote",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "false",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "salary_range",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "experience_level",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "min_education",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'open'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "application_deadline",
+        "type": "date",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "embedding_status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'pending'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "embedded_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "embedding",
+        "type": "vector(768)",
+        "size": "768",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "learning_resource_skill",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('learning_resource_skill_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "learning_resource_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → learning_resources.id",
+          "UNIQUE (with skill_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "skill_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → skills.id",
+          "UNIQUE (with learning_resource_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "learning_resources",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('learning_resources_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "department_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → departments.id"
+        ]
+      },
+      {
+        "name": "title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "provider",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "url",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "match_feedback",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('match_feedback_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "job_match_result_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → job_match_results.id",
+          "UNIQUE (with user_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE (with job_match_result_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "rating",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "messages",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('messages_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "conversation_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → conversations.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "sender_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "model_has_permissions",
+    "columns": [
+      {
+        "name": "permission_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → permissions.id",
+          "PK (with model_id, model_type)"
+        ]
+      },
+      {
+        "name": "model_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK (with permission_id, model_id)"
+        ]
+      },
+      {
+        "name": "model_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK (with permission_id, model_type)"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "model_has_roles",
+    "columns": [
+      {
+        "name": "role_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → roles.id",
+          "PK (with model_id, model_type)"
+        ]
+      },
+      {
+        "name": "model_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK (with role_id, model_id)"
+        ]
+      },
+      {
+        "name": "model_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK (with role_id, model_type)"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "notification_preferences",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('notification_preferences_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE (with preference_key)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "preference_key",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with user_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "true",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "notifications",
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "notifiable_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "notifiable_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "data",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "read_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "permissions",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('permissions_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with guard_name)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "guard_name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with name)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "reports",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('reports_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "generated_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "report_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "parameters",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "file_path",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "resumes",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('resumes_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "original_filename",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "path",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "mime_type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "size_bytes",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "extracted_text",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "is_primary",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "false",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "embedding_status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'pending'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "embedded_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "embedding",
+        "type": "vector(768)",
+        "size": "768",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "source",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'uploaded'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "role_has_permissions",
+    "columns": [
+      {
+        "name": "permission_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → permissions.id",
+          "PK (with role_id)"
+        ]
+      },
+      {
+        "name": "role_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → roles.id",
+          "PK (with permission_id)"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "roles",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('roles_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with guard_name)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "guard_name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE (with name)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "scholarship_recipients",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('scholarship_recipients_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "scholarship_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → scholarships.id",
+          "UNIQUE (with graduate_profile_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "UNIQUE (with scholarship_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "awarded_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "scholarships",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('scholarships_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "provider",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "budget_amount",
+        "type": "numeric(12,2)",
+        "size": "12,2",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'active'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "settings",
+    "columns": [
+      {
+        "name": "key",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "value",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "skill_aliases",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('skill_aliases_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "skill_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → skills.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "alias",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "alias_slug",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "skills",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('skills_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "slug",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "category",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "student_cases",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('student_cases_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "reported_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "assigned_to_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "category",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'open'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "resolution_notes",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "survey_answers",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('survey_answers_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "survey_response_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → survey_responses.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "survey_question_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → survey_questions.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "value",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "survey_questions",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('survey_questions_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "survey_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → surveys.id",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "order",
+        "type": "smallint",
+        "size": "—",
+        "nullable": false,
+        "default": "'0'::smallint",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "prompt",
+        "type": "text",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'text'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "options",
+        "type": "jsonb",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "is_required",
+        "type": "boolean",
+        "size": "—",
+        "nullable": false,
+        "default": "true",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "maps_to",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "survey_responses",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('survey_responses_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "survey_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → surveys.id",
+          "UNIQUE (with user_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "FK → users.id",
+          "UNIQUE (with survey_id)",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "graduate_profile_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → graduate_profiles.id"
+        ]
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'in_progress'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "submitted_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "surveys",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('surveys_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "created_by_user_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → users.id"
+        ]
+      },
+      {
+        "name": "title",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "type",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'custom'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "target_role",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "target_graduation_year",
+        "type": "smallint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'draft'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "opens_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "closes_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "name": "users",
+    "columns": [
+      {
+        "name": "id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": false,
+        "default": "nextval('users_id_seq'::regclass)",
+        "constraints": [
+          "PK"
+        ]
+      },
+      {
+        "name": "first_name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "last_name",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "id_number",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "UNIQUE"
+        ]
+      },
+      {
+        "name": "email",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "UNIQUE",
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "email_verified_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "password",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": null,
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "status",
+        "type": "character varying(255)",
+        "size": "255",
+        "nullable": false,
+        "default": "'active'::character varying",
+        "constraints": [
+          "NOT NULL"
+        ]
+      },
+      {
+        "name": "department_id",
+        "type": "bigint",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": [
+          "FK → departments.id"
+        ]
+      },
+      {
+        "name": "remember_token",
+        "type": "character varying(100)",
+        "size": "100",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp(0) without time zone",
+        "size": "—",
+        "nullable": true,
+        "default": null,
+        "constraints": []
+      }
+    ]
+  }
+]
