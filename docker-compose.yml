@@ -73,6 +73,32 @@ services:
       - "8025:8025"
     restart: unless-stopped
 
+  # ── Automated tests (only run when asked: `docker compose run --rm ...`) ──
+  # No env_file on purpose: these containers never learn the live database's
+  # address, so a test run cannot touch it. phpunit.xml forces SQLite too.
+  php-tests:
+    build:
+      context: .
+      target: app
+    profiles: ["test"]
+    entrypoint: ["php", "artisan", "test"]
+    environment:
+      # A throwaway key for the test run only; it encrypts nothing real.
+      APP_KEY: "base64:dGVzdC1vbmx5LWtleS1ub3QtYS1zZWNyZXQtMDEyMzQ="
+    volumes:
+      # The image leaves out tests/Fixtures; mount the current tests instead.
+      - ./tests:/var/www/html/tests:ro
+
+  frontend-tests:
+    image: node:22-bookworm-slim
+    profiles: ["test"]
+    working_dir: /app
+    command: sh -c "npm ci --no-audit --no-fund && npm test"
+    volumes:
+      - .:/app
+      # Keep Linux packages out of the host's node_modules folder.
+      - /app/node_modules
+
 volumes:
   db-data:
   storage-data:

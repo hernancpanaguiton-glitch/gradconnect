@@ -17,15 +17,16 @@ A complete, start-to-finish guide to running **GradConnect** on your own compute
 7. [Open and log in](#7-open-and-log-in)
 8. [(Optional) Enable AI matching](#8-optional-enable-ai-matching)
 9. [Everyday commands](#9-everyday-commands)
-10. [Stopping and resetting](#10-stopping-and-resetting)
-11. [Troubleshooting](#11-troubleshooting)
-12. [How it works under the hood](#12-how-it-works-under-the-hood)
+10. [Run the automated tests](#10-run-the-automated-tests)
+11. [Stopping and resetting](#11-stopping-and-resetting)
+12. [Troubleshooting](#12-troubleshooting)
+13. [How it works under the hood](#13-how-it-works-under-the-hood)
 
 ---
 
 ## 1. What you'll end up with
 
-When you finish, three containers will be running together:
+When you finish, four containers will be running together:
 
 | Container | What it does |
 |-----------|--------------|
@@ -88,7 +89,7 @@ Both commands should print a version number. If they do, Docker is ready.
 **If you have Git:**
 
 ```bash
-git clone <REPOSITORY_URL> gradconnect
+git clone https://github.com/hernancpanaguiton-glitch/gradconnect.git gradconnect
 cd gradconnect
 ```
 
@@ -156,17 +157,21 @@ Open your browser to:
 
 ### 👉 http://localhost:8000
 
-> 📧 **New sign-ups:** when you register a **Student** or **Alumni** account, a confirmation email is sent. Open the Mailpit inbox at **http://localhost:8025** to find it and click the verification link. **Alumni Officer, Dean, and Industry Partner** sign-ups instead wait for an admin to approve them (log in as `admin@gradconnect.edu.ph` and set the account to *active* on the Users page).
+> 📧 **New sign-ups:** when you register a **Graduate Student** or **Alumni** account, a confirmation email is sent. Open the Mailpit inbox at **http://localhost:8025** to find it and click the verification link. Every other role — **Industry Partner, Alumni Affairs Office, Student Affairs Office, Department Head and Admin** — waits for an administrator to approve it (log in as `admin@gradconnect.edu.ph`, open **User Management**, and set the account to *Active*).
 
-Log in with one of the seeded demo accounts:
+Log in with one of the seeded demo accounts. The password for every one of them is `password`.
 
 | Role | Email |
 |------|-------|
+| Graduate Student | `student@gradconnect.edu.ph` |
 | Alumni | `alumni@gradconnect.edu.ph` |
-| Student | `student@gradconnect.edu.ph` |
-| Partner / Employer | `partner@gradconnect.edu.ph` |
+| Industry Partner | `partner@gradconnect.edu.ph` |
+| Alumni Affairs Office | `alumni.affairs@gradconnect.edu.ph` |
+| Department Head | `depthead.ccs@gradconnect.edu.ph` |
+| Student Affairs Office | `sao@gradconnect.edu.ph` |
+| Admin | `admin@gradconnect.edu.ph` |
 
-> The password for these accounts is set by the seeder. Check the **GradConnect Tester Guide** (the included PDF/HTML) or ask your instructor for the shared password.
+> These are demo accounts for local testing only. Never reuse this password anywhere real.
 
 ---
 
@@ -211,7 +216,7 @@ Run all of these from inside the project folder.
 | Run an Artisan command | `docker compose exec app php artisan <command>` |
 | Stop everything | `docker compose down` |
 
-Example — re-seed the database manually:
+Example — re-seed the database manually (this **erases everything** and restores the demo data):
 
 ```bash
 docker compose exec app php artisan migrate:fresh --seed --force
@@ -219,7 +224,49 @@ docker compose exec app php artisan migrate:fresh --seed --force
 
 ---
 
-## 10. Stopping and resetting
+## 10. Run the automated tests
+
+GradConnect has two sets of automated tests. Each runs in its own throwaway container that is **never connected to your app's database**, so running them cannot change or erase your data.
+
+| Tests | What they check | Where they live |
+|-------|-----------------|-----------------|
+| **Back-end** (PHPUnit) | Pages, permissions for every role, forms and validation, emails, reports, AI matching logic | `tests/Feature`, `tests/Unit` |
+| **Front-end** (Vitest) | Screens and components: forms, buttons, menus, charts, the search box | `resources/js/**/*.test.tsx` |
+
+Run them from inside the project folder. Docker Desktop must be running, but the app itself does not need to be.
+
+**Back-end tests** (the first run builds the image, so it takes a few minutes):
+
+```bash
+docker compose run --rm --build php-tests
+```
+
+**Front-end tests** (the first run downloads packages, so it takes a few minutes):
+
+```bash
+docker compose run --rm frontend-tests
+```
+
+**What a pass looks like:**
+
+- Back-end: the last lines read `Tests: 5 skipped, 479 passed` (the numbers grow as tests are added) and there is **no** `failed`.
+- Front-end: `Test Files 28 passed` and `Tests 151 passed`, with no `failed`.
+
+> The **5 skipped** back-end tests are expected. They check the AI vector search, which needs PostgreSQL with pgvector; the tests run on a temporary SQLite database that has no vector support, so they skip themselves.
+
+To run just one group of back-end tests, add `--filter` and part of a test file's name:
+
+```bash
+docker compose run --rm --build php-tests --filter=SurveyControllerTest
+```
+
+> ⚠️ **Never run `php artisan test` inside the running app** (`docker compose exec app php artisan test`). Use the commands above instead. They are built so a test run can never reach your real data.
+
+**For developers** with PHP 8.3+ and Node 22 installed locally, the same tests run directly: `php artisan test` and `npm test`. GitHub Actions also runs both, plus a PHP syntax check and a type-checked build, on every push to `main` (see `.github/workflows/ci.yml`).
+
+---
+
+## 11. Stopping and resetting
 
 **Stop the app (keeps your data):**
 
@@ -239,7 +286,7 @@ The `-v` flag deletes the data volumes. The next `docker compose up --build` wil
 
 ---
 
-## 11. Troubleshooting
+## 12. Troubleshooting
 
 **"Cannot connect to the Docker daemon" / commands hang**
 Docker Desktop isn't running. Launch it and wait for the whale icon to stop animating, then retry.
@@ -262,7 +309,10 @@ docker compose exec app php artisan migrate:fresh --seed --force
 ```
 
 **"port 5432 already in use" (you have a local Postgres)**
-The database is internal and not published to your host by default, so this is rare. If it happens, make sure no other Postgres container is mapping 5432.
+The database is published on `127.0.0.1:5432` so tools like HeidiSQL or DBeaver can connect (only from your own computer). If another PostgreSQL already uses that port, stop it, or change the left-hand number in `docker-compose.yml` (for example `"127.0.0.1:5433:5432"`) and connect your tool to 5433 instead.
+
+**A test fails**
+Run the same command again to rule out a one-off hiccup. If it still fails, copy the test's name and the red lines under it into your report — they name the exact file and line that broke.
 
 **AI recommendations are empty**
 That's expected without keys — see [step 8](#8-optional-enable-ai-matching). After adding keys, restart with `docker compose down && docker compose up`.
@@ -279,12 +329,12 @@ docker compose up
 
 ---
 
-## 12. How it works under the hood
+## 13. How it works under the hood
 
 For the curious — the setup is defined by three files:
 
 - **`Dockerfile`** — a two-stage build. Stage 1 (Node) compiles the React/Vite front-end assets. Stage 2 (PHP 8.3) installs Composer dependencies, copies in the compiled assets, and prepares the app to serve.
-- **`docker-compose.yml`** — defines the three services (`app`, `queue`, `db`), wires them together on a private network, and creates named volumes for the database (`db-data`) and Laravel storage (`storage-data`) so your data persists.
+- **`docker-compose.yml`** — defines the four services (`app`, `queue`, `db`, `mail`), wires them together on a private network, and creates named volumes for the database (`db-data`) and Laravel storage (`storage-data`) so your data persists. Two more services, `php-tests` and `frontend-tests`, only run when you ask for them (see [step 10](#10-run-the-automated-tests)).
 - **`docker/entrypoint.sh`** — runs every time the `app` container starts. It waits for PostgreSQL to be ready, ensures an `APP_KEY` exists, runs database migrations, and seeds demo data the first time only.
 
 The database uses the **`pgvector/pgvector:pg16`** image because GradConnect stores AI embeddings as vector columns and queries them with nearest-neighbour (HNSW) indexes — features a standard PostgreSQL image doesn't include.

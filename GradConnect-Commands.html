@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GradConnect Commands</title>
+<style>
+    :root {
+        --ink: #14213d;
+        --body: #2b3446;
+        --muted: #5c6880;
+        --line: #dde3ec;
+        --accent: #1a56db;
+        --accent-soft: #eef3fd;
+        --ok: #0f7b4f;
+        --danger: #b42318;
+        --danger-soft: #fef3f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: #fff;
+        color: var(--body);
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+        font-size: 19px;
+        line-height: 1.7;
+    }
+
+    .wrap { max-width: 820px; margin: 0 auto; padding: 0 20px 80px; }
+
+    h1 { font-size: 44px; line-height: 1.15; margin: 56px 0 12px; color: var(--ink); letter-spacing: -.02em; }
+    .lede { font-size: 20px; color: var(--muted); margin: 0 0 28px; }
+
+    h2 {
+        font-size: 30px; color: var(--ink); margin: 52px 0 16px;
+        padding-top: 20px; border-top: 3px solid var(--line);
+    }
+
+    p { margin: 0 0 16px; }
+    a { color: var(--accent); }
+
+    .cmd { border: 2px solid var(--line); border-radius: 12px; margin: 0 0 14px; overflow: hidden; }
+    .cmd-line { display: flex; background: #14213d; }
+    .cmd-line code {
+        flex: 1; min-width: 0; color: #e8eef7; padding: 14px 18px;
+        font-family: "Cascadia Mono", Consolas, monospace; font-size: 17px;
+        overflow-x: auto; white-space: pre;
+    }
+    .copy {
+        border: 0; background: #1d2d4f; color: #cbd5e8; cursor: pointer;
+        font-family: inherit; font-size: 15px; font-weight: 600; padding: 0 18px; min-width: 84px;
+    }
+    .copy:hover { background: #26395f; color: #fff; }
+    .copy.done { background: var(--ok); color: #fff; }
+    .cmd .what { padding: 12px 18px 14px; font-size: 18px; }
+
+    .cmd.danger { border-color: #f4b8b2; }
+    .cmd.danger .what { background: var(--danger-soft); }
+    .tag {
+        display: inline-block; background: var(--danger); color: #fff; border-radius: 6px;
+        font-size: 14px; font-weight: 700; text-transform: uppercase; padding: 1px 9px; margin-right: 8px;
+    }
+
+    .box { background: var(--accent-soft); border-left: 6px solid var(--accent); color: #17335f;
+           border-radius: 12px; padding: 16px 20px; margin: 0 0 24px; font-size: 18px; }
+
+    table { border-collapse: collapse; width: 100%; font-size: 17px; }
+    .tablewrap { overflow-x: auto; border: 2px solid var(--line); border-radius: 12px; margin: 0 0 24px; }
+    th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    th { background: #f6f8fc; color: var(--ink); font-size: 15px; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    td code, p code { background: #f2f5fa; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px;
+                      font-family: "Cascadia Mono", Consolas, monospace; font-size: .92em; }
+
+    @media (max-width: 640px) {
+        body { font-size: 18px; }
+        .wrap { padding: 0 16px 60px; }
+        h1 { font-size: 34px; }
+        h2 { font-size: 25px; }
+        .cmd-line code { font-size: 15px; padding: 12px 14px; }
+        .copy { min-width: 68px; padding: 0 12px; }
+    }
+
+    @media print {
+        .copy { display: none; }
+        .cmd-line { background: #f2f5fa; }
+        .cmd-line code { color: #14213d; white-space: pre-wrap; }
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>GradConnect Commands</h1>
+<p class="lede">The basic commands for running and resetting the app while you test it. Use it alongside the <a href="GradConnect-Tester-Guide.html">Testing Guide</a>.</p>
+
+<div class="box">
+    <p><b>Before you start:</b> start Docker Desktop, then open a terminal <b>inside the project folder</b> (the one with <code>docker-compose.yml</code>). Click <b>Copy</b> on a command, paste it into the terminal, and press <code>Enter</code>.</p>
+</div>
+
+<h2>Start and stop</h2>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose up -d</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Start the app.</b> Then open <code>http://localhost:8000</code>.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose up -d --build</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Start with the latest code.</b> Use this after pulling new changes from GitHub. Takes a few minutes.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose down</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Stop the app.</b> Your data is kept for next time.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose ps</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Check it is running.</b> <code>app</code>, <code>db</code>, <code>mail</code> and <code>queue</code> should all say <code>running</code>.</div>
+</div>
+
+<h2>When something goes wrong</h2>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose logs -f app</code><button class="copy">Copy</button></div>
+    <div class="what"><b>See errors as they happen.</b> Open the broken page again and the error appears here. Press <code>Ctrl</code> + <code>C</code> to stop watching.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose exec app php artisan optimize:clear</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Clear saved copies.</b> Fixes a change or setting that doesn't seem to show up. Safe; nothing is lost.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose restart app</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Restart the website.</b> Try this if pages stop loading.</div>
+</div>
+
+<h2>Database</h2>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose exec app php artisan migrate</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Update the database to match the code.</b> Applies any new database changes and keeps all existing data. The app also does this by itself every time it starts.</div>
+</div>
+
+<div class="cmd">
+    <div class="cmd-line"><code>docker compose exec app php artisan db:seed</code><button class="copy">Copy</button></div>
+    <div class="what"><b>Fill an empty database with demo data.</b> Only works on an empty database. If the demo accounts already exist it stops with an error, because their emails are taken; use the reset command below instead.</div>
+</div>
+
+<div class="cmd danger">
+    <div class="cmd-line"><code>docker compose exec app php artisan migrate:fresh --seed</code><button class="copy">Copy</button></div>
+    <div class="what"><span class="tag">Deletes data</span><b>Start over with clean demo data.</b> Erases everything, including accounts you registered, then recreates the demo accounts, colleges, postings and surveys. Use it before a demo, or when the data gets messy.</div>
+</div>
+
+<h2>Addresses and accounts</h2>
+
+<div class="tablewrap">
+<table>
+    <thead><tr><th>Address</th><th>What it is</th></tr></thead>
+    <tbody>
+        <tr><td><code>http://localhost:8000</code></td><td>The GradConnect website</td></tr>
+        <tr><td><code>http://localhost:8025</code></td><td>Mailpit, the test inbox. Every email the app sends lands here.</td></tr>
+    </tbody>
+</table>
+</div>
+
+<p>Every demo account uses the password <code>password</code>.</p>
+
+<div class="tablewrap">
+<table>
+    <thead><tr><th>Role</th><th>Email</th></tr></thead>
+    <tbody>
+        <tr><td>Administrator</td><td><code>admin@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Graduate Student</td><td><code>student@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Alumni</td><td><code>alumni@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Industry Partner</td><td><code>partner@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Alumni Affairs Office</td><td><code>alumni.affairs@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Department Head</td><td><code>depthead.ccs@gradconnect.edu.ph</code></td></tr>
+        <tr><td>Student Affairs Office</td><td><code>sao@gradconnect.edu.ph</code></td></tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+    // Copy the command; if the browser blocks the clipboard, select it so Ctrl+C works.
+    document.querySelectorAll('.copy').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var code = button.previousElementSibling;
+            var done = function () {
+                button.textContent = 'Copied';
+                button.classList.add('done');
+                setTimeout(function () { button.textContent = 'Copy'; button.classList.remove('done'); }, 1500);
+            };
+            var select = function () {
+                var range = document.createRange();
+                range.selectNodeContents(code);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                button.textContent = 'Ctrl+C';
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code.textContent).then(done, select);
+            } else {
+                select();
+            }
+        });
+    });
+</script>
+</body>
+</html>

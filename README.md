@@ -16,11 +16,12 @@ docker compose up --build
 
 Then open **http://localhost:8000**.
 
-The first boot automatically waits for the database, runs migrations, and seeds demo data. Demo logins (password is shown by the seeder / tester guide):
+The first boot automatically waits for the database, runs migrations, and seeds demo data. Demo logins, all with the password `password` (local testing only):
 
-- `alumni@gradconnect.edu.ph`
-- `student@gradconnect.edu.ph`
-- `partner@gradconnect.edu.ph`
+- `student@gradconnect.edu.ph` · `alumni@gradconnect.edu.ph` · `partner@gradconnect.edu.ph`
+- `alumni.affairs@gradconnect.edu.ph` · `depthead.ccs@gradconnect.edu.ph` · `sao@gradconnect.edu.ph` · `admin@gradconnect.edu.ph`
+
+Full instructions: [DOCKER-SETUP.md](DOCKER-SETUP.md). Manual test checklist: [GradConnect-Tester-Guide.html](GradConnect-Tester-Guide.html).
 
 > AI résumé↔job matching only activates if you add `GEMINI_API_KEY` / `GROQ_API_KEY` to `.env.docker`. The app runs fine without them — the AI recommendations just stay empty.
 
@@ -32,6 +33,15 @@ docker compose logs -f app        # follow app logs
 docker compose down               # stop the stack
 docker compose down -v            # stop and wipe the database/storage (fresh start)
 ```
+
+Automated tests (isolated containers; they never touch the app's database):
+
+```bash
+docker compose run --rm --build php-tests   # back-end: PHPUnit
+docker compose run --rm frontend-tests      # front-end: Vitest
+```
+
+Never run `php artisan test` inside the running `app` container. With PHP and Node installed locally, `php artisan test` and `npm test` run the same suites.
 
 ---
 

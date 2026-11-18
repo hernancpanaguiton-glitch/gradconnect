@@ -188,8 +188,8 @@
 </header>
 
 <div class="box tip">
-    <p><b>How to use this guide.</b> Each check tells you what to <b>do</b>, then what <b>should happen</b>. If what you see matches, tick the box. If it does not, write it down — section 12 shows you exactly what to note.</p>
-    <p>You do not need to know how to code. You only need a web browser.</p>
+    <p><b>How to use this guide.</b> Each check tells you what to <b>do</b>, then what <b>should happen</b>. If what you see matches, tick the box. If it does not, write it down — section 14 shows you exactly what to note.</p>
+    <p>You do not need to know how to code. You only need a web browser, plus a terminal for starting the app (section 1) and running the automated tests (section 13).</p>
 </div>
 
 <nav class="toc">
@@ -207,6 +207,7 @@
         <li><a href="#admin">Administrator</a></li>
         <li><a href="#phone">Test on a phone</a></li>
         <li><a href="#theme">Light and dark mode</a></li>
+        <li><a href="#automated">Run the automated tests</a></li>
         <li><a href="#report">Report a problem</a></li>
         <li><a href="#gaps">Known gaps (not bugs)</a></li>
     </ol>
@@ -516,8 +517,65 @@
 <div class="check"><input type="checkbox"><span class="txt"><b>Click the sun icon to switch back</b><span class="see">Everything returns to the light theme and is still readable.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Sign out and look at the home page in both themes</b><span class="see">The headings ("Everything You Need to Succeed" and the card titles) are readable in both.</span></span></div>
 
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="automated"><span class="num">13</span>Run the automated tests</h2>
+<p class="role-note">Besides your clicking, GradConnect has about 630 automated tests that check the system by themselves in a few minutes. Here you run them and confirm they pass.</p>
+
+<div class="box tip">
+    <p><b>Your data is safe.</b> The tests run in their own throwaway containers on a temporary database, never on the app you have been testing. Docker Desktop must be running; the app itself does not need to be.</p>
+</div>
+
+<ol class="steps">
+    <li>
+        <span class="do">Open a terminal in the project folder (as in section 1).</span>
+    </li>
+    <li>
+        <span class="do">Run the back-end tests.</span>
+        <p>These check the pages, the permissions of every role, forms, emails and reports. The first run builds for a few minutes.</p>
+        <pre><code>docker compose run --rm --build php-tests</code></pre>
+    </li>
+    <li>
+        <span class="do">Run the front-end tests.</span>
+        <p>These check the screens themselves: forms, buttons, menus, charts. The first run downloads packages for a few minutes.</p>
+        <pre><code>docker compose run --rm frontend-tests</code></pre>
+    </li>
+</ol>
+
+<div class="check"><input type="checkbox"><span class="txt"><b>Read the last lines of the back-end run</b><span class="see"><code>Tests: 5 skipped, 479 passed</code> (or more passed, if tests were added since) — and the word “failed” appears nowhere.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the 5 skipped tests</b><span class="see">Each one says it <em>Requires PostgreSQL + pgvector</em>. That is expected: they test the AI vector search, which the temporary test database cannot do.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Read the last lines of the front-end run</b><span class="see"><code>Test Files 28 passed</code> and <code>Tests 151 passed</code>, with no “failed”.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Go back to <code>http://localhost:8000</code> and sign in as the student</b><span class="see">Everything you created while testing — your profile, applications, concerns — is still there. Running the tests changed nothing.</span></span></div>
+
+<h3>Check the tests cover what you tested</h3>
+<p>Every part of this guide has automated tests behind it. Open the project folder and confirm the files below exist. Back-end tests are in <code>tests/Feature</code>; front-end tests sit next to the screens in <code>resources/js</code>.</p>
+
+<div class="tablewrap">
+<table>
+    <thead><tr><th>Guide section</th><th>Back-end tests</th><th>Front-end tests</th></tr></thead>
+    <tbody>
+        <tr><td><b>2–3. Sign in, new accounts</b></td><td><code>Auth/AuthenticationTest</code>, <code>Auth/RegistrationTest</code>, <code>Auth/EmailVerificationTest</code></td><td>—</td></tr>
+        <tr><td><b>4. Graduate Student</b></td><td><code>GraduateProfileUpdateTest</code>, <code>ResumeUploadTest</code>, <code>ResumeBuilderControllerTest</code>, <code>JobPostingControllerTest</code></td><td><code>Pages/Graduate/</code>, <code>Components/SkillCategoryPicker</code></td></tr>
+        <tr><td><b>5. Alumni</b></td><td><code>CommunityControllerTest</code></td><td><code>Pages/Community</code></td></tr>
+        <tr><td><b>6. Industry Partner</b></td><td><code>CandidateViewTest</code>, <code>CandidateMatchControllerTest</code>, <code>TalentSearchTest</code></td><td><code>Pages/Postings/</code>, <code>Pages/Company/</code></td></tr>
+        <tr><td><b>7. Alumni Affairs Office</b></td><td><code>SurveyControllerTest</code>, <code>AnnouncementControllerTest</code>, <code>Admin/SkillTaxonomyControllerTest</code></td><td><code>Pages/Surveys/</code>, <code>Pages/Admin/Skills</code></td></tr>
+        <tr><td><b>8. Department Head</b></td><td><code>ProgramOutcomesControllerTest</code>, <code>EmployabilityReportControllerTest</code></td><td><code>Pages/Reports/</code></td></tr>
+        <tr><td><b>9. Student Affairs Office</b></td><td><code>ClearanceControllerTest</code>, <code>ScholarshipControllerTest</code>, <code>StudentCaseControllerTest</code></td><td>—</td></tr>
+        <tr><td><b>10. Administrator</b></td><td><code>Admin/UserControllerTest</code>, <code>Admin/RolePermissionManagementTest</code>, <code>Admin/SystemSettingControllerTest</code></td><td><code>Pages/Admin/UserEditRoles</code></td></tr>
+        <tr><td><b>Every role</b></td><td><code>RoleAccessTest</code>, <code>AccessControlHardeningTest</code>, <code>EmailPrivacyTest</code></td><td><code>lib/roles</code></td></tr>
+    </tbody>
+</table>
+</div>
+
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>tests/Feature</code> and find <code>SurveyControllerTest.php</code></b><span class="see">The file is there. Open it in Notepad: each <code>public function test_…</code> line names one thing it checks, written as a plain sentence with underscores.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Run only the survey tests</b><span class="see">This command runs just that one file and finishes in under a minute, with no failures: <code>docker compose run --rm --build php-tests --filter=SurveyControllerTest</code></span></span></div>
+
+<div class="box warn">
+    <p><b>Only use the two commands above.</b> Never type <code>php artisan test</code> inside the running app — that is the developers' command, not a tester's.</p>
+    <p><b>If a test fails,</b> run the command once more. If it fails again, copy the test's name and the red lines under it into your report (section 14).</p>
+</div>
+
 <!-- ════════════════════════════════════════════════════════ -->
-<h2 id="report"><span class="num">13</span>Report a problem</h2>
+<h2 id="report"><span class="num">14</span>Report a problem</h2>
 <p class="role-note">A good report can be acted on straight away. A vague one cannot.</p>
 
 <p>For anything that does not match this guide, write down these five things:</p>
@@ -549,14 +607,14 @@
 </ol>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="gaps"><span class="num">14</span>Known gaps (not bugs)</h2>
+<h2 id="gaps"><span class="num">15</span>Known gaps (not bugs)</h2>
 <p class="role-note">These are expected. Please do not report them.</p>
 
 <div class="tablewrap">
 <table>
     <thead><tr><th>What you will see</th><th>Why</th></tr></thead>
     <tbody>
-        <tr><td>AI features return nothing, or a "not configured" note</td><td>The AI service needs a paid key. Without one, the system deliberately falls back instead of failing.</td></tr>
+        <tr><td>AI features return nothing, or a "not configured" note</td><td>The AI services need an API key (see the setup guide). Without one, the system deliberately falls back instead of failing.</td></tr>
         <tr><td>No real emails arrive</td><td>By design. Everything goes to Mailpit at <code>localhost:8025</code>.</td></tr>
         <tr><td>Emails never mention anybody's name</td><td>Deliberate. Personal details stay inside the app, behind the sign-in.</td></tr>
         <tr><td>Home page figures like "4,820+ Graduates Placed"</td><td>Sample marketing text, not live data.</td></tr>
@@ -567,7 +625,7 @@
 
 <footer>
     <p><b>GradConnect</b> — University of Cebu Lapu-Lapu and Mandaue.<br>
-    Testing guide last updated 27 September 2026.</p>
+    Testing guide last updated 18 November 2026.</p>
 </footer>
 
 </div>
