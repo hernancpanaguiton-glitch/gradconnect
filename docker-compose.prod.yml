@@ -39,6 +39,10 @@ services:
     environment:
       RUN_MIGRATIONS: "false"
     command: php artisan queue:work --tries=3 --timeout=300 --sleep=3
+    # The FrankenPHP image's built-in check probes the web server, which
+    # this worker does not run; it would report a healthy worker as failing.
+    healthcheck:
+      disable: true
     volumes:
       - storage-data:/app/storage
     depends_on:
