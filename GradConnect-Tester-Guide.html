@@ -182,68 +182,71 @@
 
 <header class="hero">
     <h1>GradConnect Testing Guide</h1>
-    <p class="lede">A step-by-step walkthrough of every part of the system.</p>
+    <p class="lede">A step-by-step walkthrough of every part of the system, on the live test site <b>gradconnect.tech</b>.</p>
     <p class="lede">Work through it in order and tick each box as you go.</p>
     <p class="lede" id="saveNote">Your ticks are saved in this browser, so you can stop and come back.</p>
 </header>
 
 <div class="box tip">
-    <p><b>How to use this guide.</b> Each check tells you what to <b>do</b>, then what <b>should happen</b>. If what you see matches, tick the box. If it does not, write it down — section 14 shows you exactly what to note.</p>
-    <p>You do not need to know how to code. You only need a web browser, plus a terminal for starting the app (section 1) and running the automated tests (section 13).</p>
+    <p><b>How to use this guide.</b> Each check tells you what to <b>do</b>, then what <b>should happen</b>. If what you see matches, tick the box. If it does not, write it down — section 15 shows you exactly what to note.</p>
+    <p>You do not need to install anything or know how to code. You only need a web browser and, for section 12, a phone.</p>
+</div>
+
+<div class="box warn">
+    <p><b>The order matters.</b> The test site starts empty, so earlier sections create what later ones use. The partner posts a job before the student applies to it, and the Alumni Affairs Office publishes a survey before the student answers it. Please do the sections in order.</p>
 </div>
 
 <nav class="toc">
     <p>Contents</p>
     <ol>
-        <li><a href="#start">Start the app</a></li>
+        <li><a href="#start">Before you start</a></li>
         <li><a href="#signin">Sign in</a></li>
         <li><a href="#register">Create a new account</a></li>
+        <li><a href="#admin">Administrator</a></li>
+        <li><a href="#partner">Industry Partner — set up and post a job</a></li>
+        <li><a href="#affairs">Alumni Affairs Office</a></li>
         <li><a href="#graduate">Graduate Student</a></li>
         <li><a href="#alumni">Alumni</a></li>
-        <li><a href="#partner">Industry Partner</a></li>
-        <li><a href="#affairs">Alumni Affairs Office</a></li>
-        <li><a href="#depthead">Department Head</a></li>
         <li><a href="#sao">Student Affairs Office</a></li>
-        <li><a href="#admin">Administrator</a></li>
+        <li><a href="#depthead">Department Head</a></li>
+        <li><a href="#together">Bringing it together</a></li>
         <li><a href="#phone">Test on a phone</a></li>
         <li><a href="#theme">Light and dark mode</a></li>
-        <li><a href="#automated">Run the automated tests</a></li>
+        <li><a href="#automated">Automated tests (team members)</a></li>
         <li><a href="#report">Report a problem</a></li>
         <li><a href="#gaps">Known gaps (not bugs)</a></li>
     </ol>
 </nav>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="start"><span class="num">1</span>Start the app</h2>
-<p class="role-note">Do this once. It takes about five minutes the first time.</p>
+<h2 id="start"><span class="num">1</span>Before you start</h2>
+<p class="role-note">Everything happens on two web addresses. Nothing needs installing.</p>
 
-<ol class="steps">
-    <li>
-        <span class="do">Install Docker Desktop.</span>
-        <p>Download it from <code>docker.com</code>, install, and open it. Wait until it says <b>Engine running</b>.</p>
-    </li>
-    <li>
-        <span class="do">Open a terminal in the project folder.</span>
-        <p>In Windows File Explorer, open the <code>gradconnect</code> folder, type <code>cmd</code> in the address bar, and press Enter.</p>
-    </li>
-    <li>
-        <span class="do">Start the system.</span>
-        <p>Type this and press Enter. The first run downloads a lot, so give it a few minutes.</p>
-        <pre><code>docker compose up --build</code></pre>
-    </li>
-    <li>
-        <span class="do">Open the app.</span>
-        <p>Go to <a href="http://localhost:8000">http://localhost:8000</a> in your browser.</p>
-    </li>
-</ol>
-
-<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>http://localhost:8000</code></b><span class="see">The GradConnect home page loads, with a blue banner and a "Get Started" button.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>http://localhost:8025</code> in a second tab</b><span class="see">An empty mail inbox called Mailpit. Every email the system sends will appear here — nothing is sent to real people.</span></span></div>
+<div class="tablewrap">
+<table>
+    <thead><tr><th>What</th><th>Address</th><th>Sign-in</th></tr></thead>
+    <tbody>
+        <tr><td><b>The app</b></td><td><a href="https://gradconnect.tech">https://gradconnect.tech</a></td><td>The test accounts in section 2</td></tr>
+        <tr><td><b>The test inbox</b></td><td><a href="https://inbox.gradconnect.tech">https://inbox.gradconnect.tech</a></td><td>From your project lead</td></tr>
+    </tbody>
+</table>
+</div>
 
 <div class="box tip">
-    <p><b>Leave both tabs open</b> for the whole testing session. Keep the terminal window open too — closing it stops the app.</p>
-    <p>To stop the app later, click the terminal and press <code>Ctrl</code> + <code>C</code>. To start again, run <code>docker compose up</code>.</p>
+    <p><b>About the test inbox.</b> This is a test site, so it never emails real people. Every email it sends — confirmations, approvals, notifications — lands in this one inbox instead. Keep it open in a second tab for the whole session.</p>
+    <p><b>Passwords come from your project lead,</b> never from this guide. Do not share them outside the testing team.</p>
 </div>
+
+<div class="box warn">
+    <p><b>You are sharing this site with other testers.</b></p>
+    <p>• Start the name of everything you create with your initials, for example a job called <code>[EL] Junior Developer</code>. Then you can find your own items, and so can whoever reads your report.</p>
+    <p>• Only edit or delete things you created yourself.</p>
+    <p>• Never change the password, email or role of the shared test accounts in section 2. Everyone else would be locked out.</p>
+</div>
+
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>https://gradconnect.tech</code></b><span class="see">The GradConnect home page loads, with a blue banner and a "Get Started" button. The address bar shows a padlock.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>https://inbox.gradconnect.tech</code> in a second tab</b><span class="see">It asks for a username and password. With the ones from your project lead, a mail inbox called Mailpit opens.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Type <code>http://gradconnect.tech</code> (without the "s")</b><span class="see">You end up on <code>https://gradconnect.tech</code> anyway, with the padlock.</span></span></div>
 
 <h3>The home page</h3>
 <div class="check"><input type="checkbox"><span class="txt"><b>Watch the blue "AI Job Match Found" card for about 15 seconds</b><span class="see">It changes on its own, showing a different course each time — Computer Studies, Nursing, Criminology and so on.</span></span></div>
@@ -253,37 +256,37 @@
 
 <!-- ══════════════════════════════════════════════════════════ -->
 <h2 id="signin"><span class="num">2</span>Sign in</h2>
-<p class="role-note">Seven ready-made accounts are already in the system. The password for every one of them is <code>password</code>.</p>
+<p class="role-note">There is one shared test account per role. They all use the same password, which your project lead gives you.</p>
 
 <div class="tablewrap">
 <table>
     <thead><tr><th>Role</th><th>Email</th></tr></thead>
     <tbody>
-        <tr><td><b>Graduate Student</b></td><td><code>student@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Alumni</b></td><td><code>alumni@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Industry Partner</b></td><td><code>partner@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Alumni Affairs Office</b></td><td><code>alumni.affairs@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Department Head</b></td><td><code>depthead.ccs@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Student Affairs Office</b></td><td><code>sao@gradconnect.edu.ph</code></td></tr>
-        <tr><td><b>Administrator</b></td><td><code>admin@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>Graduate Student</b></td><td><code>student@gradconnect.tech</code></td></tr>
+        <tr><td><b>Alumni</b></td><td><code>alumni@gradconnect.tech</code></td></tr>
+        <tr><td><b>Industry Partner</b></td><td><code>partner@gradconnect.tech</code></td></tr>
+        <tr><td><b>Alumni Affairs Office</b></td><td><code>alumni.affairs@gradconnect.tech</code></td></tr>
+        <tr><td><b>Student Affairs Office</b></td><td><code>sao@gradconnect.tech</code></td></tr>
+        <tr><td><b>Department Head</b> (College of Computer Studies)</td><td><code>depthead@gradconnect.tech</code></td></tr>
+        <tr><td><b>Administrator</b></td><td><code>admin@gradconnect.tech</code></td></tr>
     </tbody>
 </table>
 </div>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Click "Sign In" and log in as the Graduate Student</b><span class="see">A dashboard opens with your name at the top right and a menu down the left side.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Try a wrong password on purpose</b><span class="see">A clear red message appears. You are not let in.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Click your name at the top right, then "Sign Out"</b><span class="see">You return to the home page.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Sign In" and log in as the Graduate Student</b><span class="see">A dashboard opens with the name at the top right and a menu down the left side.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out, then try a wrong password on purpose</b><span class="see">A clear red message appears. You are not let in.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in again, click your name at the top right, then "Sign Out"</b><span class="see">You return to the home page.</span></span></div>
 
 <div class="box tip">
-    <p><b>Tip:</b> you will switch between these accounts a lot. Signing out and back in is the simplest way. You can also use a private/incognito window to stay logged in as two people at once.</p>
+    <p><b>Tip:</b> you will switch between accounts a lot. Signing out and back in is the simplest way. A private/incognito window lets you stay signed in as two accounts at once — handy in section 11.</p>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
 <h2 id="register"><span class="num">3</span>Create a new account</h2>
-<p class="role-note">Anyone can sign up. Students and alumni get in straight away; every staff account has to be approved by an administrator first.</p>
+<p class="role-note">Anyone can sign up. Students and alumni confirm their email and get straight in; every other role waits for an administrator. You can use a made-up email address — the email goes to the test inbox, not to a real mailbox.</p>
 
 <ol class="steps">
-    <li><span class="do">From the home page, click "Get Started".</span></li>
+    <li><span class="do">Sign out. From the home page, click "Get Started".</span></li>
     <li><span class="do">Fill in the form and pick a role from the dropdown.</span></li>
     <li><span class="do">Tick the privacy consent box, then click Register.</span></li>
 </ol>
@@ -291,21 +294,97 @@
 <div class="check"><input type="checkbox"><span class="txt"><b>Open the "I am registering as" dropdown</b><span class="see">Exactly seven choices: Graduate Student, Alumni, Industry Partner, Student Affairs Office, Alumni Affairs Office, Department Head, Admin.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Choose "Department Head"</b><span class="see">A College dropdown appears, listing all ten UCLM colleges.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Choose "Graduate Student" again</b><span class="see">The College dropdown disappears. The notice says you will get a confirmation email.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Register as a Graduate Student with any made-up email</b><span class="see">You are signed in immediately and land on a dashboard.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Switch to the Mailpit tab (<code>localhost:8025</code>) and refresh</b><span class="see">A verification email has arrived. Open it and click the link inside.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Sign out. Register again, this time as "Admin"</b><span class="see">You are NOT signed in. A message says the account is waiting for administrator approval.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Register as a Graduate Student with a made-up email, such as <code>el.test1@example.com</code></b><span class="see">You are signed in, and asked to confirm your email address.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Switch to the test inbox tab and refresh</b><span class="see">A verification email to that address has arrived. Open it and click the link — you land on your new dashboard.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out. Register again with another made-up email, this time as "Admin"</b><span class="see">You are NOT signed in. A message says the account is waiting for administrator approval.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Try to sign in with that new Admin account</b><span class="see">You are refused. This is correct — nobody can approve themselves into an admin account.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Check Mailpit again</b><span class="see">An email to the administrator says an account is awaiting approval. It names the <em>role</em> but NOT the person — personal details are deliberately kept out of email.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Check the test inbox again</b><span class="see">An email to the administrators says an account is awaiting approval. It names the <em>role</em> but NOT the person — personal details are deliberately kept out of email.</span></span></div>
 
 <div class="box warn">
-    <p><b>Remember this new account.</b> You will approve it yourself in section 10, when you test the Administrator role.</p>
+    <p><b>Remember that new Admin account's email.</b> You approve it yourself in the next section.</p>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="graduate"><span class="num">4</span>Graduate Student</h2>
-<p class="role-note">Sign in as <code>student@gradconnect.edu.ph</code>. This is the biggest role, so take your time.</p>
+<h2 id="admin"><span class="num">4</span>Administrator</h2>
+<p class="role-note">Sign in as <code>admin@gradconnect.tech</code>. This account can see and change everything, so be careful to touch only your own test items.</p>
 
-<h3>4.1 — Fill in your profile</h3>
+<h3>4.1 — Approve the account you made in section 3</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "User Management" and find the Admin account you registered</b><span class="see">It is listed with a status of Pending.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit it and set the status to Active</b><span class="see">It saves. An approval email appears in the test inbox.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign out and sign in with that account</b><span class="see">You now get in. Sign out again and return to <code>admin@gradconnect.tech</code>.</span></span></div>
+
+<h3>4.2 — Colleges and programs</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Colleges &amp; Programs"</b><span class="see">All ten UCLM colleges, each with its degree programs underneath.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Add a test college whose code is your initials in lower case, like <code>xel</code></b><span class="see">It is saved in capitals (XEL). Extra spaces in the name are tidied up.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Add a program under your test college</b><span class="see">It appears nested under it.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Rename your test college, then reload the page</b><span class="see">The new name is still there.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try to delete "College of Computer Studies"</b><span class="see">You are refused, with a message explaining what is still attached to it.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Delete your test college and its program (delete the program first)</b><span class="see">You are asked to confirm, then both are removed.</span></span></div>
+
+<h3>4.3 — Safety rules</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit your OWN account and try to set the status to Suspended</b><span class="see">You are refused. You cannot lock yourself out.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Try to remove the Admin role from yourself</b><span class="see">You are refused.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit the Graduate Student account YOU registered in section 3 and tick two roles quickly, one after the other</b><span class="see">Both stay ticked. Neither un-ticks itself. Untick them again and save, so the account is back to Graduate Student. (Never do this to the shared accounts.)</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Roles &amp; Permissions"</b><span class="see">The core roles cannot be deleted, and the Admin role's permissions cannot be edited away.</span></span></div>
+
+<h3>4.4 — The rest of the menu</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Audit Logs</b><span class="see">A record of what has been done — including the college you added and deleted just now.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Platform Status</b><span class="see">System health figures.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>System Settings — clear the "minimum fit score" box completely and save</b><span class="see">A red message asks for a number. It must NOT quietly save as 0. Do not save any other change here: it affects every tester.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Data &amp; Backups</b><span class="see">The page loads. Do not restore anything: a restore replaces everyone's test data.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Tracer Surveys, Announcements, Reports, Reports Hub, Skill Taxonomy</b><span class="see">Each page opens.</span></span></div>
+<p>Job Management is checked in section 11, once there are jobs to see.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="partner"><span class="num">5</span>Industry Partner — set up and post a job</h2>
+<p class="role-note">Sign in as <code>partner@gradconnect.tech</code>. This is the employer's view. The job you post here is the one the student applies to in section 7.</p>
+
+<h3>5.1 — Company profile</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Company"</b><span class="see">Either an empty form to create the company profile, or the profile another tester already created. If it exists, skip the next check.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>If empty: fill in the company name, industry and location, then Save</b><span class="see">A "Company created" message. The details stay after a reload.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Paste a very long Location (a few hundred characters) and save</b><span class="see">A red message appears under that box. The Save button must never just flicker and do nothing. Put the location back afterwards.</span></span></div>
+
+<h3>5.2 — Post a job</h3>
+<ol class="steps">
+    <li><span class="do">Click "Job Postings", then "New Posting".</span></li>
+    <li><span class="do">Fill in Title (starting with your initials), Description, Location and Salary, and pick some skills — include PHP and Laravel.</span></li>
+    <li><span class="do">Set the status to Open and save.</span></li>
+</ol>
+
+<div class="check"><input type="checkbox"><span class="txt"><b>Type slowly in the Job Title box</b><span class="see">Suggestions appear. They always match what is currently in the box, never an older half-typed word.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click several skill chips quickly, one after another</b><span class="see">Every one you click stays selected. None un-select themselves.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Generate from title" for the description</b><span class="see">The AI writes a job description based on your title. You can edit it before saving.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Put a very long salary range in (over 100 characters) and save</b><span class="see">A red message appears under the Salary box.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Fix it, for example <code>40000-65000</code>, and save properly</b><span class="see">The posting appears in your list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Talent Search" and filter by college</b><span class="see">Graduates from that college are listed (there may be only a few on the test site).</span></span></div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="affairs"><span class="num">6</span>Alumni Affairs Office</h2>
+<p class="role-note">Sign in as <code>alumni.affairs@gradconnect.tech</code>. This office runs tracer surveys and alumni engagement.</p>
+
+<h3>6.1 — Tracer surveys</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Tracer Survey"</b><span class="see">Each survey card shows a real number of questions — never the word "undefined".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Create a survey (title starting with your initials), aimed at Graduate Students, with three questions including one multiple-choice</b><span class="see">For the choice question you type the options separated by commas. It saves without complaint.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Set an "Opens at" date and time, save, then reopen the survey for editing</b><span class="see">The date and time shown are the SAME ones you typed — not shifted by several hours.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Leave one question's text blank and save</b><span class="see">A red message appears under that exact question.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Now delete a DIFFERENT question and save again</b><span class="see">The red message stays on the right question. It must not jump to another one or vanish.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Fix the blank question, make sure the survey opens now (not in the future), and publish it</b><span class="see">It is published. The student answers it in section 7.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Results for your survey</b><span class="see">It says "No answers yet." — not a blank empty box.</span></span></div>
+
+<h3>6.2 — The rest of the menu</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Announcements — publish one aimed at Graduate Students (title with your initials)</b><span class="see">It appears in the list, and an email appears in the test inbox.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Learning Resources — add one and restrict it to a program</b><span class="see">The program dropdown groups programs under their college. The resource saves.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Skill Taxonomy — add an alias such as "JS" to JavaScript</b><span class="see">The alias is added to that skill.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Now try adding an alias that is already a skill's real name, such as "React"</b><span class="see">A neat red message appears next to the box. You must NOT get a full-page error screen.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Remove your alias by clicking its ×</b><span class="see">You are asked to confirm first.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Database, Employability Reports, Reports Hub</b><span class="see">Each opens. In Employability Reports, type a graduation year in the filter — the report updates once you stop typing, not on every keystroke. Figures are small: the test site starts empty.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Events, Alumni Community, Messages, Settings</b><span class="see">Each page opens and works.</span></span></div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="graduate"><span class="num">7</span>Graduate Student</h2>
+<p class="role-note">Sign in as <code>student@gradconnect.tech</code>. This is the biggest role, so take your time.</p>
+
+<h3>7.1 — Fill in your profile</h3>
 <ol class="steps">
     <li><span class="do">In the left menu, click "My Profile".</span></li>
     <li><span class="do">Work through the four tabs across the top, one at a time.</span></li>
@@ -314,194 +393,131 @@
 <div class="check"><input type="checkbox"><span class="txt"><b>Look at the College dropdown on the Basic Info tab</b><span class="see">All ten UCLM colleges are listed — Computer Studies, Criminology, Nursing, Business and Accountancy, Customs Administration, Hospitality Management, Education, Marine Engineering, Marine Transportation, Engineering.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Pick "College of Nursing"</b><span class="see">The Program dropdown next to it now offers only Nursing programs.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Change the College to "College of Engineering"</b><span class="see">The Program resets — it will not keep a program from the wrong college.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Set College back to Computer Studies, fill in Phone, City and a Headline, then click Save</b><span class="see">A green "saved" message. The "% complete" figure at the top goes up.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Set College to Computer Studies and pick a program, fill in Phone, City and a Headline, then click Save</b><span class="see">A green "saved" message. The "% complete" figure at the top goes up.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Type <code>not-a-website</code> into LinkedIn URL and save</b><span class="see">A red message under that exact box tells you the link is not valid. Nothing is saved silently.</span></span></div>
 
-<h3>4.2 — Education and employment</h3>
+<h3>7.2 — Education and employment</h3>
 <div class="check"><input type="checkbox"><span class="txt"><b>On the Education tab, click Add with every box left empty</b><span class="see">Red messages appear under Institution and Degree telling you they are required.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Now fill in Institution and Degree, then click Add</b><span class="see">The record appears in the list above and the form clears.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>On the Employment tab, tick "Currently working here"</b><span class="see">The End Date box greys out — you cannot set an end date for a job you still hold.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Untick it, set an End Date EARLIER than the Start Date, then click Add</b><span class="see">A red message says the end date must come after the start date.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Fix the dates and click Add</b><span class="see">The job appears in the list.</span></span></div>
 
-<h3>4.3 — Skills</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open the Skills tab</b><span class="see">Skills are grouped in collapsible sections by subject — Computing &amp; IT, Nursing &amp; Healthcare, Soft Skills and so on. Your own course's group is already open.</span></span></div>
+<h3>7.3 — Skills</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open the Skills tab</b><span class="see">Skills are grouped in collapsible sections by subject — Computing &amp; IT, Nursing &amp; Healthcare, Soft Skills and so on. Your own college's group is already open.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Click several group headings to open and close them</b><span class="see">They open and close smoothly. The page never goes blank.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Type "nurs" into the filter box</b><span class="see">Only matching skills remain, and their group is opened for you.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Clear the filter box</b><span class="see">The groups return to how you had them.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Click a few skills to select them, then click Save Skills</b><span class="see">They stay selected after the page saves.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Select PHP, Laravel and a few others, then click Save Skills</b><span class="see">They stay selected after the page saves.</span></span></div>
 
-<h3>4.4 — Résumé</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Go to "My Resumes" and upload a PDF or Word (.docx) file</b><span class="see">It appears in the list. The first one you upload is marked Primary.</span></span></div>
+<h3>7.4 — Résumé and AI</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Go to "My Resumes" and upload a PDF or Word (.docx) résumé (up to 10 MB)</b><span class="see">It appears in the list. The first one you upload is marked Primary.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Try uploading a picture (.jpg or .png)</b><span class="see">It is refused with a clear message.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Click "Build from My Profile"</b><span class="see">A formatted résumé is built from what you typed in section 4.1. Check the dates read correctly — a job you have left must NOT say "Present".</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "AI Resume Analysis"</b><span class="see">Either feedback on your résumé, or a clear message telling you to upload one first.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Click "Build from My Profile"</b><span class="see">A formatted résumé is built from what you typed in 7.1–7.3. Check the dates read correctly — a job you have left must NOT say "Present".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "AI Resume Analysis"</b><span class="see">AI feedback on your uploaded résumé, or a clear message telling you what is missing.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Wait a minute, then open "Recommendations"</b><span class="see">Jobs matched to your résumé, each with a fit score, a short explanation, matched skills and missing skills. With an IT résumé, the partner's job from section 5 should be among them. If none show yet, wait another minute and reload.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Mark one recommendation helpful or not helpful</b><span class="see">Your choice is saved.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Skill Gap Analysis"</b><span class="see">The skills you have against the skills the jobs ask for, with what to learn next.</span></span></div>
 
-<h3>4.5 — Jobs and applications</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Jobs &amp; Internships" and click any job</b><span class="see">The full advert opens. Check the salary reads sensibly, like <code>₱40,000–₱65,000 / month</code> — never something like "₱40–000".</span></span></div>
+<h3>7.5 — Jobs and applications</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Jobs &amp; Internships" and find the partner's job (it starts with the initials used in section 5)</b><span class="see">The full advert opens. The salary reads sensibly, like <code>₱40,000–₱65,000 / month</code> — never something like "₱40–000".</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Click Apply</b><span class="see">A confirmation appears and the button changes so you cannot apply twice.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Applications"</b><span class="see">Your application is listed with a status of Submitted.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Withdraw the application</b><span class="see">The status changes to Withdrawn.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Use the search and filter boxes on the jobs page</b><span class="see">The list narrows. If there are many jobs, page links appear at the bottom and work.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Applications"</b><span class="see">Your application is listed with a status of Submitted. Leave it there — the partner reviews it in section 11.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Use the search and filter boxes on the jobs page</b><span class="see">The list narrows as you type and filter.</span></span></div>
 
-<h3>4.6 — The rest of the menu</h3>
-<p>Open each of these and confirm the page loads with no blank screen and no error box.</p>
-
-<div class="check"><input type="checkbox"><span class="txt"><b>Recommendations</b><span class="see">Suggested jobs with a match score, or a message explaining none are ready yet.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Skill Gap Analysis</b><span class="see">Skills you have against skills employers want.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Career Readiness</b><span class="see">A readiness score, or an invitation to complete a survey. Any percentage shown must be between 0 and 100.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Career Progression</b><span class="see">Your employment history over time.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Guidance Resources</b><span class="see">Training and seminar suggestions.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Surveys — open one and answer it</b><span class="see">Your answers save. Leaving a required question blank shows a message under that question.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — file a concern</b><span class="see">It appears in your list of concerns.</span></span></div>
+<h3>7.6 — The rest of the menu</h3>
+<div class="check"><input type="checkbox"><span class="txt"><b>Surveys — open the survey from section 6 and answer it</b><span class="see">Your answers save. Leaving a required question blank shows a message under that question.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — file a concern (subject starting with your initials)</b><span class="see">It appears in your list of concerns. The Student Affairs Office replies in section 9.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Career Readiness</b><span class="see">A readiness score, or an invitation to complete an assessment. Any percentage shown is between 0 and 100.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Career Progression and Guidance Resources</b><span class="see">Your employment history over time, and training suggestions — including the learning resource from section 6 if it matches your program.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Messages — start a conversation with a staff office</b><span class="see">The conversation opens and your message sends.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Notifications (the bell, top right)</b><span class="see">The panel opens on screen, fully visible. Clicking a notification opens it AND clears its unread dot.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Settings — turn a notification preference off, then reload the page</b><span class="see">It is still off. Your choice was saved.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Notifications (the bell, top right)</b><span class="see">The panel opens fully on screen. The announcement from section 6 is there. Clicking a notification opens it AND clears its unread dot.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Settings — turn a notification preference off, then reload the page</b><span class="see">It is still off. Turn it back on afterwards.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="alumni"><span class="num">5</span>Alumni</h2>
-<p class="role-note">Sign in as <code>alumni@gradconnect.edu.ph</code>. Very similar to a Graduate Student, with a community instead of student services.</p>
+<h2 id="alumni"><span class="num">8</span>Alumni</h2>
+<p class="role-note">Sign in as <code>alumni@gradconnect.tech</code>. Very similar to a Graduate Student, with a community instead of student services.</p>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Compare the left menu with the student's</b><span class="see">You now have "Alumni Community". You no longer have "Student Concerns".</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Alumni Community" and post an update</b><span class="see">Your post appears at the top of the list.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Reply to a post</b><span class="see">Your comment appears underneath it.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Compare the left menu with the student's</b><span class="see">You now have "Alumni Community". You no longer have "Student Concerns" or "Career Readiness".</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Alumni Community" and post an update (starting with your initials)</b><span class="see">Your post appears at the top of the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Reply to your post</b><span class="see">Your comment appears underneath it.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Try posting a very long update (paste a page of text several times over)</b><span class="see">Either the box stops you typing past the limit, or a clear red message explains the problem. It must never just do nothing.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Run through Profile, Resumes, Job Board and Applications</b><span class="see">They behave exactly as they did in section 4.</span></span></div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="partner"><span class="num">6</span>Industry Partner</h2>
-<p class="role-note">Sign in as <code>partner@gradconnect.edu.ph</code>. This is the employer's view.</p>
-
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Company", change the Location, and click Save</b><span class="see">A confirmation appears and the new value sticks after a reload.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Paste a very long Location (a few hundred characters) and save</b><span class="see">A red message appears under that box. The Save button must never just flicker and do nothing.</span></span></div>
-
-<h3>6.1 — Post a job</h3>
-<ol class="steps">
-    <li><span class="do">Click "Job Postings", then "New Posting".</span></li>
-    <li><span class="do">Fill in Title, Description, Location and Salary, and pick some skills.</span></li>
-    <li><span class="do">Set the status to Open and save.</span></li>
-</ol>
-
-<div class="check"><input type="checkbox"><span class="txt"><b>Type slowly in the Job Title box</b><span class="see">Suggestions appear. They always match what is currently in the box, never an older half-typed word.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Click several skill chips quickly, one after another</b><span class="see">Every one you click stays selected. None un-select themselves.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Put a very long salary range in (over 100 characters) and save</b><span class="see">A red message appears under the Salary box.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Fix it and save properly</b><span class="see">The posting appears in your list.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Sign in as the student in another window and apply to that job</b><span class="see">Back as the partner, the applicant shows under "Candidates" for that posting.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open Candidates for the posting</b><span class="see">Each applicant shows a link to their résumé. Their birthday, phone number and home address are NOT shown.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Move an applicant to Shortlisted</b><span class="see">The status updates, and the applicant gets an email in Mailpit. The email must NOT contain their own name.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Matches" for the posting and click "Refresh matches"</b><span class="see">The button stays disabled for a few seconds, then the list refreshes. Clicking twice quickly must not start two runs.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Look at the match score bars</b><span class="see">Every bar sits between empty and full. A weak match must never show a completely full bar.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Talent Search" and filter by college</b><span class="see">Graduates from that college are listed, including those on a specific program within it.</span></span></div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="affairs"><span class="num">7</span>Alumni Affairs Office</h2>
-<p class="role-note">Sign in as <code>alumni.affairs@gradconnect.edu.ph</code>. This office runs tracer surveys and alumni engagement.</p>
-
-<h3>7.1 — Tracer surveys</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Tracer Survey"</b><span class="see">Each survey card shows a real number of questions — never the word "undefined".</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Create a new survey with three questions, including one multiple-choice</b><span class="see">For the choice question you type the options separated by commas. It saves without complaint.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Set an "Opens at" date and time, save, then reopen the survey for editing</b><span class="see">The date and time shown are the SAME ones you typed — not shifted by several hours.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Leave one question's text blank and save</b><span class="see">A red message appears under that exact question.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Now delete a DIFFERENT question and save again</b><span class="see">The red message stays on the right question. It must not jump to another one or vanish.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Publish the survey, answer it as the student, then come back and open Results</b><span class="see">Your answer is counted in the chart.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open Results for a survey nobody has answered</b><span class="see">It says "No answers yet." — not a blank empty box.</span></span></div>
-
-<div class="box warn">
-    <p><b>Important check.</b> Edit a survey that already has answers and change some wording, then save. Open Results again — <b>the answers must still be there</b>. Losing them would be a serious bug.</p>
-</div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Edit an answered survey, then check Results</b><span class="see">All previous answers are still counted.</span></span></div>
-
-<h3>7.2 — The rest of the menu</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Database</b><span class="see">A searchable list of graduates.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Employability Reports</b><span class="see">Charts and figures. Type a graduation year in the filter — the report updates once you stop typing, not on every keystroke.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Reports Hub</b><span class="see">Links to each available report.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Announcements — publish one aimed at Graduate Students</b><span class="see">It appears in the list. Students receive it; check Mailpit for the email.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Learning Resources — add one and restrict it to a program</b><span class="see">The program dropdown groups programs under their college. The resource saves.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Skill Taxonomy — add an alias such as "JS" to JavaScript</b><span class="see">The alias is added to that skill.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Now try adding an alias that is already a skill's real name, such as "React"</b><span class="see">A neat red message appears next to the box. You must NOT get a full-page error screen.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Remove an alias by clicking its ×</b><span class="see">You are asked to confirm first.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Alumni Events, Alumni Community, Messages, Settings</b><span class="see">Each page opens and works.</span></span></div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="depthead"><span class="num">8</span>Department Head</h2>
-<p class="role-note">Sign in as <code>depthead.ccs@gradconnect.edu.ph</code>. This account belongs to the College of Computer Studies.</p>
-
-<div class="check"><input type="checkbox"><span class="txt"><b>Look at the dashboard</b><span class="see">Graduate numbers and an employment rate, plus a bar chart of placement by program. The program names on the chart are readable, not overlapping.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Employment Statistics"</b><span class="see">Figures for Computer Studies only — this account cannot see other colleges.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Program Outcomes"</b><span class="see">Results broken down by program within the college.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Download or export a report if the button is offered</b><span class="see">A file downloads and contains only this college's data.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Reports Hub" and "Settings"</b><span class="see">Both pages load.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Run through Profile, Resumes, Job Board and Applications</b><span class="see">They behave exactly as they did in section 7.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
 <h2 id="sao"><span class="num">9</span>Student Affairs Office</h2>
-<p class="role-note">Sign in as <code>sao@gradconnect.edu.ph</code>. This office looks after student welfare.</p>
+<p class="role-note">Sign in as <code>sao@gradconnect.tech</code>. This office looks after student welfare.</p>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Student Records</b><span class="see">A searchable list of students.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — open the concern the student filed in section 7 and reply</b><span class="see">Your reply is recorded against that concern.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Records</b><span class="see">A searchable list of students, including the test student.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Career Readiness</b><span class="see">Readiness figures across students.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Scholarships — add a scholarship</b><span class="see">It saves and appears in the list.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Student Events — add an event</b><span class="see">It saves and appears in the list.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Clearance &amp; Records — pick a student and tick off a clearance item</b><span class="see">The change is saved.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Student Concerns — open the concern the student filed in section 4.6 and reply</b><span class="see">Your reply is recorded against that concern.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Scholarships — add a scholarship (name starting with your initials)</b><span class="see">It saves and appears in the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Student Events — add an event (with your initials)</b><span class="see">It saves and appears in the list.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Clearance &amp; Records — pick the test student and tick off a clearance item</b><span class="see">The change is saved and the progress bar moves.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Student Analytics and Reports Hub</b><span class="see">Both pages load with charts and figures.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="admin"><span class="num">10</span>Administrator</h2>
-<p class="role-note">Sign in as <code>admin@gradconnect.edu.ph</code>. This account can see and change everything.</p>
+<h2 id="depthead"><span class="num">10</span>Department Head</h2>
+<p class="role-note">Sign in as <code>depthead@gradconnect.tech</code>. This account belongs to the College of Computer Studies. Figures are small because the test site started empty.</p>
 
-<h3>10.1 — Approve the account you made earlier</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "User Management" and find the Admin account you registered in section 3</b><span class="see">It is listed with a status of Pending.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Edit it and set the status to Active</b><span class="see">It saves. An approval email arrives in Mailpit.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Sign out and sign in with that account</b><span class="see">You now get in. Sign out again and return to the main admin account.</span></span></div>
-
-<h3>10.2 — Colleges and programs</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Colleges &amp; Programs"</b><span class="see">All ten UCLM colleges, each with its degree programs underneath.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Add a new college — type the code in lower case, like <code>ctest</code></b><span class="see">It is saved in capitals (CTEST). Extra spaces in the name are tidied up.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Add a program under your new college</b><span class="see">It appears nested under it.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Rename the college, then reload the page</b><span class="see">The new name is still there.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Try to delete "College of Computer Studies"</b><span class="see">You are refused, with a message explaining it still has graduates and programs attached.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Delete your test college and its program (delete the program first)</b><span class="see">You are asked to confirm, then both are removed.</span></span></div>
-
-<h3>10.3 — Safety rules</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Edit your OWN admin account and try to set the status to Suspended</b><span class="see">You are refused. You cannot lock yourself out.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Try to remove the Admin role from yourself</b><span class="see">You are refused.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Edit any user and tick two roles quickly, one after the other</b><span class="see">Both stay ticked. Neither un-ticks itself.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "Roles &amp; Permissions"</b><span class="see">The core roles cannot be deleted, and the Admin role's permissions cannot be edited away.</span></span></div>
-
-<h3>10.4 — The rest of the menu</h3>
-<div class="check"><input type="checkbox"><span class="txt"><b>Job Management</b><span class="see">Every posting on the platform. If there are more than 20, page links appear at the bottom and work.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Audit Logs</b><span class="see">A record of what has been done — including the college you added and deleted just now.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Platform Status</b><span class="see">System health figures.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>System Settings — clear the "minimum fit score" box completely and save</b><span class="see">A red message asks for a number. It must NOT quietly save as 0.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Data &amp; Backups</b><span class="see">The page loads and lists any backups.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Tracer Surveys, Announcements, Reports, Reports Hub, Skill Taxonomy</b><span class="see">Each page opens.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the dashboard</b><span class="see">Graduate numbers and an employment rate, plus a chart of placement by program. Program names on the chart are readable, not overlapping.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Employment Statistics"</b><span class="see">Figures for Computer Studies only — this account cannot see other colleges.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Program Outcomes"</b><span class="see">Results broken down by program within the college.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Export a report as CSV</b><span class="see">A file downloads and contains only this college's data.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Reports Hub" and "Settings"</b><span class="see">Both pages load.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="phone"><span class="num">11</span>Test on a phone</h2>
-<p class="role-note">Many students will use this on a phone, so this section matters. You can use a real phone on the same wi-fi, or your computer browser's phone preview.</p>
+<h2 id="together"><span class="num">11</span>Bringing it together</h2>
+<p class="role-note">Now the pieces meet: the partner reviews the student's application, and the survey office sees the student's answers. A private window lets you be both accounts at once.</p>
 
-<ol class="steps">
-    <li><span class="do">In Chrome or Edge, press <code>F12</code>.</span></li>
-    <li><span class="do">Click the small phone/tablet icon near the top left of the panel that opens.</span></li>
-    <li><span class="do">Choose a phone size such as iPhone SE or Pixel, then reload the page.</span></li>
-</ol>
+<h3>11.1 — The partner reviews the applicant</h3>
+<p>Sign in as <code>partner@gradconnect.tech</code> and open your job from section 5.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Candidates for the posting</b><span class="see">The test student is listed, with a link to their résumé. Their birthday, phone number and home address are NOT shown.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Move the applicant to Shortlisted</b><span class="see">The status updates, and an email to the applicant appears in the test inbox. The email must NOT contain the applicant's name.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "Matches" for the posting and click "Refresh matches"</b><span class="see">The button stays disabled for a few seconds, then the list refreshes with the test student and a fit score. Clicking twice quickly must not start two runs.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Look at the match score bars</b><span class="see">Every bar sits between empty and full. A weak match never shows a completely full bar.</span></span></div>
+
+<h3>11.2 — The student sees the outcome</h3>
+<p>Sign in as <code>student@gradconnect.tech</code>.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Applications"</b><span class="see">The application now says Shortlisted.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Withdraw the application</b><span class="see">The status changes to Withdrawn.</span></span></div>
+
+<h3>11.3 — The survey office sees the answers</h3>
+<p>Sign in as <code>alumni.affairs@gradconnect.tech</code> and open your survey from section 6.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open Results</b><span class="see">The student's answer is counted in the chart.</span></span></div>
+
+<div class="box warn">
+    <p><b>Important check.</b> Edit that survey, change some wording, and save. Open Results again — <b>the answers must still be there</b>. Losing them would be a serious bug.</p>
+</div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Edit the answered survey, then check Results</b><span class="see">All previous answers are still counted.</span></span></div>
+
+<h3>11.4 — The administrator sees it all</h3>
+<p>Sign in as <code>admin@gradconnect.tech</code>.</p>
+<div class="check"><input type="checkbox"><span class="txt"><b>Job Management</b><span class="see">Every posting on the site, including the partner's job. If there are more than 20, page links appear at the bottom and work.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Audit Logs</b><span class="see">Today's actions are recorded, such as the account you approved.</span></span></div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 id="phone"><span class="num">12</span>Test on a phone</h2>
+<p class="role-note">Many students will use this on a phone, so this section matters. The site is on the internet, so use your own phone — mobile data or any wi-fi.</p>
 
 <div class="box tip">
     <p><b>The one thing to watch for:</b> you should never have to scroll <em>sideways</em> to read a page. Scrolling up and down is normal; scrolling left and right is a bug.</p>
 </div>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Home page — tap the ☰ menu button</b><span class="see">A menu opens with Features, For Employers, Contact, About, and Sign In / Get Started.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Home page — look at the AI Job Match card</b><span class="see">It is visible and readable on the phone, and the course chips scroll sideways within their own row.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Sign in, then tap the ☰ button at the top left</b><span class="see">The menu slides in. Tapping outside it, or pressing Escape, closes it. The page behind must not scroll while it is open.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>gradconnect.tech</code> on your phone and tap the ☰ menu button</b><span class="see">A menu opens with Features, For Employers, Contact, About, and Sign In / Get Started.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Home page — look at the AI Job Match card</b><span class="see">It is visible and readable, and the course chips scroll sideways within their own row.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in as the student, then tap the ☰ button at the top left</b><span class="see">The menu slides in. Tapping outside it closes it. The page behind must not scroll while it is open.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Tap the magnifying glass in the top bar</b><span class="see">A search box opens across the screen. Closing it clears what you typed.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Tap the bell icon</b><span class="see">The notifications panel is fully on screen — not cut off at the edge.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Open "My Profile" and swipe across the four tabs</b><span class="see">The tab strip scrolls sideways by itself. The page underneath does not.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Check the form boxes on the profile page</b><span class="see">They are stacked one per line and full width. No text is cut off.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Upload a résumé from your phone (from Files or Google Drive)</b><span class="see">It uploads and appears in My Resumes.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Open Messages, then open a conversation</b><span class="see">The conversation fills the screen and has a back arrow to return to the list.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>As an admin, open User Management</b><span class="see">The table scrolls sideways inside its own box, so you can still reach the Edit and Delete buttons.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Visit five or six more pages at phone size</b><span class="see">None of them scroll sideways.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Sign in as the admin and open User Management</b><span class="see">The table scrolls sideways inside its own box, so you can still reach the Edit and Delete buttons.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Visit five or six more pages on the phone</b><span class="see">None of them scroll sideways.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="theme"><span class="num">12</span>Light and dark mode</h2>
+<h2 id="theme"><span class="num">13</span>Light and dark mode</h2>
 <p class="role-note">The app has two colour themes. Both must be readable. The switch is the moon/sun icon in the top bar once you are signed in.</p>
 
 <div class="box tip">
@@ -509,7 +525,7 @@
 </div>
 
 <div class="check"><input type="checkbox"><span class="txt"><b>Sign in, then click the moon icon in the top bar</b><span class="see">The whole app turns dark. Every heading, label and paragraph is still easy to read.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Profile" and type your name into a box</b><span class="see">What you type is clearly visible — light text on a dark box. It must never be invisible.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Open "My Profile" and type into a box</b><span class="see">What you type is clearly visible — light text on a dark box. It must never be invisible.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Look at the faint example text inside empty boxes (such as "Cebu City")</b><span class="see">Readable grey — dimmer than real text, but not close to invisible.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Open a dropdown, for example College</b><span class="see">The list of choices is readable, not dark text on a dark strip.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Visit five more pages while still in dark mode</b><span class="see">No page has text that vanishes into the background.</span></span></div>
@@ -518,16 +534,13 @@
 <div class="check"><input type="checkbox"><span class="txt"><b>Sign out and look at the home page in both themes</b><span class="see">The headings ("Everything You Need to Succeed" and the card titles) are readable in both.</span></span></div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="automated"><span class="num">13</span>Run the automated tests</h2>
-<p class="role-note">Besides your clicking, GradConnect has about 630 automated tests that check the system by themselves in a few minutes. Here you run them and confirm they pass.</p>
-
-<div class="box tip">
-    <p><b>Your data is safe.</b> The tests run in their own throwaway containers on a temporary database, never on the app you have been testing. Docker Desktop must be running; the app itself does not need to be.</p>
-</div>
+<h2 id="automated"><span class="num">14</span>Automated tests (team members)</h2>
+<p class="role-note">For team members who have the project and Docker Desktop on their own computer. If you only test through the browser, skip this section. About 640 automated tests check the system by themselves in a few minutes. They run on your computer, never on the live site, and cannot change its data.</p>
 
 <ol class="steps">
     <li>
-        <span class="do">Open a terminal in the project folder (as in section 1).</span>
+        <span class="do">Open a terminal in the project folder.</span>
+        <p>In Windows File Explorer, open the <code>gradconnect</code> folder, type <code>cmd</code> in the address bar, and press Enter.</p>
     </li>
     <li>
         <span class="do">Run the back-end tests.</span>
@@ -541,41 +554,37 @@
     </li>
 </ol>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Read the last lines of the back-end run</b><span class="see"><code>Tests: 5 skipped, 479 passed</code> (or more passed, if tests were added since) — and the word “failed” appears nowhere.</span></span></div>
+<div class="check"><input type="checkbox"><span class="txt"><b>Read the last lines of the back-end run</b><span class="see"><code>Tests: 5 skipped, 489 passed</code> (or more passed, if tests were added since) — and the word “failed” appears nowhere.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Look at the 5 skipped tests</b><span class="see">Each one says it <em>Requires PostgreSQL + pgvector</em>. That is expected: they test the AI vector search, which the temporary test database cannot do.</span></span></div>
 <div class="check"><input type="checkbox"><span class="txt"><b>Read the last lines of the front-end run</b><span class="see"><code>Test Files 28 passed</code> and <code>Tests 151 passed</code>, with no “failed”.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Go back to <code>http://localhost:8000</code> and sign in as the student</b><span class="see">Everything you created while testing — your profile, applications, concerns — is still there. Running the tests changed nothing.</span></span></div>
 
 <h3>Check the tests cover what you tested</h3>
-<p>Every part of this guide has automated tests behind it. Open the project folder and confirm the files below exist. Back-end tests are in <code>tests/Feature</code>; front-end tests sit next to the screens in <code>resources/js</code>.</p>
+<p>Every part of this guide has automated tests behind it. Back-end tests are in <code>tests/Feature</code>; front-end tests sit next to the screens in <code>resources/js</code>.</p>
 
 <div class="tablewrap">
 <table>
     <thead><tr><th>Guide section</th><th>Back-end tests</th><th>Front-end tests</th></tr></thead>
     <tbody>
         <tr><td><b>2–3. Sign in, new accounts</b></td><td><code>Auth/AuthenticationTest</code>, <code>Auth/RegistrationTest</code>, <code>Auth/EmailVerificationTest</code></td><td>—</td></tr>
-        <tr><td><b>4. Graduate Student</b></td><td><code>GraduateProfileUpdateTest</code>, <code>ResumeUploadTest</code>, <code>ResumeBuilderControllerTest</code>, <code>JobPostingControllerTest</code></td><td><code>Pages/Graduate/</code>, <code>Components/SkillCategoryPicker</code></td></tr>
-        <tr><td><b>5. Alumni</b></td><td><code>CommunityControllerTest</code></td><td><code>Pages/Community</code></td></tr>
-        <tr><td><b>6. Industry Partner</b></td><td><code>CandidateViewTest</code>, <code>CandidateMatchControllerTest</code>, <code>TalentSearchTest</code></td><td><code>Pages/Postings/</code>, <code>Pages/Company/</code></td></tr>
-        <tr><td><b>7. Alumni Affairs Office</b></td><td><code>SurveyControllerTest</code>, <code>AnnouncementControllerTest</code>, <code>Admin/SkillTaxonomyControllerTest</code></td><td><code>Pages/Surveys/</code>, <code>Pages/Admin/Skills</code></td></tr>
-        <tr><td><b>8. Department Head</b></td><td><code>ProgramOutcomesControllerTest</code>, <code>EmployabilityReportControllerTest</code></td><td><code>Pages/Reports/</code></td></tr>
+        <tr><td><b>4. Administrator</b></td><td><code>Admin/UserControllerTest</code>, <code>Admin/RolePermissionManagementTest</code>, <code>Admin/SystemSettingControllerTest</code></td><td><code>Pages/Admin/UserEditRoles</code></td></tr>
+        <tr><td><b>5. Industry Partner</b></td><td><code>JobPostingControllerTest</code>, <code>JobAssistTest</code>, <code>TalentSearchTest</code></td><td><code>Pages/Postings/</code>, <code>Pages/Company/</code></td></tr>
+        <tr><td><b>6. Alumni Affairs Office</b></td><td><code>SurveyControllerTest</code>, <code>AnnouncementControllerTest</code>, <code>Admin/SkillTaxonomyControllerTest</code></td><td><code>Pages/Surveys/</code>, <code>Pages/Admin/Skills</code></td></tr>
+        <tr><td><b>7. Graduate Student</b></td><td><code>GraduateProfileUpdateTest</code>, <code>ResumeUploadTest</code>, <code>ResumeBuilderControllerTest</code>, <code>JobRecommendationControllerTest</code></td><td><code>Pages/Graduate/</code>, <code>Components/SkillCategoryPicker</code></td></tr>
+        <tr><td><b>8. Alumni</b></td><td><code>CommunityControllerTest</code></td><td><code>Pages/Community</code></td></tr>
         <tr><td><b>9. Student Affairs Office</b></td><td><code>ClearanceControllerTest</code>, <code>ScholarshipControllerTest</code>, <code>StudentCaseControllerTest</code></td><td>—</td></tr>
-        <tr><td><b>10. Administrator</b></td><td><code>Admin/UserControllerTest</code>, <code>Admin/RolePermissionManagementTest</code>, <code>Admin/SystemSettingControllerTest</code></td><td><code>Pages/Admin/UserEditRoles</code></td></tr>
-        <tr><td><b>Every role</b></td><td><code>RoleAccessTest</code>, <code>AccessControlHardeningTest</code>, <code>EmailPrivacyTest</code></td><td><code>lib/roles</code></td></tr>
+        <tr><td><b>10. Department Head</b></td><td><code>ProgramOutcomesControllerTest</code>, <code>EmployabilityReportControllerTest</code></td><td><code>Pages/Reports/</code></td></tr>
+        <tr><td><b>11. Bringing it together</b></td><td><code>CandidateViewTest</code>, <code>CandidateMatchControllerTest</code>, <code>EmailPrivacyTest</code></td><td><code>Pages/Postings/Candidates</code>, <code>Pages/Surveys/Results</code></td></tr>
+        <tr><td><b>Every role</b></td><td><code>RoleAccessTest</code>, <code>AccessControlHardeningTest</code></td><td><code>lib/roles</code></td></tr>
     </tbody>
 </table>
 </div>
 
-<div class="check"><input type="checkbox"><span class="txt"><b>Open <code>tests/Feature</code> and find <code>SurveyControllerTest.php</code></b><span class="see">The file is there. Open it in Notepad: each <code>public function test_…</code> line names one thing it checks, written as a plain sentence with underscores.</span></span></div>
-<div class="check"><input type="checkbox"><span class="txt"><b>Run only the survey tests</b><span class="see">This command runs just that one file and finishes in under a minute, with no failures: <code>docker compose run --rm --build php-tests --filter=SurveyControllerTest</code></span></span></div>
-
 <div class="box warn">
-    <p><b>Only use the two commands above.</b> Never type <code>php artisan test</code> inside the running app — that is the developers' command, not a tester's.</p>
-    <p><b>If a test fails,</b> run the command once more. If it fails again, copy the test's name and the red lines under it into your report (section 14).</p>
+    <p><b>If a test fails,</b> run the command once more. If it fails again, copy the test's name and the red lines under it into your report (section 15).</p>
 </div>
 
 <!-- ════════════════════════════════════════════════════════ -->
-<h2 id="report"><span class="num">14</span>Report a problem</h2>
+<h2 id="report"><span class="num">15</span>Report a problem</h2>
 <p class="role-note">A good report can be acted on straight away. A vague one cannot.</p>
 
 <p>For anything that does not match this guide, write down these five things:</p>
@@ -584,7 +593,7 @@
 <table>
     <thead><tr><th>Write down</th><th>Example</th></tr></thead>
     <tbody>
-        <tr><td><b>1. Who you were</b></td><td>Signed in as <code>partner@gradconnect.edu.ph</code></td></tr>
+        <tr><td><b>1. Who you were</b></td><td>Signed in as <code>partner@gradconnect.tech</code>, on a phone</td></tr>
         <tr><td><b>2. Where you were</b></td><td>Job Postings → New Posting</td></tr>
         <tr><td><b>3. What you did</b></td><td>Typed a 200-character salary and clicked Publish</td></tr>
         <tr><td><b>4. What you expected</b></td><td>A red message under the Salary box</td></tr>
@@ -594,38 +603,39 @@
 </div>
 
 <div class="box warn">
-    <p><b>Always add a screenshot.</b> On Windows press <code>Windows</code> + <code>Shift</code> + <code>S</code>. Include the whole browser window, with the web address visible.</p>
+    <p><b>Always add a screenshot.</b> On Windows press <code>Windows</code> + <code>Shift</code> + <code>S</code>. Include the whole browser window, with the web address visible. Add the date and time, so the team can find it in the server's logs.</p>
 </div>
 
-<h3>If the screen goes completely white</h3>
+<h3>If the screen goes completely white, or says "Server Error"</h3>
 <p>This matters most of all, so capture it properly:</p>
 <ol class="steps">
-    <li><span class="do">Press <code>F12</code> to open the developer panel.</span></li>
+    <li><span class="do">On a computer, press <code>F12</code> to open the developer panel.</span></li>
     <li><span class="do">Click the "Console" tab.</span></li>
     <li><span class="do">Screenshot any red text you see there.</span></li>
-    <li><span class="do">Note the exact web address and what you clicked immediately before.</span></li>
+    <li><span class="do">Note the exact web address, the time, and what you clicked immediately before.</span></li>
 </ol>
 
 <!-- ══════════════════════════════════════════════════════════ -->
-<h2 id="gaps"><span class="num">15</span>Known gaps (not bugs)</h2>
+<h2 id="gaps"><span class="num">16</span>Known gaps (not bugs)</h2>
 <p class="role-note">These are expected. Please do not report them.</p>
 
 <div class="tablewrap">
 <table>
     <thead><tr><th>What you will see</th><th>Why</th></tr></thead>
     <tbody>
-        <tr><td>AI features return nothing, or a "not configured" note</td><td>The AI services need an API key (see the setup guide). Without one, the system deliberately falls back instead of failing.</td></tr>
-        <tr><td>No real emails arrive</td><td>By design. Everything goes to Mailpit at <code>localhost:8025</code>.</td></tr>
+        <tr><td>No email reaches a real mailbox</td><td>By design on the test site. Everything goes to the test inbox at <code>inbox.gradconnect.tech</code>.</td></tr>
         <tr><td>Emails never mention anybody's name</td><td>Deliberate. Personal details stay inside the app, behind the sign-in.</td></tr>
+        <tr><td>Recommendations and match scores appear a minute or two after a résumé upload or a new job</td><td>The AI works in the background, so pages stay fast. Wait a moment and reload.</td></tr>
+        <tr><td>Reports and dashboards show small numbers</td><td>The test site started empty; it only holds what testers created.</td></tr>
+        <tr><td>Jobs, posts and surveys you did not create</td><td>Other testers share the site. Leave them alone.</td></tr>
         <tr><td>Home page figures like "4,820+ Graduates Placed"</td><td>Sample marketing text, not live data.</td></tr>
-        <tr><td>Match scores are missing on brand-new postings</td><td>Matching runs in the background. Wait a moment and reload.</td></tr>
     </tbody>
 </table>
 </div>
 
 <footer>
     <p><b>GradConnect</b> — University of Cebu Lapu-Lapu and Mandaue.<br>
-    Testing guide last updated 18 November 2026.</p>
+    Testing guide for the test site at gradconnect.tech, last updated 24 November 2026.</p>
 </footer>
 
 </div>
@@ -634,7 +644,7 @@
 (function () {
     'use strict';
 
-    var STORE = 'gradconnect-test-progress-v2';
+    var STORE = 'gradconnect-test-progress-v3';
     var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input[type=checkbox]'));
     var fill = document.getElementById('barFill');
     var label = document.getElementById('progressLabel');

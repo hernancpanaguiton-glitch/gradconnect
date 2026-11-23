@@ -156,6 +156,12 @@ There are **no demo accounts** in production. Create the first administrator; it
 docker compose exec app php artisan app:create-admin
 ```
 
+**For a UAT server**, also create one shared test account per role (`student@`, `alumni@`, `partner@`, `alumni.affairs@`, `sao@`, `depthead@` and `admin@` your domain). These are the accounts `GradConnect-Tester-Guide.html` uses. You choose one shared password at a hidden prompt; give it to testers privately. Accounts that already exist are left alone, so running it again is safe:
+
+```bash
+docker compose exec app php artisan app:create-test-accounts
+```
+
 ---
 
 ## 11. Check it works
