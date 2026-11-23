@@ -9,3 +9,12 @@
 	encode zstd gzip
 	php_server
 }
+
+# UAT mail inbox (Mailpit, password-protected by Mailpit itself). Only
+# answers when MAILPIT_HOST is set and the uat-mail profile is running.
+{$MAILPIT_HOST:http://mailpit.invalid} {
+	# Fail closed: without a password the inbox would be open to anyone.
+	@noPassword expression `{env.MAILPIT_UI_AUTH} == ""`
+	respond @noPassword "Inbox disabled: set MAILPIT_UI_AUTH in .env" 503
+	reverse_proxy mail:8025
+}

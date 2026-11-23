@@ -100,6 +100,8 @@ The two `openssl` lines each print a random value. In the editor:
 
 Save with `Ctrl` + `O`, `Enter`, then exit with `Ctrl` + `X`.
 
+**A UAT or test server?** Catch emails instead of sending them. Use option **A** in the Email part of `.env`: every email lands in a password-protected web inbox at `https://inbox.your-domain`, and nobody outside the test receives anything. Add an `A` record for `inbox` as well in step 8. Switch to option **B** when you go live.
+
 **No domain yet?** Set `SERVER_NAME=:80`, `APP_URL=http://203.0.113.25` (your IP) and `SESSION_SECURE_COOKIE=false`. Switch to the domain values later and restart (step 12).
 
 > 🔒 `.env` holds the server's secrets. Never copy it into Git, chat or email.
@@ -113,6 +115,12 @@ At your domain's DNS settings (hPanel → Domains → DNS, if Hostinger manages 
 | Type | Name | Points to |
 |------|------|-----------|
 | `A` | `@` | your VPS IP |
+| `A` | `www` | your VPS IP |
+| `A` | `inbox` | your VPS IP (only for the UAT inbox) |
+
+New Hostinger domains often come with `A` records that already point at Hostinger's parking page. Edit or delete those, so each name points only at your VPS.
+
+To answer on `www` as well, set `SERVER_NAME=your-domain, www.your-domain`.
 
 Wait until it resolves to your IP. This usually takes minutes, but can take a few hours:
 

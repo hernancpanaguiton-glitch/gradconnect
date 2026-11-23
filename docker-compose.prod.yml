@@ -52,6 +52,23 @@ services:
         condition: service_started
     restart: unless-stopped
 
+  # UAT only: catches every email in a password-protected web inbox instead
+  # of sending it. Turned on by COMPOSE_PROFILES=uat-mail in .env, and
+  # reached through the app's web server at MAILPIT_HOST (never directly).
+  mail:
+    image: axllent/mailpit:v1.33.0
+    profiles: ["uat-mail"]
+    environment:
+      # "user:password". Optional here only so production without this
+      # profile still starts; the Caddyfile refuses to show the inbox
+      # when it is empty, and Mailpit's own port is never published.
+      MP_UI_AUTH: ${MAILPIT_UI_AUTH:-}
+      MP_MAX_MESSAGES: 5000
+    volumes:
+      - mail-data:/data
+    command: ["--database", "/data/mailpit.db"]
+    restart: unless-stopped
+
   db:
     image: pgvector/pgvector:pg16
     environment:
@@ -72,3 +89,4 @@ volumes:
   storage-data:
   caddy-data:
   caddy-config:
+  mail-data:
