@@ -59,4 +59,12 @@ return [
         'api_url' => 'https://api.jina.ai/v1/embeddings',
     ],
 
+    // Self-hosted embeddings (AI_EMBEDDING_PROVIDER=ollama). No key: the
+    // server runs beside the app and is not reachable from outside.
+    'ollama' => [
+        'url' => env('OLLAMA_URL', 'http://ollama:11434'),
+        'embedding_model' => env('OLLAMA_EMBEDDING_MODEL', 'nomic-embed-text'),
+        'embedding_prefix' => env('OLLAMA_EMBEDDING_PREFIX', 'search_document: '),
+    ],
+
 ];

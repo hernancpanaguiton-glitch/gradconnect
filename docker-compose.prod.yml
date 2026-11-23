@@ -69,6 +69,24 @@ services:
     command: ["--database", "/data/mailpit.db"]
     restart: unless-stopped
 
+  # Self-hosted embeddings (AI_EMBEDDING_PROVIDER=ollama), so résumé text
+  # stays on this server. Turned on by the "ollama" entry in
+  # COMPOSE_PROFILES. Reachable only by the app and worker (no ports
+  # published). The model downloads once, on first start, into the volume.
+  ollama:
+    image: ollama/ollama:0.40.15
+    profiles: ["ollama"]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - ollama serve & pid=$$!; sleep 5; ollama pull "$${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}"; wait $$pid
+    environment:
+      OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      # Keep the small model loaded, so the first résumé is not slow.
+      OLLAMA_KEEP_ALIVE: "-1"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
   db:
     image: pgvector/pgvector:pg16
     environment:
@@ -90,3 +108,4 @@ volumes:
   caddy-data:
   caddy-config:
   mail-data:
+  ollama-data:

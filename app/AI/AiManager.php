@@ -9,6 +9,7 @@ use App\AI\Providers\GeminiEmbeddingProvider;
 use App\AI\Providers\GeminiMatchScorer;
 use App\AI\Providers\GroqMatchScorer;
 use App\AI\Providers\JinaEmbeddingProvider;
+use App\AI\Providers\OllamaEmbeddingProvider;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -20,6 +21,7 @@ class AiManager
     protected array $embeddingProviders = [
         'gemini' => GeminiEmbeddingProvider::class,
         'jina' => JinaEmbeddingProvider::class,
+        'ollama' => OllamaEmbeddingProvider::class,
     ];
 
     /**

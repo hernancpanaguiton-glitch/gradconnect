@@ -100,6 +100,8 @@ The two `openssl` lines each print a random value. In the editor:
 
 Save with `Ctrl` + `O`, `Enter`, then exit with `Ctrl` + `X`.
 
+**Self-hosted embeddings (recommended).** Run the résumé/job embeddings on this server with Ollama, so résumé text is not sent to Google. Add `ollama` to `COMPOSE_PROFILES` (for example `COMPOSE_PROFILES=ollama`, or `uat-mail,ollama`) and set `AI_EMBEDDING_PROVIDER=ollama`. The first start downloads the `nomic-embed-text` model once, about 300 MB. Scoring still uses Groq, so keep `GROQ_API_KEY`. If you switch embedding provider after résumés and jobs already exist, they must be embedded again: vectors from different models cannot be compared.
+
 **A UAT or test server?** Catch emails instead of sending them. Use option **A** in the Email part of `.env`: every email lands in a password-protected web inbox at `https://inbox.your-domain`, and nobody outside the test receives anything. Add an `A` record for `inbox` as well in step 8. Switch to option **B** when you go live.
 
 **No domain yet?** Set `SERVER_NAME=:80`, `APP_URL=http://203.0.113.25` (your IP) and `SESSION_SECURE_COOKIE=false`. Switch to the domain values later and restart (step 12).
