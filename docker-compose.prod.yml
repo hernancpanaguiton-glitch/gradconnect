@@ -1,0 +1,70 @@
+# GradConnect — production stack for a VPS. Setup: DEPLOY-HOSTINGER.md.
+#
+# Every setting comes from the server's .env file (copied from
+# .env.production.example), which also points `docker compose` at this
+# file, so on the server plain `docker compose up -d --build` works.
+#
+# Differences from docker-compose.yml: FrankenPHP serves the app on ports
+# 80/443 with automatic HTTPS; the database is not reachable from outside;
+# no demo accounts and no Mailpit (real email is configured in .env).
+
+name: gradconnect
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    env_file: .env
+    environment:
+      RUN_MIGRATIONS: "true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - storage-data:/app/storage
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  queue:
+    build:
+      context: .
+      target: production
+    env_file: .env
+    environment:
+      RUN_MIGRATIONS: "false"
+    command: php artisan queue:work --tries=3 --timeout=300 --sleep=3
+    volumes:
+      - storage-data:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      app:
+        condition: service_started
+    restart: unless-stopped
+
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:?set DB_DATABASE in .env}
+      POSTGRES_USER: ${DB_USERNAME:?set DB_USERNAME in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  storage-data:
+  caddy-data:
+  caddy-config:

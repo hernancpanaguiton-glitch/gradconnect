@@ -63,3 +63,38 @@ EXPOSE 8000
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+
+# ── Stage 3: production server (docker-compose.prod.yml) ──────────────
+# FrankenPHP is a production PHP server built on Caddy: it serves many
+# requests at once (artisan serve does not) and gets HTTPS certificates
+# from Let's Encrypt automatically for the domain in SERVER_NAME.
+FROM dunglas/frankenphp:1.13.4-php8.3-bookworm AS production
+
+RUN install-php-extensions pdo_pgsql pgsql zip gd bcmath pcntl opcache \
+    && apt-get update && apt-get install -y --no-install-recommends postgresql-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY docker/production/php.ini "$PHP_INI_DIR/conf.d/zz-gradconnect.ini"
+COPY docker/production/Caddyfile /etc/caddy/Caddyfile
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# Runtime packages only: no test tools or fake-data generators in production.
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist --no-progress
+
+COPY . .
+COPY --from=assets /app/public/build ./public/build
+
+RUN composer dump-autoload --optimize --no-dev \
+    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

@@ -10,6 +10,8 @@ storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
+# Host caches name the host's (dev) packages; each image builds its own.
+bootstrap/cache/*.php
 .env
 .env.*
 !.env.docker.example
