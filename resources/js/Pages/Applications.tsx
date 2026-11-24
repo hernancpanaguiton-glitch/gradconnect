@@ -3,6 +3,7 @@ import StatTile from '@/Components/StatTile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Briefcase, CheckCircle2, Send, Star } from 'lucide-react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Application {
     id: number;
@@ -47,8 +48,8 @@ function formatDate(value: string | null): string {
 }
 
 export default function Applications({ hasProfile, applications, stats }: Props) {
-    function withdraw(id: number) {
-        if (!confirm('Withdraw this application?')) return;
+    async function withdraw(id: number) {
+        if (!(await confirmDialog('Withdraw this application?', { confirmLabel: 'Withdraw' }))) return;
         router.patch(route('applications.withdraw', id), {}, { preserveScroll: true });
     }
 

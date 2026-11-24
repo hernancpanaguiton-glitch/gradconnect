@@ -4,6 +4,7 @@ import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface EventItem {
     id: number; title: string; description: string | null; type: string;
@@ -71,8 +72,8 @@ export default function Events({ events, canManage }: Props) {
         router.post(route('events.rsvp', eventId), { status }, { preserveScroll: true });
     }
 
-    function destroy(id: number) {
-        if (!confirm('Delete this event?')) return;
+    async function destroy(id: number) {
+        if (!(await confirmDialog('Delete this event?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('events.destroy', id), { preserveScroll: true });
     }
 

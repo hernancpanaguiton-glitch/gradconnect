@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface UserRow {
     id: number;
@@ -48,8 +49,8 @@ export default function Users({ users, filters }: Props) {
         router.get(route('admin.users.index'), { search }, { preserveState: true, replace: true });
     }
 
-    function deleteUser(id: number, name: string) {
-        if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+    async function deleteUser(id: number, name: string) {
+        if (!(await confirmDialog(`Delete user "${name}"? This cannot be undone.`, { confirmLabel: 'Delete' }))) return;
         router.delete(route('admin.users.destroy', id), { preserveScroll: true });
     }
 

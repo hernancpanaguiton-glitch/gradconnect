@@ -4,8 +4,10 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { ConfirmHost } from './lib/confirm';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+// Docker builds have no .env, so the fallback is what users actually see.
+const appName = import.meta.env.VITE_APP_NAME || 'GradConnect';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -17,7 +19,12 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <>
+                <App {...props} />
+                <ConfirmHost />
+            </>,
+        );
     },
     progress: {
         color: '#4B5563',

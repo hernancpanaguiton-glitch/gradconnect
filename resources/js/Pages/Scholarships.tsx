@@ -5,6 +5,7 @@ import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { Award, GraduationCap, Wallet } from 'lucide-react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Recipient { id: number; graduate_profile: { user: { name: string } } }
 interface ScholarshipItem {
@@ -95,8 +96,8 @@ export default function Scholarships({ scholarships, totalBudget, totalRecipient
     const [showForm, setShowForm] = useState(false);
     const [expanded, setExpanded] = useState<number | null>(null);
 
-    function destroy(id: number) {
-        if (!confirm('Delete this scholarship program?')) return;
+    async function destroy(id: number) {
+        if (!(await confirmDialog('Delete this scholarship program?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('scholarships.destroy', id));
     }
 

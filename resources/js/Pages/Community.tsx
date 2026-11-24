@@ -4,6 +4,7 @@ import { PageProps } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { MessageCircle, Users } from 'lucide-react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Comment { id: number; body: string; created_at: string; user: { id: number; name: string } }
 interface Post { id: number; body: string; created_at: string; user: { id: number; name: string }; comments: Comment[]; comments_count: number }
@@ -64,13 +65,13 @@ export default function Community({ posts, canPost, canModerate }: Props) {
         });
     }
 
-    function deletePost(id: number) {
-        if (!confirm('Remove this post?')) return;
+    async function deletePost(id: number) {
+        if (!(await confirmDialog('Remove this post?', { confirmLabel: 'Remove' }))) return;
         router.delete(route('community.destroy', id), { preserveScroll: true });
     }
 
-    function deleteComment(id: number) {
-        if (!confirm('Remove this comment?')) return;
+    async function deleteComment(id: number) {
+        if (!(await confirmDialog('Remove this comment?', { confirmLabel: 'Remove' }))) return;
         router.delete(route('community.comments.destroy', id), { preserveScroll: true });
     }
 

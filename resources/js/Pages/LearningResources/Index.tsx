@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { ExternalLink } from 'lucide-react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Skill { id: number; name: string }
 interface Resource {
@@ -21,8 +22,8 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 export default function LearningResourcesIndex({ resources, canManage }: Props) {
-    function destroy(id: number) {
-        if (!confirm('Remove this resource?')) return;
+    async function destroy(id: number) {
+        if (!(await confirmDialog('Remove this resource?', { confirmLabel: 'Remove' }))) return;
         router.delete(route('learning-resources.destroy', id));
     }
 

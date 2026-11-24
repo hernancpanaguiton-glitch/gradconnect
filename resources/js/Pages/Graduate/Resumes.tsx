@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Resume {
     id: number; original_filename: string; size_bytes: number;
@@ -36,8 +37,8 @@ export default function Resumes({ resumes }: Props) {
     function setPrimary(id: number) {
         router.patch(route('resumes.set-primary', id), {}, { preserveScroll: true });
     }
-    function deleteResume(id: number, name: string) {
-        if (!confirm(`Delete "${name}"?`)) return;
+    async function deleteResume(id: number, name: string) {
+        if (!(await confirmDialog(`Delete "${name}"?`, { confirmLabel: 'Delete' }))) return;
         router.delete(route('resumes.destroy', id), { preserveScroll: true });
     }
 

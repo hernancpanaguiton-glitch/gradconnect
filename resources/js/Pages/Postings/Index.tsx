@@ -3,6 +3,7 @@ import TableCard from '@/Components/TableCard';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Posting {
     id: number; title: string; employment_type: string; location: string | null;
@@ -23,8 +24,8 @@ const statusColors: Record<string, string> = {
 export default function PostingsIndex({ company, postings }: Props) {
     const { flash } = usePage<Props>().props;
 
-    function destroy(id: number, title: string) {
-        if (!confirm(`Delete "${title}"?`)) return;
+    async function destroy(id: number, title: string) {
+        if (!(await confirmDialog(`Delete "${title}"?`, { confirmLabel: 'Delete' }))) return;
         router.delete(route('postings.destroy', id), { preserveScroll: true });
     }
 

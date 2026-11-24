@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Survey {
     id: number; title: string; type: string; status: string;
@@ -24,8 +25,8 @@ const STATUS_FALLBACK = 'bg-muted text-muted-foreground';
 export default function SurveysIndex({ surveys, canManage }: Props) {
     const { flash } = usePage<Props>().props;
 
-    function destroy(id: number) {
-        if (!confirm('Delete this survey?')) return;
+    async function destroy(id: number) {
+        if (!(await confirmDialog('Delete this survey?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('surveys.destroy', id));
     }
 

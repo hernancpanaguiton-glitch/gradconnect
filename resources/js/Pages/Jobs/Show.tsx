@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { confirmDialog } from '@/lib/confirm';
 
 /** Render a "30000-50000" / "80000+" range as a peso, comma-grouped monthly figure. */
 /**
@@ -55,14 +56,14 @@ export default function JobShow({ posting, userApplication }: Props) {
     const user = auth.user;
     const isGraduate = user.roles.includes('alumni') || user.roles.includes('student');
 
-    function apply() {
-        if (!confirm('Apply for this position?')) return;
+    async function apply() {
+        if (!(await confirmDialog('Apply for this position?', { confirmLabel: 'Apply', danger: false }))) return;
         router.post(route('applications.store', posting.id));
     }
 
-    function withdraw() {
+    async function withdraw() {
         if (!userApplication) return;
-        if (!confirm('Withdraw your application?')) return;
+        if (!(await confirmDialog('Withdraw your application?', { confirmLabel: 'Withdraw' }))) return;
         router.patch(route('applications.withdraw', userApplication.id));
     }
 

@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Permission {
     id: number;
@@ -56,8 +57,8 @@ export default function Roles({ roles, permissionGroups, protectedRoles, lockedR
         post(route('admin.roles.store'), { onSuccess: () => reset() });
     }
 
-    function deleteRole(role: Role) {
-        if (!confirm(`Delete role "${role.name}"? This cannot be undone.`)) return;
+    async function deleteRole(role: Role) {
+        if (!(await confirmDialog(`Delete role "${role.name}"? This cannot be undone.`, { confirmLabel: 'Delete' }))) return;
         router.delete(route('admin.roles.destroy', role.id), { preserveScroll: true });
     }
 

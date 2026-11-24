@@ -2,6 +2,7 @@ import { roleAudienceLabel } from '@/lib/roles';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Announcement {
     id: number;
@@ -16,8 +17,8 @@ interface Announcement {
 interface Props extends PageProps { announcements: Announcement[] }
 
 export default function AnnouncementsIndex({ announcements }: Props) {
-    function destroy(id: number) {
-        if (!confirm('Delete this announcement?')) return;
+    async function destroy(id: number) {
+        if (!(await confirmDialog('Delete this announcement?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('announcements.destroy', id));
     }
 

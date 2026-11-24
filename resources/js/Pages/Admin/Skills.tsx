@@ -6,6 +6,7 @@ import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { Layers, Search } from 'lucide-react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Alias { id: number; alias: string }
 interface SkillItem { id: number; name: string; category: string | null; aliases: Alias[] }
@@ -49,9 +50,9 @@ export default function Skills({ skills, filters }: Props) {
         router.get(route('skill-taxonomy.index'), { search }, { preserveState: true });
     }
 
-    function removeAlias(aliasId: number, alias: string) {
+    async function removeAlias(aliasId: number, alias: string) {
         // A 10px x inside a chip, and the deletion is permanent.
-        if (!confirm(`Remove the alias "${alias}"? Resumes using it will stop matching this skill.`)) {
+        if (!(await confirmDialog(`Remove the alias "${alias}"? Resumes using it will stop matching this skill.`, { confirmLabel: 'Remove' }))) {
             return;
         }
 

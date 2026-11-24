@@ -7,6 +7,7 @@ import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { Briefcase, CheckCircle2, FileEdit, Search, XCircle } from 'lucide-react';
 import { FormEvent, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface Posting {
     id: number;
@@ -54,8 +55,8 @@ export default function JobManagement({ postings, filters, stats }: Props) {
         router.patch(route('admin.jobs.update-status', posting.id), { status: next }, { preserveScroll: true });
     }
 
-    function destroy(posting: Posting) {
-        if (!confirm(`Remove "${posting.title}"? This cannot be undone.`)) return;
+    async function destroy(posting: Posting) {
+        if (!(await confirmDialog(`Remove "${posting.title}"? This cannot be undone.`, { confirmLabel: 'Remove' }))) return;
         router.delete(route('admin.jobs.destroy', posting.id), { preserveScroll: true });
     }
 

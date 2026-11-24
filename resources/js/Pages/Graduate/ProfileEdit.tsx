@@ -5,6 +5,7 @@ import { College, PageProps } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
+import { confirmDialog } from '@/lib/confirm';
 
 interface SkillSuggestion { id: number | null; name: string; source: string }
 
@@ -171,8 +172,8 @@ export default function ProfileEdit({
             onFinish: () => setEduSaving(false),
         });
     }
-    function deleteEducation(id: number) {
-        if (!confirm('Delete this education record?')) return;
+    async function deleteEducation(id: number) {
+        if (!(await confirmDialog('Delete this education record?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('education.destroy', id), { preserveScroll: true });
     }
 
@@ -193,8 +194,8 @@ export default function ProfileEdit({
             onFinish: () => setEmpSaving(false),
         });
     }
-    function deleteEmployment(id: number) {
-        if (!confirm('Delete this employment record?')) return;
+    async function deleteEmployment(id: number) {
+        if (!(await confirmDialog('Delete this employment record?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('employment.destroy', id), { preserveScroll: true });
     }
 
