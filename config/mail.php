@@ -81,10 +81,9 @@ return [
 
         'failover' => [
             'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
+            // Tried in order; the next one takes over when one fails.
+            // Production: MAIL_MAILER=failover, MAIL_FAILOVER_MAILERS=resend,smtp
+            'mailers' => explode(',', env('MAIL_FAILOVER_MAILERS', 'smtp,log')),
             'retry_after' => 60,
         ],
 

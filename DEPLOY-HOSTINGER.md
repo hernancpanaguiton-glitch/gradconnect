@@ -12,7 +12,7 @@ This puts GradConnect on the internet at your own domain, with HTTPS, on a Hosti
 
 - **A Hostinger VPS** (KVM plans) with **at least 4 GB of RAM**. The first build compiles the front end and needs the memory.
 - **A domain name** (for example `gradconnect-uclm.com`), from Hostinger or any registrar. You can start without one and add it later; without it the site runs on plain HTTP only.
-- **An email account to send from**, such as `no-reply@your-domain`. New graduates must confirm their email address to sign in, so this must work. A Hostinger email plan for your domain is the simplest.
+- **An email account to send from**, such as `no-reply@your-domain`. New graduates must confirm their email address to sign in, so this must work. Email goes out through **Resend** (free plan is enough; verify your domain there), with a Hostinger email account as the backup.
 - **AI keys** (optional): `GEMINI_API_KEY` and `GROQ_API_KEY`, the same as in local testing.
 
 On your own computer you need a terminal: PowerShell on Windows, or Terminal on macOS.
@@ -96,6 +96,7 @@ The two `openssl` lines each print a random value. In the editor:
 | `APP_URL` | `https://` + your domain. |
 | `MAIL_USERNAME`, `MAIL_FROM_ADDRESS` | The sending address, e.g. `no-reply@gradconnect-uclm.com`. |
 | `MAIL_PASSWORD` | That email account's password. |
+| `RESEND_API_KEY` | Your [Resend](https://resend.com) API key; Resend sends the email, and the account above takes over if it fails. The `MAIL_FROM_ADDRESS` domain must be verified in Resend. No key? Set `MAIL_MAILER=smtp`. |
 | `GEMINI_API_KEY`, `GROQ_API_KEY` | Your AI keys, or leave empty. |
 
 Save with `Ctrl` + `O`, `Enter`, then exit with `Ctrl` + `X`.
@@ -232,7 +233,7 @@ The site is on plain HTTP while `SESSION_SECURE_COOKIE=true`. Either finish HTTP
 Fill in `APP_KEY` (step 7) and run `docker compose up -d`.
 
 **Confirmation emails never arrive**
-Check the `MAIL_` values against hPanel → Emails → your account → configuration, and look in the spam folder. Errors appear in Laravel's log (step 12).
+Check `RESEND_API_KEY` and that your domain shows *Verified* in Resend → Domains, then the `MAIL_` values against hPanel → Emails → your account → configuration, and look in the spam folder. Errors appear in Laravel's log (step 12).
 
 **The build stops with "killed" or runs out of memory**
 Add swap space, then build again:
