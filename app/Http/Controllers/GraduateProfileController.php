@@ -77,6 +77,13 @@ class GraduateProfileController extends Controller
             // The free-text program is what résumé/job matching reads, so keep
             // it in step with the program the graduate picked.
             $attributes['program'] = Department::find($programId)?->name ?? ($attributes['program'] ?? null);
+        } elseif ($profile->department?->type === 'program'
+            && ($attributes['program'] ?? null) === $profile->department->name) {
+            // A college chosen without a program: the text field still carries
+            // the old catalogue program, which would leave e.g. a Business
+            // graduate listed under "BS Computer Science". A program the
+            // graduate typed in themselves is kept.
+            $attributes['program'] = null;
         }
 
         $profile->fill($attributes)->save();

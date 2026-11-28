@@ -39,9 +39,8 @@ class AppServiceProvider extends ServiceProvider
             fn (object $notifiable, string $token): string => url(route('password.reset', ['token' => $token], false))
         );
 
-        // Audit trail (Fig. 15 "System Logs & Audit Trail").
-        Event::listen(Login::class, [RecordAuthActivity::class, 'handleLogin']);
-        Event::listen(Failed::class, [RecordAuthActivity::class, 'handleFailed']);
-        Event::listen(Logout::class, [RecordAuthActivity::class, 'handleLogout']);
+        // Audit trail (Fig. 15 "System Logs & Audit Trail"): RecordAuthActivity's
+        // handleLogin/handleFailed/handleLogout are found by Laravel's event
+        // discovery. Registering them here as well recorded every event twice.
     }
 }

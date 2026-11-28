@@ -23,7 +23,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default function LearningResourcesIndex({ resources, canManage }: Props) {
     async function destroy(id: number) {
-        if (!(await confirmDialog('Remove this resource?', { confirmLabel: 'Remove' }))) return;
+        if (!(await confirmDialog('Delete this resource?', { confirmLabel: 'Delete' }))) return;
         router.delete(route('learning-resources.destroy', id));
     }
 

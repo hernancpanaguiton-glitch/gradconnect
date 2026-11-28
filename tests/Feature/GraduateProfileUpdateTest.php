@@ -188,4 +188,35 @@ class GraduateProfileUpdateTest extends TestCase
         $this->actingAs($affairs)->get(route('reports.employability'))
             ->assertInertia(fn ($page) => $page->where('employmentBreakdown.employed', 1));
     }
+
+    public function test_changing_college_without_a_program_does_not_keep_the_old_program(): void
+    {
+        $ccs = Department::create(['name' => 'College of Computer Studies', 'code' => 'CCS', 'type' => 'college']);
+        $bscs = Department::create(['name' => 'BS Computer Science', 'code' => 'BSCS', 'type' => 'program', 'parent_id' => $ccs->id]);
+        $cba = Department::create(['name' => 'College of Business and Accountancy', 'code' => 'CBA', 'type' => 'college']);
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id, 'department_id' => $bscs->id, 'program' => 'BS Computer Science']);
+
+        // The form still carries the old program's name in its text field.
+        $this->actingAs($user)
+            ->patch(route('graduate.profile.update'), $this->formPayload($profile, ['college_id' => $cba->id, 'program_id' => null]))
+            ->assertSessionHasNoErrors();
+
+        $profile->refresh();
+        $this->assertSame($cba->id, $profile->department_id);
+        $this->assertNull($profile->program, 'a Business graduate must not keep "BS Computer Science"');
+    }
+
+    public function test_a_typed_in_program_is_kept_when_no_catalogue_program_is_chosen(): void
+    {
+        $cba = Department::create(['name' => 'College of Business and Accountancy', 'code' => 'CBA', 'type' => 'college']);
+        $user = User::factory()->alumni()->create();
+        $profile = GraduateProfile::factory()->create(['user_id' => $user->id, 'department_id' => $cba->id]);
+
+        $this->actingAs($user)
+            ->patch(route('graduate.profile.update'), $this->formPayload($profile, ['college_id' => $cba->id, 'program' => 'BS Entrepreneurship']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('BS Entrepreneurship', $profile->fresh()->program);
+    }
 }

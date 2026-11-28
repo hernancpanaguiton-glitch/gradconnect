@@ -9,6 +9,7 @@ use App\Models\AuditLog;
 use App\Models\Department;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -82,7 +83,7 @@ class DepartmentController extends Controller
         if ($blockers !== []) {
             throw ValidationException::withMessages([
                 'department' => "Cannot delete \"{$department->name}\" — it still has ".
-                    collect($blockers)->map(fn (int $count, string $label): string => "{$count} {$label}")->join(', ', ' and ').
+                    collect($blockers)->map(fn (int $count, string $label): string => $count.' '.Str::plural(Str::singular($label), $count))->join(', ', ' and ').
                     '. Move or remove those first.',
             ]);
         }

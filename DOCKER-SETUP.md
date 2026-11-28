@@ -249,7 +249,7 @@ docker compose run --rm frontend-tests
 
 **What a pass looks like:**
 
-- Back-end: the last lines read `Tests: 5 skipped, 489 passed` (the numbers grow as tests are added) and there is **no** `failed`.
+- Back-end: the last lines read `Tests: 5 skipped, 504 passed` (the numbers grow as tests are added) and there is **no** `failed`.
 - Front-end: `Test Files 29 passed` and `Tests 154 passed`, with no `failed`.
 
 > The **5 skipped** back-end tests are expected. They check the AI vector search, which needs PostgreSQL with pgvector; the tests run on a temporary SQLite database that has no vector support, so they skip themselves.

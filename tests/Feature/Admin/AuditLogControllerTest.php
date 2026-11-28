@@ -74,4 +74,17 @@ class AuditLogControllerTest extends TestCase
         $this->actingAs($admin)->post(route('admin.roles.store'), ['name' => 'recruiter']);
         $this->assertDatabaseHas('audit_logs', ['action' => 'role.created', 'user_id' => $admin->id]);
     }
+
+    public function test_each_sign_in_failure_and_sign_out_is_recorded_once(): void
+    {
+        $user = User::factory()->alumni()->create();
+
+        $this->post(route('login'), ['email' => $user->email, 'password' => 'wrong-password']);
+        $this->post(route('login'), ['email' => $user->email, 'password' => 'password']);
+        $this->post(route('logout'));
+
+        foreach (['login_failed', 'login', 'logout'] as $action) {
+            $this->assertSame(1, AuditLog::where('action', $action)->count(), $action);
+        }
+    }
 }
